@@ -1,0 +1,25 @@
+{
+  "name": "@multitenantkit/adapter-system-crypto-uuid",
+  "version": "1.0.0",
+  "description": "Crypto UUID adapter using Node.js crypto module",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/CryptoUuid.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/CryptoUuid.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@multitenantkit/domain-contracts": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@multitenantkit/api-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API contracts and schemas for MultiTenantKit HTTP API",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "build:watch": "tsc --build --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@multitenantkit/domain-contracts": "file:../domain-contracts",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./shared": {
+      "types": "./dist/shared/index.d.ts",
+      "import": "./dist/shared/index.js"
+    },
+    "./shared/ports": {
+      "types": "./dist/shared/ports/index.d.ts",
+      "import": "./dist/shared/ports/index.js"
+    },
+    "./users": {
+      "types": "./dist/users/index.d.ts",
+      "import": "./dist/users/index.js"
+    },
+    "./organizations": {
+      "types": "./dist/organizations/index.d.ts",
+      "import": "./dist/organizations/index.js"
+    },
+    "./organization-memberships": {
+      "types": "./dist/organization-memberships/index.d.ts",
+      "import": "./dist/organization-memberships/index.js"
+    },
+    "./projects": {
+      "types": "./dist/projects/index.d.ts",
+      "import": "./dist/projects/index.js"
+    },
+    "./project-memberships": {
+      "types": "./dist/project-memberships/index.d.ts",
+      "import": "./dist/project-memberships/index.js"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+    "extends": "./tsconfig.base.json",
+    "files": [],
+    "references": [
+        {
+            "path": "./packages/adapters/system/crypto-uuid",
+        },
+        {
+            "path": "./packages/adapters/system/system-clock",
+        },
+        {
+            "path": "./packages/contracts/domain-contracts"
+        },
+        {
+            "path": "./packages/contracts/api-contracts"
+        },
+        {
+            "path": "./packages/domain"
+        },
+        {
+            "path": "./packages/api/handlers"
+        },
+        {
+            "path": "./packages/adapters/persistence/json"
+        },
+        {
+            "path": "./packages/adapters/persistence/postgres"
+        },
+        {
+            "path": "./packages/adapters/metrics/http-metrics"
+        },
+        {
+            "path": "./packages/adapters/transport/express"
+        },
+        {
+            "path": "./packages/composition"
+        },
+        {
+            "path": "./packages/adapters/auth/supabase"
+        },
+        {
+            "path": "./packages/bundles/sdk"
+        }
+    ]
+}

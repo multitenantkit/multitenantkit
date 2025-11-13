@@ -1,0 +1,63 @@
+{
+  "name": "@multitenantkit/sdk",
+  "version": "1.0.0",
+  "description": "Complete SDK for building multi-tenant SaaS applications - includes all adapters and options",
+  "keywords": [
+    "multitenantkit",
+    "sdk",
+    "multitenancy",
+    "complete",
+    "all-inclusive",
+    "clean-architecture",
+    "hexagonal",
+    "ddd"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/multitenantkit/multitenantkit.git",
+    "directory": "packages/bundles/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/multitenantkit/multitenantkit/issues"
+  },
+  "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "peerDependencies": {
+    "@multitenantkit/adapter-auth-supabase": "^1.0.0",
+    "@multitenantkit/adapter-persistence-json": "^1.0.0",
+    "@multitenantkit/adapter-persistence-postgres": "^1.0.0",
+    "@multitenantkit/adapter-system-crypto-uuid": "^1.0.0",
+    "@multitenantkit/adapter-system-system-clock": "^1.0.0",
+    "@multitenantkit/adapter-transport-express": "^1.0.0",
+    "@multitenantkit/api-handlers": "^1.0.0",
+    "@multitenantkit/api-contracts": "^1.0.0",
+    "@multitenantkit/domain-contracts": "^1.0.0",
+    "@multitenantkit/domain": "^1.0.0",
+    "@multitenantkit/composition": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

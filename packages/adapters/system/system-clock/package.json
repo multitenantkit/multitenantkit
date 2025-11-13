@@ -1,0 +1,25 @@
+{
+  "name": "@multitenantkit/adapter-system-system-clock",
+  "version": "1.0.0",
+  "description": "System Clock adapter using real system time",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/SystemClock.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/SystemClock.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@multitenantkit/domain-contracts": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

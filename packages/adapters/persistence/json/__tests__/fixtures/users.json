@@ -1,0 +1,101 @@
+[
+    {
+        "id": "00000001-0000-4000-8000-000000010000",
+        "email": "owner@acme.com",
+        "firstName": "John",
+        "lastName": "Owner",
+        "status": "active",
+        "createdAt": "2025-01-01T10:00:00.000Z",
+        "updatedAt": "2025-01-01T10:00:00.000Z"
+    },
+    {
+        "id": "00000002-0000-4000-8000-000000020000",
+        "email": "sarah.ceo@techcorp.com",
+        "firstName": "Sarah",
+        "lastName": "Johnson",
+        "status": "active",
+        "createdAt": "2025-01-02T09:30:00.000Z",
+        "updatedAt": "2025-01-02T09:30:00.000Z"
+    },
+    {
+        "id": "00000003-0000-4000-8000-000000030000",
+        "email": "admin@acme.com",
+        "firstName": "Jane",
+        "lastName": "Admin",
+        "status": "active",
+        "createdAt": "2025-01-03T14:15:00.000Z",
+        "updatedAt": "2025-01-03T14:15:00.000Z"
+    },
+    {
+        "id": "00000004-0000-4000-8000-000000040000",
+        "email": "mike.admin@techcorp.com",
+        "firstName": "Mike",
+        "lastName": "Administrator",
+        "status": "active",
+        "createdAt": "2025-01-04T11:20:00.000Z",
+        "updatedAt": "2025-01-04T11:20:00.000Z"
+    },
+    {
+        "id": "00000005-0000-4000-8000-000000050000",
+        "email": "member1@acme.com",
+        "firstName": "Alice",
+        "lastName": "Member",
+        "status": "active",
+        "createdAt": "2025-01-05T16:45:00.000Z",
+        "updatedAt": "2025-01-05T16:45:00.000Z"
+    },
+    {
+        "id": "00000006-0000-4000-8000-000000060000",
+        "email": "member2@acme.com",
+        "firstName": "Bob",
+        "lastName": "Member",
+        "status": "active",
+        "createdAt": "2025-01-06T08:30:00.000Z",
+        "updatedAt": "2025-01-06T08:30:00.000Z"
+    },
+    {
+        "id": "00000007-0000-4000-8000-000000070000",
+        "email": "carol.dev@techcorp.com",
+        "firstName": "Carol",
+        "lastName": "Developer",
+        "status": "active",
+        "createdAt": "2025-01-07T13:10:00.000Z",
+        "updatedAt": "2025-01-07T13:10:00.000Z"
+    },
+    {
+        "id": "00000008-0000-4000-8000-000000080000",
+        "email": "suspended@acme.com",
+        "firstName": "David",
+        "lastName": "Suspended",
+        "status": "active",
+        "createdAt": "2025-01-08T12:00:00.000Z",
+        "updatedAt": "2025-01-08T12:00:00.000Z"
+    },
+    {
+        "id": "00000009-0000-4000-8000-000000090000",
+        "email": "inactive@example.com",
+        "firstName": "Emma",
+        "lastName": "Inactive",
+        "status": "inactive",
+        "createdAt": "2025-01-09T15:30:00.000Z",
+        "updatedAt": "2025-01-15T10:00:00.000Z"
+    },
+    {
+        "id": "0000000a-0000-4000-8000-0000000a0000",
+        "email": "noorganizations@freelancer.com",
+        "firstName": "Frank",
+        "lastName": "Freelancer",
+        "status": "active",
+        "createdAt": "2025-01-10T09:00:00.000Z",
+        "updatedAt": "2025-01-10T09:00:00.000Z"
+    },
+    {
+        "id": "0000000b-0000-4000-8000-0000000b0000",
+        "email": "consultant@multi.com",
+        "firstName": "Grace",
+        "lastName": "Consultant",
+        "status": "active",
+        "createdAt": "2025-01-11T11:45:00.000Z",
+        "updatedAt": "2025-01-11T11:45:00.000Z"
+    }
+]

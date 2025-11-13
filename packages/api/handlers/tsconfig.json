@@ -1,0 +1,24 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist",
+        "rootDir": "./src"
+    },
+    "references": [
+        {
+            "path": "../../contracts/api-contracts"
+        },
+        {
+            "path": "../../contracts/domain-contracts"
+        }
+    ],
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "dist",
+        "**/*.test.ts",
+        "**/*.spec.ts"
+    ]
+}

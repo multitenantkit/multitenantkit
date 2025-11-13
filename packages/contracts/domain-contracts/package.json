@@ -1,0 +1,78 @@
+{
+  "name": "@multitenantkit/domain-contracts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Domain schemas and types for MultiTenantKit - Single source of truth for domain models",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "build:watch": "tsc --build --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "contracts",
+    "schemas",
+    "zod",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./shared": {
+      "types": "./dist/shared/index.d.ts",
+      "import": "./dist/shared/index.js"
+    },
+    "./shared/errors": {
+      "types": "./dist/shared/errors/index.d.ts",
+      "import": "./dist/shared/errors/index.js"
+    },
+    "./shared/errors/index": {
+      "types": "./dist/shared/errors/index.d.ts",
+      "import": "./dist/shared/errors/index.js"
+    },
+    "./shared/auth": {
+      "types": "./dist/shared/auth/index.d.ts",
+      "import": "./dist/shared/auth/index.js"
+    },
+    "./shared/auth/Principal": {
+      "types": "./dist/shared/auth/Principal.d.ts",
+      "import": "./dist/shared/auth/Principal.js"
+    },
+    "./shared/config": {
+      "types": "./dist/shared/config/index.d.ts",
+      "import": "./dist/shared/config/index.js"
+    },
+    "./shared/config/ResponseTransformer": {
+      "types": "./dist/shared/config/ResponseTransformer.d.ts",
+      "import": "./dist/shared/config/ResponseTransformer.js"
+    },
+    "./users": {
+      "types": "./dist/users/index.d.ts",
+      "import": "./dist/users/index.js"
+    },
+    "./organizations": {
+      "types": "./dist/organizations/index.d.ts",
+      "import": "./dist/organizations/index.js"
+    },
+    "./organization-memberships": {
+      "types": "./dist/organization-memberships/index.d.ts",
+      "import": "./dist/organization-memberships/index.js"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+    "name": "@multitenantkit/adapter-auth-supabase",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Supabase authentication adapter",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@multitenantkit/api-contracts": "file:../../../contracts/api-contracts",
+        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
+        "@supabase/supabase-js": "^2.39.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    }
+}

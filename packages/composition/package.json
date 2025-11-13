@@ -1,0 +1,39 @@
+{
+    "name": "@multitenantkit/composition",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "dev": "tsc --build --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
+    },
+    "dependencies": {
+        "@multitenantkit/domain": "*",
+        "@multitenantkit/adapter-persistence-json": "*",
+        "@multitenantkit/adapter-persistence-postgres": "*",
+        "@multitenantkit/adapter-system-crypto-uuid": "*",
+        "@multitenantkit/adapter-system-system-clock": "*",
+        "@multitenantkit/adapter-metrics-http": "*"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
+    }
+}

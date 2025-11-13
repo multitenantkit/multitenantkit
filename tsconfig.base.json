@@ -1,0 +1,100 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "@multitenantkit/domain-contracts": [
+                "packages/contracts/domain-contracts/dist"
+            ],
+            "@multitenantkit/domain-contracts/*": [
+                "packages/contracts/domain-contracts/dist/*"
+            ],
+            "@multitenantkit/api-contracts": [
+                "packages/contracts/api-contracts/dist"
+            ],
+            "@multitenantkit/api-contracts/*": [
+                "packages/contracts/api-contracts/dist/*"
+            ],
+            "@multitenantkit/domain": [
+                "packages/domain/dist"
+            ],
+            "@multitenantkit/domain/*": [
+                "packages/domain/dist/*"
+            ],
+            "@multitenantkit/composition": [
+                "packages/composition/src"
+            ],
+            "@multitenantkit/composition/*": [
+                "packages/composition/src/*"
+            ],
+            "@multitenantkit/api-handlers": [
+                "packages/api/handlers/dist"
+            ],
+            "@multitenantkit/api-handlers/*": [
+                "packages/api/handlers/dist/*"
+            ],
+            "@multitenantkit/adapter-transport-express": [
+                "packages/adapters/transport/express/dist"
+            ],
+            "@multitenantkit/adapter-transport-express/*": [
+                "packages/adapters/transport/express/dist/*"
+            ],
+            "@multitenantkit/api-lambda/*": [
+                "packages/api/api-lambda/src/*"
+            ],
+            "@multitenantkit/adapter-persistence-json": [
+                "packages/adapters/persistence/json/dist"
+            ],
+            "@multitenantkit/adapter-persistence-json/*": [
+                "packages/adapters/persistence/json/dist/*"
+            ],
+            "@multitenantkit/adapter-persistence-postgres": [
+                "packages/adapters/persistence/postgres/dist"
+            ],
+            "@multitenantkit/adapter-persistence-postgres/*": [
+                "packages/adapters/persistence/postgres/dist/*"
+            ],
+            "@multitenantkit/billing-stripe/*": [
+                "packages/adapters/billing/stripe/src/*"
+            ],
+            "@multitenantkit/identity-supabase/*": [
+                "packages/adapters/identity/supabase/src/*"
+            ],
+            "@multitenantkit/adapter-system-crypto-uuid": [
+                "packages/adapters/system/crypto-uuid/src"
+            ],
+            "@multitenantkit/adapter-system-crypto-uuid/*": [
+                "packages/adapters/system/crypto-uuid/src/*"
+            ],
+            "@multitenantkit/adapter-system-system-clock": [
+                "packages/adapters/system/system-clock/src"
+            ],
+            "@multitenantkit/adapter-system-system-clock/*": [
+                "packages/adapters/system/system-clock/src/*"
+            ],
+            "@multitenantkit/adapter-metrics-http": [
+                "packages/adapters/metrics/http-metrics/dist"
+            ],
+            "@multitenantkit/adapter-metrics-http/*": [
+                "packages/adapters/metrics/http-metrics/dist/*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts",
+        "**/*.spec.ts"
+    ]
+}

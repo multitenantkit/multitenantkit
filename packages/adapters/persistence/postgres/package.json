@@ -1,0 +1,41 @@
+{
+    "name": "@multitenantkit/adapter-persistence-postgres",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "dev": "tsc --build --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "migrate-from-json": "tsx scripts/migrate-from-json.ts",
+        "check-db-health": "tsx scripts/check-db-health.ts"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
+        "postgres": "^3.4.0",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/pg": "^8.10.0",
+        "tsx": "^4.0.0",
+        "typescript": "^5.0.0",
+        "vitest": "^1.0.0"
+    }
+}
