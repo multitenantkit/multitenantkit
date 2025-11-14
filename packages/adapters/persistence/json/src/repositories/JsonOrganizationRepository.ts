@@ -1,9 +1,9 @@
-import { JsonStorage } from '../storage/JsonStorage';
-import { OrganizationMapper } from '../mappers/OrganizationMapper';
-import { OrganizationJsonData } from '../storage/schemas';
-import { join } from 'path';
+import { join } from 'node:path';
+import type { Organization, OrganizationRepository } from '@multitenantkit/domain-contracts';
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import { Organization, OrganizationRepository } from '@multitenantkit/domain-contracts';
+import { OrganizationMapper } from '../mappers/OrganizationMapper';
+import { JsonStorage } from '../storage/JsonStorage';
+import type { OrganizationJsonData } from '../storage/schemas';
 
 /**
  * JSON-based implementation of OrganizationRepository
@@ -12,6 +12,8 @@ import { Organization, OrganizationRepository } from '@multitenantkit/domain-con
  * Generic support for custom fields:
  * @template TCustomFields - Custom fields added to Organization
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class JsonOrganizationRepository<TCustomFields = {}>
     implements OrganizationRepository<TCustomFields>
 {
@@ -34,7 +36,7 @@ export class JsonOrganizationRepository<TCustomFields = {}>
         return OrganizationMapper.toDomainArray(jsonDataArray) as any;
     }
 
-    async insert(organization: Organization, context?: OperationContext): Promise<void> {
+    async insert(organization: Organization, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         const jsonData = OrganizationMapper.toJson(organization);
 
@@ -53,7 +55,7 @@ export class JsonOrganizationRepository<TCustomFields = {}>
         });
     }
 
-    async update(organization: Organization, context?: OperationContext): Promise<void> {
+    async update(organization: Organization, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         const jsonData = OrganizationMapper.toJson(organization);
 
@@ -69,7 +71,7 @@ export class JsonOrganizationRepository<TCustomFields = {}>
         });
     }
 
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         await this.storage.update((organizations) =>
             organizations.filter((organization) => organization.id !== id)

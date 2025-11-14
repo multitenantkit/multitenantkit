@@ -1,13 +1,13 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Base Meta Schema for all API responses
  * Contains request tracking and versioning information
  */
 export const MetaSchema = z.object({
-  requestId: z.string().uuid(),
-  timestamp: z.string().datetime(),
-  version: z.string().default("1.0"),
+    requestId: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    version: z.string().default('1.0')
 });
 
 export type Meta = z.infer<typeof MetaSchema>;
@@ -17,13 +17,13 @@ export type Meta = z.infer<typeof MetaSchema>;
  * Extends Meta with pagination-specific fields
  */
 export const PaginationMetaSchema = MetaSchema.extend({
-  pagination: z.object({
-    total: z.number().int().nonnegative(),
-    page: z.number().int().positive(),
-    perPage: z.number().int().positive(),
-    totalPages: z.number().int().nonnegative(),
-    hasMore: z.boolean(),
-  }),
+    pagination: z.object({
+        total: z.number().int().nonnegative(),
+        page: z.number().int().positive(),
+        perPage: z.number().int().positive(),
+        totalPages: z.number().int().nonnegative(),
+        hasMore: z.boolean()
+    })
 });
 
 export type PaginationMeta = z.infer<typeof PaginationMetaSchema>;
@@ -48,10 +48,10 @@ export type PaginationMeta = z.infer<typeof PaginationMetaSchema>;
  * ```
  */
 export function ApiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
-  return z.object({
-    data: dataSchema,
-    meta: MetaSchema,
-  });
+    return z.object({
+        data: dataSchema,
+        meta: MetaSchema
+    });
 }
 
 /**
@@ -63,13 +63,11 @@ export function ApiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
  * IMPORTANT: Custom fields handling same as ApiResponseSchema.
  * Merge custom fields into T BEFORE using this wrapper.
  */
-export function PaginatedResponseSchema<T extends z.ZodTypeAny>(
-  itemSchema: T
-) {
-  return z.object({
-    data: z.array(itemSchema),
-    meta: PaginationMetaSchema,
-  });
+export function PaginatedResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
+    return z.object({
+        data: z.array(itemSchema),
+        meta: PaginationMetaSchema
+    });
 }
 
 /**
@@ -77,13 +75,13 @@ export function PaginatedResponseSchema<T extends z.ZodTypeAny>(
  * Consistent error format across all endpoints
  */
 export const ErrorResponseSchema = z.object({
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-    details: z.record(z.unknown()).optional(),
-    requestId: z.string().uuid(),
-    timestamp: z.string().datetime(),
-  }),
+    error: z.object({
+        code: z.string(),
+        message: z.string(),
+        details: z.record(z.unknown()).optional(),
+        requestId: z.string().uuid(),
+        timestamp: z.string().datetime()
+    })
 });
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
@@ -92,11 +90,11 @@ export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
  * Generic types for responses
  */
 export type ApiResponse<T> = {
-  data: T;
-  meta: Meta;
+    data: T;
+    meta: Meta;
 };
 
 export type PaginatedResponse<T> = {
-  data: T[];
-  meta: PaginationMeta;
+    data: T[];
+    meta: PaginationMeta;
 };

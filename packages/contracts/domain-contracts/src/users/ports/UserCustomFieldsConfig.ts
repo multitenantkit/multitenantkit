@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { User } from '../entities';
+import type { z } from 'zod';
+import type { User } from '../entities';
 
 /**
  * Configuration for UserRepository implementations
@@ -8,6 +8,7 @@ import { User } from '../entities';
  * This configuration is transversal across all repository implementations
  * (PostgreSQL, JSON, MongoDB, etc.)
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export interface UserCustomFieldsConfig<TCustomFields = {}> {
     /**
      * Column/field mapping for BASE framework fields

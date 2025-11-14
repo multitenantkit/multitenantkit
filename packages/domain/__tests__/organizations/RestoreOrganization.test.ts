@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { RestoreOrganization } from '../../src/organizations/use-cases/restore-organization/RestoreOrganization';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
 
 describe('RestoreOrganization use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -148,6 +148,7 @@ describe('RestoreOrganization use case', () => {
             const activeMembership = {
                 id: setup.uuid.generate(),
                 userId: member1.id,
+                username: member1.username,
                 organizationId: organization.id,
                 roleCode: 'member' as const,
                 joinedAt: new Date(),
@@ -160,6 +161,7 @@ describe('RestoreOrganization use case', () => {
             const leftMembership = {
                 id: setup.uuid.generate(),
                 userId: member2.id,
+                username: member2.username,
                 organizationId: organization.id,
                 roleCode: 'admin' as const,
                 joinedAt: new Date(),
@@ -172,6 +174,7 @@ describe('RestoreOrganization use case', () => {
             const deletedMembership = {
                 id: setup.uuid.generate(),
                 userId: member3.id,
+                username: member3.username,
                 organizationId: organization.id,
                 roleCode: 'member' as const,
                 joinedAt: new Date(),

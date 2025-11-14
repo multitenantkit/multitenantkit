@@ -1,12 +1,11 @@
-import express, { Express, Request, Response } from 'express';
+import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import type { HandlerPackage } from '@multitenantkit/api-handlers';
 import cors from 'cors';
+import express, { type Express, type Request, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
-import { HandlerPackage } from '@multitenantkit/api-handlers';
-import { requestIdMiddleware, errorHandler, notFoundHandler } from './middleware';
-import { AuthService } from '@multitenantkit/api-contracts/shared/ports';
 import { buildExpressRouter } from './buildExpressRouter';
+import { errorHandler, notFoundHandler, requestIdMiddleware } from './middleware';
 
 /**
  * Build a complete Express application from handler packages

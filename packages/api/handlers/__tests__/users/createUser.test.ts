@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeCreateUserHandler,
-    createUserRoute,
-    createUserHandlerPackage
-} from '../../src/users/create-user/createUser';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { ValidationError, ConflictError } from '@multitenantkit/domain-contracts/shared/errors';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import { ConflictError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    createUserHandlerPackage,
+    createUserRoute,
+    makeCreateUserHandler
+} from '../../src/users/create-user/createUser';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -124,7 +124,7 @@ describe('CreateUser Handler', () => {
                 requestId: 'req-location'
             });
 
-            expect(response.headers?.['Location']).toBe(`/users/${userId}`);
+            expect(response.headers?.Location).toBe(`/users/${userId}`);
         });
 
         it('should work without principal (public endpoint)', async () => {
@@ -171,7 +171,7 @@ describe('CreateUser Handler', () => {
             const userId = '00000000-0000-4000-8000-000000000004';
             const externalId = '00000000-0000-4000-8000-000000000104';
             type UserCustom = { role: string; email: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -387,7 +387,6 @@ describe('CreateUser Handler', () => {
 
         it('should handle errors in schema parsing', async () => {
             const userId = '00000000-0000-4000-8000-000000000010';
-            const externalId = '00000000-0000-4000-8000-000000000110';
             // Return data that doesn't match schema (missing required field)
             const invalidUser = {
                 id: userId,
@@ -422,7 +421,7 @@ describe('CreateUser Handler', () => {
 
         it('should handle custom schema parsing errors', async () => {
             type UserCustom = { role: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -546,7 +545,8 @@ describe('CreateUser Handler', () => {
             await handler({
                 input: {
                     body: {
-                        externalId: 'audit@example.com'
+                        externalId: 'audit@example.com',
+                        username: 'audituser'
                     }
                 },
                 principal: undefined,
@@ -579,7 +579,7 @@ describe('CreateUser Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ role: string }, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<{ role: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({

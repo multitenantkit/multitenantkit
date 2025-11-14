@@ -1,20 +1,22 @@
-import type { IListOrganizationMembers } from '@multitenantkit/domain-contracts/organizations';
-import { ListOrganizationMembersInputSchema } from '@multitenantkit/domain-contracts/organizations';
-import { UserSchema } from '@multitenantkit/domain-contracts/users';
-import { OrganizationSchema } from '@multitenantkit/domain-contracts/organizations';
-import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts/organization-memberships';
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type { FindMembersOptions } from '@multitenantkit/domain-contracts/organization-memberships';
-import { Result } from '../../../shared/result/Result';
+import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts/organization-memberships';
+import type { IListOrganizationMembers } from '@multitenantkit/domain-contracts/organizations';
 import {
-    DomainError,
-    ValidationError,
-    NotFoundError,
-    UnauthorizedError
-} from '@multitenantkit/domain-contracts/shared/errors/index';
-import { Adapters } from '@multitenantkit/domain-contracts';
+    ListOrganizationMembersInputSchema,
+    OrganizationSchema
+} from '@multitenantkit/domain-contracts/organizations';
 import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
-import { BaseUseCase } from '../../../shared/use-case';
+import {
+    type DomainError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors/index';
+import { UserSchema } from '@multitenantkit/domain-contracts/users';
 import { z } from 'zod';
+import { Result } from '../../../shared/result/Result';
+import { BaseUseCase } from '../../../shared/use-case';
 
 /**
  * Helper to merge base Zod object with optional custom-fields Zod object.
@@ -40,8 +42,11 @@ const mergeCF = <S extends z.AnyZodObject>(base: S, cf?: z.AnyZodObject): z.AnyZ
  * @template MCF - Zod schema for OrganizationMembership custom fields (default: empty object schema)
  */
 export class ListOrganizationMembers<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         UCF extends z.AnyZodObject = z.ZodObject<{}>,
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TCF extends z.AnyZodObject = z.ZodObject<{}>,
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         MCF extends z.AnyZodObject = z.ZodObject<{}>
     >
     extends BaseUseCase<
@@ -78,8 +83,9 @@ export class ListOrganizationMembers<
         const organizationCF = frameworkConfig?.organizations?.customFields?.customSchema as
             | TCF
             | undefined;
-        const membershipCF = frameworkConfig?.organizationMemberships?.customFields
-            ?.customSchema as MCF | undefined;
+        const membershipCF = frameworkConfig?.organizationMemberships?.customFields?.customSchema as
+            | MCF
+            | undefined;
 
         // 2) Merge base + custom schemas (custom wins on conflicting keys)
         const UserWithCF = mergeCF(UserSchema, userCF);
@@ -115,7 +121,7 @@ export class ListOrganizationMembers<
 
     protected async executeBusinessLogic(
         input: z.infer<typeof ListOrganizationMembersInputSchema>,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<
         Result<
             {

@@ -1,4 +1,4 @@
-import { UuidPort } from '../../src/shared/ports/UuidPort';
+import type { UuidPort } from '@multitenantkit/domain-contracts';
 
 /**
  * Mock implementation of UuidPort for testing

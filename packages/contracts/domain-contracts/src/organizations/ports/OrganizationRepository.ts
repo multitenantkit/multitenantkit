@@ -1,5 +1,5 @@
-import type { Organization } from "../entities";
-import type { OperationContext } from "../../shared/OperationContext";
+import type { OperationContext } from '../../shared/OperationContext';
+import type { Organization } from '../entities';
 
 /**
  * Repository port for Organization entity
@@ -9,6 +9,7 @@ import type { OperationContext } from "../../shared/OperationContext";
  * @template TCustomFields - Additional fields beyond the base Organization
  *                           Default is empty object for backward compatibility
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export interface OrganizationRepository<TCustomFields = {}> {
     /**
      * Find a organization by its ID
@@ -25,20 +26,14 @@ export interface OrganizationRepository<TCustomFields = {}> {
      * @param organization The organization entity to insert (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    insert(
-        organization: Organization & TCustomFields,
-        context?: OperationContext
-    ): Promise<void>;
+    insert(organization: Organization & TCustomFields, context?: OperationContext): Promise<void>;
 
     /**
      * Update an existing organization
      * @param organization The organization entity to update (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    update(
-        organization: Organization & TCustomFields,
-        context?: OperationContext
-    ): Promise<void>;
+    update(organization: Organization & TCustomFields, context?: OperationContext): Promise<void>;
 
     /**
      * Delete a organization by ID
@@ -63,7 +58,7 @@ export interface OrganizationRepository<TCustomFields = {}> {
     findMany(options?: {
         limit?: number;
         offset?: number;
-        status?: "active" | "archived";
+        status?: 'active' | 'archived';
         ownerUserId?: string;
     }): Promise<(Organization & TCustomFields)[]>;
 }

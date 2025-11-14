@@ -1,15 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Global error handler middleware
  * Catches any unhandled errors and returns consistent error response
  */
-export function errorHandler(
-    error: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
     // Log the error for debugging
     console.error('Unhandled error:', {
         message: error.message,
@@ -18,12 +13,12 @@ export function errorHandler(
         url: req.url,
         method: req.method
     });
-    
+
     // Don't handle if response already sent
     if (res.headersSent) {
         return next(error);
     }
-    
+
     // Return consistent error response
     return res.status(500).json({
         error: {

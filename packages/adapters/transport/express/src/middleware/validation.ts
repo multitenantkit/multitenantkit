@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { ZodSchema, ZodError } from "zod";
+import type { NextFunction, Request, Response } from 'express';
+import type { ZodSchema } from 'zod';
 
 /**
  * Validation schema configuration for different parts of the request
@@ -21,7 +21,7 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
             const errors: any[] = [];
 
             // Handle simple schema (body only) for backward compatibility
-            if ("safeParse" in schema) {
+            if ('safeParse' in schema) {
                 const validationResult = schema.safeParse(req);
                 if (!validationResult.success) {
                     errors.push(...validationResult.error.errors);
@@ -39,7 +39,7 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
                         errors.push(
                             ...bodyResult.error.errors.map((err) => ({
                                 ...err,
-                                path: ["body", ...err.path],
+                                path: ['body', ...err.path]
                             }))
                         );
                     } else {
@@ -54,13 +54,13 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
                         errors.push(
                             ...paramsResult.error.errors.map((err) => ({
                                 ...err,
-                                path: ["params", ...err.path],
+                                path: ['params', ...err.path]
                             }))
                         );
                     } else {
                         validatedInput = {
                             ...validatedInput,
-                            ...paramsResult.data,
+                            ...paramsResult.data
                         };
                     }
                 }
@@ -72,13 +72,13 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
                         errors.push(
                             ...queryResult.error.errors.map((err) => ({
                                 ...err,
-                                path: ["query", ...err.path],
+                                path: ['query', ...err.path]
                             }))
                         );
                     } else {
                         validatedInput = {
                             ...validatedInput,
-                            ...queryResult.data,
+                            ...queryResult.data
                         };
                     }
                 }
@@ -88,16 +88,16 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
             if (errors.length > 0) {
                 return res.status(400).json({
                     error: {
-                        code: "VALIDATION_ERROR",
-                        message: "Request validation failed",
+                        code: 'VALIDATION_ERROR',
+                        message: 'Request validation failed',
                         details: {
                             issues: errors.map((issue) => ({
-                                field: issue.path.join("."),
+                                field: issue.path.join('.'),
                                 message: issue.message,
-                                code: issue.code,
-                            })),
-                        },
-                    },
+                                code: issue.code
+                            }))
+                        }
+                    }
                 });
             }
             // Add validated data to request
@@ -106,12 +106,12 @@ export function validateRequest(schema: ZodSchema | ValidationSchemaConfig) {
         } catch (error) {
             return res.status(500).json({
                 error: {
-                    code: "INTERNAL_SERVER_ERROR",
-                    message: "Validation middleware failed",
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: 'Validation middleware failed',
                     details: {
-                        originalError: (error as Error).message,
-                    },
-                },
+                        originalError: (error as Error).message
+                    }
+                }
             });
         }
     };

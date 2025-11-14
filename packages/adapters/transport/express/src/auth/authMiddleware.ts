@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { Principal, ANONYMOUS_PRINCIPAL } from '@multitenantkit/domain-contracts/shared/auth';
-import { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import { ANONYMOUS_PRINCIPAL, type Principal } from '@multitenantkit/domain-contracts/shared/auth';
+import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Create Express middleware for authentication
@@ -12,7 +12,7 @@ import { AuthService } from '@multitenantkit/api-contracts/shared/ports';
  * @returns Express middleware function
  */
 export function createAuthMiddleware(authService: AuthService<any>) {
-    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
         try {
             // Build authentication input from Express request
             const authInput = {

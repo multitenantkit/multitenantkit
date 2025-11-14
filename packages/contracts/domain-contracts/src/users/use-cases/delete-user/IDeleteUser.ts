@@ -1,6 +1,6 @@
-import type { IUseCase, IDomainError } from '../../../shared';
-import type { DeleteUserInput } from './DeleteUser.dto';
+import type { IDomainError, IUseCase } from '../../../shared';
 import type { User } from '../../entities';
+import type { DeleteUserInput } from './DeleteUser.dto';
 
 /**
  * DeleteUser use case port

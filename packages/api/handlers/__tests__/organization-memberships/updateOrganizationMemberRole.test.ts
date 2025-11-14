@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { UseCases } from '@multitenantkit/domain-contracts';
+import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    BusinessRuleError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     makeUpdateOrganizationMemberRoleHandler,
-    updateOrganizationMemberRoleRoute,
-    updateOrganizationMemberRoleHandlerPackage
+    updateOrganizationMemberRoleHandlerPackage,
+    updateOrganizationMemberRoleRoute
 } from '../../src/organization-memberships/update-organization-member-role/updateOrganizationMemberRole';
-import type { UseCases } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError,
-    BusinessRuleError
-} from '@multitenantkit/domain-contracts/shared/errors';
-import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -62,7 +62,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Happy Path', () => {
         it('should return 200 with updated membership when role is changed', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000001';
             const organizationId = '00000000-0000-4000-8000-111111111111';
             const targetUserId = '00000000-0000-4000-8000-222222222222';
             const membershipId = '00000000-0000-4000-8000-333333333333';
@@ -129,7 +128,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should include X-Request-ID in response headers', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000002';
             const organizationId = '00000000-0000-4000-8000-444444444444';
             const targetUserId = '00000000-0000-4000-8000-555555555555';
             const membershipId = '00000000-0000-4000-8000-666666666666';
@@ -171,7 +169,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should handle promoting member to admin', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000003';
             const organizationId = '00000000-0000-4000-8000-777777777777';
             const targetUserId = '00000000-0000-4000-8000-888888888888';
             const membershipId = '00000000-0000-4000-8000-999999999999';
@@ -214,7 +211,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should handle demoting admin to member', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000004';
             const organizationId = '00000000-0000-4000-8000-101010101010';
             const targetUserId = '00000000-0000-4000-8000-111111111111';
             const membershipId = '00000000-0000-4000-8000-121212121212';
@@ -298,7 +294,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Error Cases - Authorization', () => {
         it('should return 401 when user is not authorized to change roles', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000005';
             const organizationId = '00000000-0000-4000-8000-151515151515';
             const targetUserId = '00000000-0000-4000-8000-161616161616';
             const unauthorizedError = new UnauthorizedError(
@@ -340,7 +335,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Error Cases - Validation', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000006';
             const organizationId = '00000000-0000-4000-8000-171717171717';
             const targetUserId = '00000000-0000-4000-8000-181818181818';
             const notFoundError = new NotFoundError('Organization', organizationId);
@@ -383,7 +377,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should return 404 when target membership not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000007';
             const organizationId = '00000000-0000-4000-8000-191919191919';
             const targetUserId = '00000000-0000-4000-8000-202020202020';
             const notFoundError = new NotFoundError(
@@ -422,7 +415,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-212121212121';
             const targetUserId = '00000000-0000-4000-8000-222222222221';
             const validationError = new ValidationError('Invalid role code', 'roleCode');
@@ -466,7 +458,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Error Cases - Business Rules', () => {
         it('should return 422 when trying to change owner role', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000009';
             const organizationId = '00000000-0000-4000-8000-232323232323';
             const targetUserId = '00000000-0000-4000-8000-242424242424';
             const businessError = new BusinessRuleError('Cannot change organization owner role');
@@ -502,7 +493,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should return 422 when member has left', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000010';
             const organizationId = '00000000-0000-4000-8000-252525252525';
             const targetUserId = '00000000-0000-4000-8000-262626262626';
             const businessError = new BusinessRuleError(
@@ -540,7 +530,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should return 422 when role is the same', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-272727272727';
             const targetUserId = '00000000-0000-4000-8000-282828282828';
             const businessError = new BusinessRuleError('Member already has this role');
@@ -578,7 +567,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000012';
             const organizationId = '00000000-0000-4000-8000-292929292929';
             const targetUserId = '00000000-0000-4000-8000-303030303030';
             mockUpdateOrganizationMemberRoleExecute.mockRejectedValue(
@@ -621,7 +609,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
         it('should pass through data from domain without re-validation', async () => {
             // Note: We trust the domain layer to return valid data
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000013';
             const organizationId = '00000000-0000-4000-8000-313131313131';
             const targetUserId = '00000000-0000-4000-8000-323232323232';
             const membershipId = '00000000-0000-4000-8000-333333333336';
@@ -673,7 +660,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Edge Cases', () => {
         it('should handle empty string request ID', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000014';
             const organizationId = '00000000-0000-4000-8000-333333333331';
             const targetUserId = '00000000-0000-4000-8000-343434343434';
             const membershipId = '00000000-0000-4000-8000-353535353535';
@@ -716,7 +702,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should handle membership with null leftAt', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000015';
             const organizationId = '00000000-0000-4000-8000-363636363636';
             const targetUserId = '00000000-0000-4000-8000-373737373737';
             const membershipId = '00000000-0000-4000-8000-383838383838';
@@ -759,7 +744,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
 
         it('should handle membership with leftAt date (coverage for ?? branch)', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000018';
             const organizationId = '00000000-0000-4000-8000-454545454545';
             const targetUserId = '00000000-0000-4000-8000-464646464646';
             const membershipId = '00000000-0000-4000-8000-474747474747';
@@ -806,7 +790,6 @@ describe('UpdateOrganizationMemberRole Handler', () => {
     describe('Integration - Operation Context', () => {
         it('should build correct operation context for audit', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000016';
             const organizationId = '00000000-0000-4000-8000-393939393939';
             const targetUserId = '00000000-0000-4000-8000-404040404040';
             const membershipId = '00000000-0000-4000-8000-414141414141';

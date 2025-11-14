@@ -1,17 +1,17 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { ApiResponse } from '@multitenantkit/api-contracts';
 import {
-    type UseCases,
     type FrameworkConfig,
-    UserSchema,
-    User
+    type UseCases,
+    type User,
+    UserSchema
 } from '@multitenantkit/domain-contracts';
-import { IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { type IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import type { ApiResponse } from '@multitenantkit/api-contracts';
 
 /**
  * Route definition for get user endpoint
@@ -35,8 +35,11 @@ export const getUserRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeGetUserHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -166,8 +169,11 @@ export function makeGetUserHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function getUserHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

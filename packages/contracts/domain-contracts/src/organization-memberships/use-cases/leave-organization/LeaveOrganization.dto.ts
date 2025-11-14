@@ -1,6 +1,6 @@
 import z from 'zod';
-import { OrganizationMembershipSchema } from '../../entities';
 import { UserSchema } from '../../../users';
+import { OrganizationMembershipSchema } from '../../entities';
 
 /**
  * Input schema - user leaving their own organization

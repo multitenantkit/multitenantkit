@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { OrganizationSchema } from '@multitenantkit/domain-contracts';
+import { z } from 'zod';
 
 // Create Organization
 export const CreateOrganizationRequestSchema = z.object({

@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { OrganizationMembershipSchema, OrganizationRole } from '@multitenantkit/domain-contracts';
+import { z } from 'zod';
 
 // Add Organization Member
 export const AddOrganizationMemberRequestSchema = z.object({
@@ -74,8 +74,12 @@ export const ListOrganizationMembershipsParamsSchema = z.object({
 // Type exports
 export type AddOrganizationMemberRequest = z.infer<typeof AddOrganizationMemberRequestSchema>;
 export type AddOrganizationMemberResponse = z.infer<typeof AddOrganizationMemberResponseSchema>;
-export type AcceptOrganizationInvitationRequest = z.infer<typeof AcceptOrganizationInvitationRequestSchema>;
-export type AcceptOrganizationInvitationResponse = z.infer<typeof AcceptOrganizationInvitationResponseSchema>;
+export type AcceptOrganizationInvitationRequest = z.infer<
+    typeof AcceptOrganizationInvitationRequestSchema
+>;
+export type AcceptOrganizationInvitationResponse = z.infer<
+    typeof AcceptOrganizationInvitationResponseSchema
+>;
 export type RemoveOrganizationMemberRequest = z.infer<typeof RemoveOrganizationMemberRequestSchema>;
 export type RemoveOrganizationMemberResponse = z.infer<
     typeof RemoveOrganizationMemberResponseSchema

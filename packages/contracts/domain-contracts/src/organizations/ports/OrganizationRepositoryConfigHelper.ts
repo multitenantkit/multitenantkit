@@ -1,4 +1,4 @@
-import { Organization } from '../entities';
+import type { Organization } from '../entities';
 import type { OrganizationCustomFieldsConfig } from './OrganizationCustomFieldsConfig';
 import {
     ORGANIZATION_BASE_FIELDS,
@@ -15,6 +15,7 @@ import {
  * - Type-safe access to custom fields and mappers
  * - Composition over inheritance approach
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class OrganizationRepositoryConfigHelper<TCustomFields = {}> {
     /**
      * Resolved column mapping (generated from namingStrategy + user overrides)
@@ -216,7 +217,6 @@ export class OrganizationRepositoryConfigHelper<TCustomFields = {}> {
             case 'PascalCase':
                 // camelCase → PascalCase: planType → PlanType
                 return key.charAt(0).toUpperCase() + key.slice(1);
-            case 'camelCase':
             default:
                 // No transformation
                 return key;

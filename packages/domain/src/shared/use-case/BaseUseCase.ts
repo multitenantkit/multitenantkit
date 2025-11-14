@@ -1,21 +1,21 @@
-import { z } from 'zod';
+import { randomUUID } from 'node:crypto';
 import type {
-    OperationContext,
     Adapters,
     DomainError,
     FrameworkConfig,
+    HookContext,
+    OperationContext,
     UseCaseHooks,
-    HookContext
+    User
 } from '@multitenantkit/domain-contracts';
 import {
-    ValidationError,
-    NotFoundError,
+    AbortedError,
     InfrastructureError,
-    AbortedError
+    NotFoundError,
+    ValidationError
 } from '@multitenantkit/domain-contracts';
-import type { User } from '@multitenantkit/domain-contracts';
+import type { z } from 'zod';
 import { Result } from '../result/Result';
-import { randomUUID } from 'crypto';
 
 /**
  * Base class for all use cases following a consistent execution pipeline.
@@ -148,7 +148,6 @@ export abstract class BaseUseCase<
     ): HookContext<
         TInput,
         TOutput,
-        TError,
         TCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -211,7 +210,6 @@ export abstract class BaseUseCase<
                   ctx: HookContext<
                       TInput,
                       TOutput,
-                      TError,
                       TCustomFields,
                       TOrganizationCustomFields,
                       TOrganizationMembershipCustomFields
@@ -221,7 +219,6 @@ export abstract class BaseUseCase<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -250,7 +247,6 @@ export abstract class BaseUseCase<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -453,14 +449,14 @@ export abstract class BaseUseCase<
             const onFinallyHook = hooks?.onFinally;
             if (onFinallyHook) {
                 this.logMetrics('onFinally', hookCtx);
-                await onFinallyHook({ ...hookCtx, result: result! } as any);
+                await onFinallyHook({ ...hookCtx, result } as any);
             }
         } catch (finallyError) {
             // onFinally errors don't affect the result, just log them
             console.error(`Error in onFinally hook for ${this.useCaseName}:`, finallyError);
         }
 
-        return result!;
+        return result;
     }
 
     /**
@@ -480,8 +476,8 @@ export abstract class BaseUseCase<
      * Default: no authorization
      */
     protected async authorize(
-        input: TInput,
-        context: OperationContext
+        _input: TInput,
+        _context: OperationContext
     ): Promise<Result<void, DomainError>> {
         return Result.ok(undefined);
     }

@@ -1,4 +1,4 @@
-import { ClockPort } from '../../src/shared/ports/ClockPort';
+import type { ClockPort } from '@multitenantkit/domain-contracts';
 
 /**
  * Mock implementation of ClockPort for testing

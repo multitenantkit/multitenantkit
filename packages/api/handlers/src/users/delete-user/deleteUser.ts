@@ -1,12 +1,15 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { DeleteUserRequest, DeleteUserRequestSchema } from '@multitenantkit/api-contracts/users';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts';
+import {
+    type DeleteUserRequest,
+    DeleteUserRequestSchema
+} from '@multitenantkit/api-contracts/users';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import type { ApiResponse } from '@multitenantkit/api-contracts';
 
 /**
  * Route definition for delete user endpoint
@@ -31,8 +34,11 @@ export const deleteUserRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeDeleteUserHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -91,7 +97,7 @@ export function makeDeleteUserHandler<
                 // Only return minimal data for delete confirmation
                 const deletionData = {
                     id: user.id,
-                    deletedAt: user.deletedAt!
+                    deletedAt: user.deletedAt
                 };
 
                 // Build base response with standard API format
@@ -153,8 +159,11 @@ export function makeDeleteUserHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function deleteUserHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

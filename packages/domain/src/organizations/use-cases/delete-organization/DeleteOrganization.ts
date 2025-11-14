@@ -1,22 +1,22 @@
-import { z } from 'zod';
 import type {
     DeleteOrganizationInput,
+    FrameworkConfig,
     IDeleteOrganization,
-    Organization,
     OperationContext,
-    FrameworkConfig
+    Organization
 } from '@multitenantkit/domain-contracts';
 import {
+    type Adapters,
     DeleteOrganizationInputSchema,
-    OrganizationSchema,
-    ValidationError,
     NotFoundError,
+    OrganizationSchema,
     UnauthorizedError,
-    Adapters
+    ValidationError
 } from '@multitenantkit/domain-contracts';
+import type { DomainError } from '@multitenantkit/domain-contracts/shared/errors/index';
+import type { z } from 'zod';
 import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
-import type { DomainError } from '@multitenantkit/domain-contracts/shared/errors/index';
 
 /**
  * DeleteOrganization use case
@@ -41,8 +41,11 @@ import type { DomainError } from '@multitenantkit/domain-contracts/shared/errors
  * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
  */
 export class DeleteOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -96,7 +99,7 @@ export class DeleteOrganization<
 
     protected async authorize(
         input: DeleteOrganizationInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<void, DomainError>> {
         // 1. Ensure organization exists for permission checks
         const organization = await this.adapters.persistence.organizationRepository.findById(

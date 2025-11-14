@@ -4,7 +4,7 @@
  */
 
 export * from './create-user';
-export * from './get-user';
-export * from './update-user';
-export * from './list-user-organizations';
 export * from './delete-user';
+export * from './get-user';
+export * from './list-user-organizations';
+export * from './update-user';

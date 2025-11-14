@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { UserRepositoryConfigHelper } from '../UserRepositoryConfigHelper';
 import type { UserCustomFieldsConfig } from '../UserCustomFieldsConfig';
+import { UserRepositoryConfigHelper } from '../UserRepositoryConfigHelper';
 
 describe('UserRepositoryConfigHelper - namingStrategy precedence', () => {
     const schema = z.object({

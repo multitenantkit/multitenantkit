@@ -1,8 +1,37 @@
 {
     "name": "@multitenantkit/adapter-persistence-postgres",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
+    "description": "PostgreSQL persistence adapter for MultiTenantKit (production-ready)",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "adapter",
+        "persistence",
+        "postgres",
+        "postgresql",
+        "database",
+        "organizations",
+        "teams",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/persistence/postgres"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -27,7 +56,7 @@
         "check-db-health": "tsx scripts/check-db-health.ts"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
+        "@multitenantkit/domain-contracts": "^0.1.0",
         "postgres": "^3.4.0",
         "zod": "^3.22.4"
     },

@@ -1,22 +1,22 @@
-import { z } from 'zod';
 import type {
     DeleteUserInput,
-    IDeleteUser,
-    User,
-    OperationContext,
     FrameworkConfig,
+    IDeleteUser,
+    OperationContext,
     Organization,
-    OrganizationMembership
+    OrganizationMembership,
+    User
 } from '@multitenantkit/domain-contracts';
 import {
+    type Adapters,
     DeleteUserInputSchema,
-    UserSchema,
-    ValidationError,
-    NotFoundError,
-    Adapters,
+    type NotFoundError,
+    OrganizationMembershipSchema,
     OrganizationSchema,
-    OrganizationMembershipSchema
+    UserSchema,
+    ValidationError
 } from '@multitenantkit/domain-contracts';
+import { z } from 'zod';
 import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
 
@@ -47,8 +47,11 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
  */
 export class DeleteUser<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

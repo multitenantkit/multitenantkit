@@ -1,8 +1,37 @@
 {
     "name": "@multitenantkit/adapter-transport-express",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
+    "description": "Express.js transport adapter for MultiTenantKit HTTP API",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "adapter",
+        "express",
+        "rest-api",
+        "api-server",
+        "http",
+        "organizations",
+        "teams",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/transport/express"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -19,9 +48,9 @@
         "test:e2e": "vitest run --config vitest.config.ts"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "file:../../../contracts/api-contracts",
-        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
-        "@multitenantkit/api-handlers": "file:../../../api/handlers",
+        "@multitenantkit/api-contracts": "^0.1.0",
+        "@multitenantkit/domain-contracts": "^0.1.0",
+        "@multitenantkit/api-handlers": "^0.1.0",
         "@supabase/supabase-js": "^2.57.4",
         "cors": "^2.8.5",
         "dotenv": "^17.2.2",

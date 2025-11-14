@@ -1,18 +1,18 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { DomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import {
-    CreateOrganizationRequestSchema,
-    CreateOrganizationRequest
+    type CreateOrganizationRequest,
+    CreateOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import { type Organization, OrganizationSchema } from '@multitenantkit/domain-contracts';
+import { type DomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import { z } from 'zod';
-import { type Organization, OrganizationSchema } from '@multitenantkit/domain-contracts';
 
 /**
  * Route definition for create organization endpoint
@@ -36,8 +36,11 @@ export const createOrganizationRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeCreateOrganizationHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -147,7 +150,8 @@ export function makeCreateOrganizationHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizations?.CreateOrganization;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizations?.CreateOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -197,8 +201,11 @@ export function makeCreateOrganizationHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function createOrganizationHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -1,3 +1,4 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
     AcceptOrganizationInvitationInput,
     AcceptOrganizationInvitationOutput,
@@ -5,37 +6,39 @@ import type {
 } from '@multitenantkit/domain-contracts/organization-memberships';
 import {
     AcceptOrganizationInvitationInputSchema,
-    AcceptOrganizationInvitationOutputSchema
+    AcceptOrganizationInvitationOutputSchema,
+    type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import { Result } from '../../../shared/result/Result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
-    ValidationError,
-    NotFoundError
+    type DomainError,
+    NotFoundError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
+import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
  * AcceptOrganizationInvitation use case
  * Handles business logic for accepting a pending organization invitation
- * 
+ *
  * Business Rules:
  * - User must be registered (have a userId)
  * - Invitation must exist and be pending (invitedAt set, joinedAt null)
  * - Username in invitation must match user's username
  * - Membership must not be already accepted, left, or deleted
- * 
+ *
  * Generic support for custom fields:
  * @template TUserCustomFields - Custom fields for UserRepository
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
  */
 export class AcceptOrganizationInvitation<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -138,10 +141,7 @@ export class AcceptOrganizationInvitation<
 
         if (pendingInvitation.joinedAt) {
             return Result.fail(
-                new ValidationError(
-                    'Invitation has already been accepted',
-                    'organizationId'
-                )
+                new ValidationError('Invitation has already been accepted', 'organizationId')
             );
         }
 
@@ -163,18 +163,13 @@ export class AcceptOrganizationInvitation<
 
         try {
             await this.adapters.persistence.uow.transaction(async (repos) => {
-                await repos.organizationMemberships.update(
-                    acceptedMembership as any,
-                    auditContext
-                );
+                await repos.organizationMemberships.update(acceptedMembership as any, auditContext);
             });
         } catch (error) {
             return Result.fail(
-                new ValidationError(
-                    'Failed to accept organization invitation',
-                    undefined,
-                    { originalError: error }
-                )
+                new ValidationError('Failed to accept organization invitation', undefined, {
+                    originalError: error
+                })
             );
         }
 

@@ -1,6 +1,6 @@
 import z from 'zod';
-import { OrganizationSchema } from '../../entities';
 import { UserSchema } from '../../../users';
+import { OrganizationSchema } from '../../entities';
 
 export const CreateOrganizationInputSchema = z.object({
     principalExternalId: UserSchema.shape.externalId

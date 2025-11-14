@@ -1,20 +1,21 @@
-import { MockUnitOfWork } from "../test-doubles/MockUnitOfWork";
-import { MockUserRepository } from "../test-doubles/MockUserRepository";
-import { FixedClock, DeterministicUuid } from "./TestDoubles";
-import { TestData } from "./Builders";
+import { MockUnitOfWork } from '../test-doubles/MockUnitOfWork';
+import type { MockUserRepository } from '../test-doubles/MockUserRepository';
+import { TestData } from './Builders';
+import { DeterministicUuid, FixedClock } from './TestDoubles';
 
 /**
  * Test setup utility that provides common testing infrastructure
  */
 export class TestSetup {
     public readonly uow: MockUnitOfWork;
-    public readonly userRepo: MockUserRepository;
+    public readonly userRepo: MockUserRepository<Record<string, unknown>>;
     public readonly clock: FixedClock;
     public readonly uuid: DeterministicUuid;
 
     constructor() {
         this.uow = new MockUnitOfWork();
-        this.userRepo = this.uow.getUserRepository();
+        // biome-ignore lint/complexity/noBannedTypes: Empty object {} for user custom fields
+        this.userRepo = this.uow.getUserRepository() as MockUserRepository<{}>;
         this.clock = new FixedClock();
         this.uuid = new DeterministicUuid();
     }
@@ -47,24 +48,23 @@ export class TestSetup {
         return {
             owner,
             admin,
-            member,
+            member
         };
     }
-
 }
 
 /**
  * Common assertion helpers for domain tests
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class TestAssertions {
     /**
      * Assert that a Result is successful and return the value
      */
     static expectSuccess<T>(result: any): T {
         if (result.isFailure) {
-            throw new Error(
-                `Expected success but got failure: ${result.getError().message}`
-            );
+            throw new Error(`Expected success but got failure: ${result.getError().message}`);
         }
         return result.getValue();
     }
@@ -75,9 +75,7 @@ export class TestAssertions {
     static expectFailure(result: any, expectedErrorCode?: string): any {
         if (result.isSuccess) {
             throw new Error(
-                `Expected failure but got success: ${JSON.stringify(
-                    result.getValue()
-                )}`
+                `Expected failure but got success: ${JSON.stringify(result.getValue())}`
             );
         }
 
@@ -96,9 +94,7 @@ export class TestAssertions {
      */
     static expectArrayLength<T>(array: T[], expectedLength: number): T[] {
         if (array.length !== expectedLength) {
-            throw new Error(
-                `Expected array length ${expectedLength} but got ${array.length}`
-            );
+            throw new Error(`Expected array length ${expectedLength} but got ${array.length}`);
         }
         return array;
     }
@@ -106,11 +102,7 @@ export class TestAssertions {
     /**
      * Assert that a date is approximately equal to another (within tolerance)
      */
-    static expectDateNear(
-        actual: Date,
-        expected: Date,
-        toleranceMs: number = 1000
-    ): void {
+    static expectDateNear(actual: Date, expected: Date, toleranceMs: number = 1000): void {
         const diff = Math.abs(actual.getTime() - expected.getTime());
         if (diff > toleranceMs) {
             throw new Error(
@@ -153,5 +145,5 @@ export const TestScenarios = {
      */
     empty() {
         return {};
-    },
+    }
 };

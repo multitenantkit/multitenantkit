@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import { UuidPort } from '@multitenantkit/domain-contracts';
+import { randomUUID } from 'node:crypto';
+import type { UuidPort } from '@multitenantkit/domain-contracts';
 
 /**
  * Crypto UUID implementation using Node.js crypto module

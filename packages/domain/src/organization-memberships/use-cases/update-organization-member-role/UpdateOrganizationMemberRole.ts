@@ -1,22 +1,22 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
+    IUpdateOrganizationMemberRole,
     UpdateOrganizationMemberRoleInput,
-    UpdateOrganizationMemberRoleOutput,
-    IUpdateOrganizationMemberRole
+    UpdateOrganizationMemberRoleOutput
 } from '@multitenantkit/domain-contracts/organization-memberships';
 import {
+    type OrganizationMembership,
     UpdateOrganizationMemberRoleInputSchema,
     UpdateOrganizationMemberRoleOutputSchema
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import { Result } from '../../../shared/result/Result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
-    ValidationError,
+    type DomainError,
     NotFoundError,
-    UnauthorizedError
+    UnauthorizedError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
+import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -24,8 +24,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * Handles business logic for updating a organization member's role
  */
 export class UpdateOrganizationMemberRole<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -62,7 +65,7 @@ export class UpdateOrganizationMemberRole<
 
     protected async authorize(
         input: UpdateOrganizationMemberRoleInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<void, DomainError>> {
         const organization = await this.adapters.persistence.organizationRepository.findById(
             input.organizationId

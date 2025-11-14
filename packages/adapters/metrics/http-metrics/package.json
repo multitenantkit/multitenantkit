@@ -1,28 +1,52 @@
 {
-  "name": "@multitenantkit/adapter-metrics-http",
-  "version": "1.0.0",
-  "description": "HTTP adapter for metrics and observability",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+    "name": "@multitenantkit/adapter-metrics-http",
+    "version": "0.1.0",
+    "description": "HTTP adapter for metrics and observability",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "adapter",
+        "metrics",
+        "observability",
+        "monitoring",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/metrics/http-metrics"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rm -rf dist"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.1.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
     }
-  },
-  "scripts": {
-    "build": "tsc --build",
-    "clean": "rm -rf dist"
-  },
-  "dependencies": {
-    "@multitenantkit/domain-contracts": "*"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  }
 }

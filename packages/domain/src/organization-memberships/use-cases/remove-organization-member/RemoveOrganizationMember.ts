@@ -1,33 +1,34 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
-    RemoveOrganizationMemberInput,
-    RemoveOrganizationMemberOutput,
     IRemoveOrganizationMember,
-} from "@multitenantkit/domain-contracts/organization-memberships";
+    OrganizationMembership,
+    RemoveOrganizationMemberInput,
+    RemoveOrganizationMemberOutput
+} from '@multitenantkit/domain-contracts/organization-memberships';
 import {
     RemoveOrganizationMemberInputSchema,
-    RemoveOrganizationMemberOutputSchema,
-} from "@multitenantkit/domain-contracts/organization-memberships";
-import { Result } from "../../../shared/result/Result";
+    RemoveOrganizationMemberOutputSchema
+} from '@multitenantkit/domain-contracts/organization-memberships';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
-    ValidationError,
+    type DomainError,
     NotFoundError,
     UnauthorizedError,
-} from "@multitenantkit/domain-contracts/shared/errors/index";
-import type {
-    OperationContext,
-    FrameworkConfig,
-} from "@multitenantkit/domain-contracts/shared";
-import { Adapters } from "@multitenantkit/domain-contracts";
-import { BaseUseCase } from "../../../shared/use-case";
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors/index';
+import { Result } from '../../../shared/result/Result';
+import { BaseUseCase } from '../../../shared/use-case';
 
 /**
  * RemoveOrganizationMember use case
  * Handles business logic for removing a user from a organization
  */
 export class RemoveOrganizationMember<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -53,33 +54,28 @@ export class RemoveOrganizationMember<
         >
     ) {
         super(
-            "organizationMembership-removeOrganizationMember",
+            'organizationMembership-removeOrganizationMember',
             adapters,
             frameworkConfig,
             RemoveOrganizationMemberInputSchema,
             RemoveOrganizationMemberOutputSchema,
-            "Failed to remove organization member"
+            'Failed to remove organization member'
         );
     }
 
     protected async authorize(
         input: RemoveOrganizationMemberInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<void, DomainError>> {
         // Organization must exist
-        const organization =
-            await this.adapters.persistence.organizationRepository.findById(
-                input.organizationId
-            );
+        const organization = await this.adapters.persistence.organizationRepository.findById(
+            input.organizationId
+        );
         if (!organization) {
-            return Result.fail(
-                new NotFoundError("Organization", input.organizationId)
-            );
+            return Result.fail(new NotFoundError('Organization', input.organizationId));
         }
 
-        const getUserResult = await this.getUserFromExternalId(
-            input.principalExternalId
-        );
+        const getUserResult = await this.getUserFromExternalId(input.principalExternalId);
 
         if (getUserResult.isFailure) {
             return Result.fail(getUserResult.getError());
@@ -88,7 +84,7 @@ export class RemoveOrganizationMember<
         const existingUser = getUserResult.getValue();
 
         // Target membership must exist and be active (not left)
-        let targetMembership;
+        let targetMembership: OrganizationMembership | null;
         if (!input.removeByUsername) {
             targetMembership =
                 await this.adapters.persistence.organizationMembershipRepository.findByUserIdAndOrganizationId(
@@ -102,14 +98,10 @@ export class RemoveOrganizationMember<
                     input.organizationId
                 );
         }
-        if (
-            !targetMembership ||
-            targetMembership.leftAt ||
-            targetMembership.deletedAt
-        ) {
+        if (!targetMembership || targetMembership.leftAt || targetMembership.deletedAt) {
             return Result.fail(
                 new NotFoundError(
-                    "OrganizationMembership",
+                    'OrganizationMembership',
                     `${input.targetUser}:${input.organizationId}`
                 )
             );
@@ -119,7 +111,7 @@ export class RemoveOrganizationMember<
         if (organization.ownerUserId === targetMembership.userId) {
             return Result.fail(
                 new ValidationError(
-                    "Organization owner cannot be removed. Transfer ownership first."
+                    'Organization owner cannot be removed. Transfer ownership first.'
                 )
             );
         }
@@ -133,17 +125,15 @@ export class RemoveOrganizationMember<
         const isOwner = organization.ownerUserId === existingUser.id;
         const isAdmin =
             !!actorMembership &&
-            actorMembership.roleCode === "admin" &&
+            actorMembership.roleCode === 'admin' &&
             !!actorMembership.joinedAt &&
             !actorMembership.leftAt &&
             !actorMembership.deletedAt;
-        const targetIsMember = targetMembership.roleCode === "member";
+        const targetIsMember = targetMembership.roleCode === 'member';
 
         if (!(isOwner || (isAdmin && targetIsMember))) {
             return Result.fail(
-                new UnauthorizedError(
-                    "Insufficient permissions to remove this member"
-                )
+                new UnauthorizedError('Insufficient permissions to remove this member')
             );
         }
 
@@ -155,7 +145,7 @@ export class RemoveOrganizationMember<
         context: OperationContext
     ): Promise<Result<RemoveOrganizationMemberOutput, DomainError>> {
         // Re-fetch target membership to get its ID for deletion
-        let targetMembership;
+        let targetMembership: OrganizationMembership | null;
 
         if (!input.removeByUsername) {
             targetMembership =
@@ -173,7 +163,7 @@ export class RemoveOrganizationMember<
         if (!targetMembership) {
             return Result.fail(
                 new NotFoundError(
-                    "OrganizationMembership",
+                    'OrganizationMembership',
                     `${input.targetUser}:${input.organizationId}`
                 )
             );
@@ -182,25 +172,18 @@ export class RemoveOrganizationMember<
         const auditContext: OperationContext = {
             ...context,
             organizationId: input.organizationId,
-            auditAction: "REMOVE_ORGANIZATION_MEMBER",
+            auditAction: 'REMOVE_ORGANIZATION_MEMBER'
         };
 
         try {
             await this.adapters.persistence.uow.transaction(async (repos) => {
-                await repos.organizationMemberships.delete(
-                    targetMembership.id,
-                    auditContext
-                );
+                await repos.organizationMemberships.delete(targetMembership.id, auditContext);
             });
         } catch (error) {
             return Result.fail(
-                new ValidationError(
-                    "Failed to remove organization member",
-                    undefined,
-                    {
-                        originalError: error,
-                    }
-                )
+                new ValidationError('Failed to remove organization member', undefined, {
+                    originalError: error
+                })
             );
         }
 

@@ -6,13 +6,11 @@
  * Organized by vertical slices (users, organizations, organization-memberships)
  */
 
+export * from './organization-memberships';
+export * from './organizations';
 // Shared types and primitives
 export * from './shared';
-
-// Vertical slices
-export * from './users';
-export * from './organizations';
-export * from './organization-memberships';
-
 // Use cases composition types
 export * from './types';
+// Vertical slices
+export * from './users';

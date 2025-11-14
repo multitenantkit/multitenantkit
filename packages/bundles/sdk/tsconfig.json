@@ -1,24 +1,24 @@
 {
-  "extends": "../../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true
-  },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../../domain" },
-    { "path": "../../contracts/domain-contracts" },
-    { "path": "../../contracts/api-contracts" },
-    { "path": "../../api/handlers" },
-    { "path": "../../adapters/persistence/json" },
-    { "path": "../../adapters/persistence/postgres" },
-    { "path": "../../adapters/auth/supabase" },
-    { "path": "../../adapters/transport/express" },
-    { "path": "../../adapters/system/crypto-uuid" },
-    { "path": "../../adapters/system/system-clock" },
-    { "path": "../../composition" }
-  ]
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src/**/*"],
+    "references": [
+        { "path": "../../domain" },
+        { "path": "../../contracts/domain-contracts" },
+        { "path": "../../contracts/api-contracts" },
+        { "path": "../../api/handlers" },
+        { "path": "../../adapters/persistence/json" },
+        { "path": "../../adapters/persistence/postgres" },
+        { "path": "../../adapters/auth/supabase" },
+        { "path": "../../adapters/transport/express" },
+        { "path": "../../adapters/system/crypto-uuid" },
+        { "path": "../../adapters/system/system-clock" },
+        { "path": "../../composition" }
+    ]
 }

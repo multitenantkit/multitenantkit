@@ -1,9 +1,4 @@
-import type {
-    ApiResponse,
-    PaginatedResponse,
-    Meta,
-    PaginationMeta
-} from '@multitenantkit/api-contracts';
+import type { ApiResponse, PaginatedResponse } from '@multitenantkit/api-contracts';
 
 /**
  * Response Builder - Utility for constructing consistent API responses
@@ -17,6 +12,8 @@ import type {
  * 3. Handler calls ResponseBuilder.success() with parsed data
  * 4. ResponseBuilder wraps data with {data, meta} structure
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class ResponseBuilder {
     /**
      * Build a successful API response

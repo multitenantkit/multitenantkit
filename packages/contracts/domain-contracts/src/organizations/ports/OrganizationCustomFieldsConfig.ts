@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { Organization } from '../entities';
+import type { z } from 'zod';
+import type { Organization } from '../entities';
 
 /**
  * Configuration for OrganizationRepository implementations
@@ -8,6 +8,7 @@ import { Organization } from '../entities';
  * This configuration is transversal across all repository implementations
  * (PostgreSQL, JSON, MongoDB, etc.)
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export interface OrganizationCustomFieldsConfig<TCustomFields = {}> {
     /**
      * Column/field mapping for BASE framework fields

@@ -1,23 +1,23 @@
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import {
+    type Organization,
+    OrganizationSchema
+} from '@multitenantkit/domain-contracts/organizations';
+import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
+import {
+    type DomainError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors/index';
 import type {
-    ListUserOrganizationsInput,
-    ListUserOrganizationsOutput,
-    IListUserOrganizations
+    IListUserOrganizations,
+    ListUserOrganizationsInput
 } from '@multitenantkit/domain-contracts/users';
 import {
     ListUserOrganizationsInputSchema,
     ListUserOrganizationsOutputSchema
 } from '@multitenantkit/domain-contracts/users';
-import { Organization, OrganizationSchema } from '@multitenantkit/domain-contracts/organizations';
 import { z } from 'zod';
 import { Result } from '../../../shared/result/Result';
-import {
-    DomainError,
-    ValidationError,
-    NotFoundError
-} from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import type { FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { Adapters } from '@multitenantkit/domain-contracts';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -29,8 +29,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationCustomFields - Custom fields added to Organization
  */
 export class ListUserOrganizations<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -79,7 +82,7 @@ export class ListUserOrganizations<
 
     protected async executeBusinessLogic(
         input: ListUserOrganizationsInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<Array<Organization & TOrganizationCustomFields>, DomainError>> {
         // 1. Get user by externalId
         const getUserResult = await this.getUserFromExternalId(input.principalExternalId);

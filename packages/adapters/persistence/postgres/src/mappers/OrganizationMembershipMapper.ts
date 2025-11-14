@@ -1,4 +1,4 @@
-import { OrganizationMembership } from '@multitenantkit/domain-contracts';
+import type { OrganizationMembership } from '@multitenantkit/domain-contracts';
 
 /**
  * Maps between OrganizationMembership domain entity and Postgres database format
@@ -6,6 +6,7 @@ import { OrganizationMembership } from '@multitenantkit/domain-contracts';
  * Note: This mapper ONLY handles type conversions (Date ↔ string).
  * Field name mapping is handled by OrganizationMembershipRepositoryConfigHelper using columnMapping.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class OrganizationMembershipMapper {
     /**
      * Convert database row to OrganizationMembership entity with custom fields
@@ -43,28 +44,28 @@ export class OrganizationMembershipMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate required dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in database row for membership ${id}`);
                 return null;
             }
 
             // Validate optional dates
-            if (invitedAt && isNaN(invitedAt.getTime())) {
+            if (invitedAt && Number.isNaN(invitedAt.getTime())) {
                 console.warn(`Invalid invitedAt date in database row for membership ${id}`);
                 return null;
             }
 
-            if (joinedAt && isNaN(joinedAt.getTime())) {
+            if (joinedAt && Number.isNaN(joinedAt.getTime())) {
                 console.warn(`Invalid joinedAt date in database row for membership ${id}`);
                 return null;
             }
 
-            if (leftAt && isNaN(leftAt.getTime())) {
+            if (leftAt && Number.isNaN(leftAt.getTime())) {
                 console.warn(`Invalid leftAt date in database row for membership ${id}`);
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 console.warn(`Invalid deletedAt date in database row for membership ${id}`);
                 return null;
             }
@@ -110,7 +111,9 @@ export class OrganizationMembershipMapper {
         customMapper?: (dbRow: Record<string, any>) => TCustomFields
     ): (OrganizationMembership & TCustomFields)[] {
         return dbRows
-            .map((row) => this.toDomainWithCustom(row, columnMap, customMapper))
+            .map((row) =>
+                OrganizationMembershipMapper.toDomainWithCustom(row, columnMap, customMapper)
+            )
             .filter(
                 (membership): membership is OrganizationMembership & TCustomFields =>
                     membership !== null

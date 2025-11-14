@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { OrganizationRepositoryConfigHelper } from '../OrganizationRepositoryConfigHelper';
-import type { OrganizationCustomFieldsConfig } from '../OrganizationCustomFieldsConfig';
 import type { Organization } from '../../entities';
+import type { OrganizationCustomFieldsConfig } from '../OrganizationCustomFieldsConfig';
+import { OrganizationRepositoryConfigHelper } from '../OrganizationRepositoryConfigHelper';
 
 describe('OrganizationRepositoryConfigHelper - namingStrategy', () => {
     describe('Default behavior (snake_case)', () => {

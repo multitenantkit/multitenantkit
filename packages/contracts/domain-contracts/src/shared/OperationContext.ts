@@ -3,7 +3,7 @@
  * Provides information about who is performing an operation and in what context
  */
 import type { z } from 'zod';
-import { Uuid } from './primitives';
+import type { Uuid } from './primitives';
 
 export type UuidString = z.infer<typeof Uuid>;
 

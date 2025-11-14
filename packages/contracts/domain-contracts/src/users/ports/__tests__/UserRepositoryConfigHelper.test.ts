@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { UserRepositoryConfigHelper } from '../UserRepositoryConfigHelper';
-import type { UserCustomFieldsConfig } from '../UserCustomFieldsConfig';
 import type { User } from '../../entities';
+import type { UserCustomFieldsConfig } from '../UserCustomFieldsConfig';
+import { UserRepositoryConfigHelper } from '../UserRepositoryConfigHelper';
 
 describe('UserRepositoryConfigHelper - namingStrategy', () => {
     describe('Default behavior (snake_case)', () => {
@@ -318,7 +318,7 @@ describe('UserRepositoryConfigHelper - namingStrategy', () => {
             const config: UserCustomFieldsConfig<any> = {
                 customSchema: schema,
                 customMapper: {
-                    toDb: (fields) => ({}),
+                    toDb: () => ({}),
                     toDomain: (dbRow) => ({
                         firstName: dbRow.full_name?.split(' ')[0] || '',
                         lastName: dbRow.full_name?.split(' ')[1] || '',
@@ -424,7 +424,6 @@ describe('UserRepositoryConfigHelper - namingStrategy', () => {
         it('should return empty object when no customSchema is provided', () => {
             const config: UserCustomFieldsConfig<any> = {
                 // No customSchema
-                namingStrategy: 'snake_case'
             };
 
             const helper = new UserRepositoryConfigHelper(config);

@@ -1,4 +1,4 @@
-import { ClockPort, UuidPort } from '@multitenantkit/domain-contracts';
+import type { ClockPort, UuidPort } from '@multitenantkit/domain-contracts';
 
 /**
  * Fixed clock for deterministic testing
@@ -21,8 +21,6 @@ export class FixedClock implements ClockPort {
  */
 export class DeterministicUuid implements UuidPort {
     private counter = 1;
-
-    constructor() {}
 
     generate(): string {
         // Generate a valid UUID v4 format with deterministic values

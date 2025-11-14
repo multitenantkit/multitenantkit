@@ -1,3 +1,4 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
     AddOrganizationMemberInput,
     AddOrganizationMemberOutput,
@@ -5,20 +6,18 @@ import type {
 } from '@multitenantkit/domain-contracts/organization-memberships';
 import {
     AddOrganizationMemberInputSchema,
-    AddOrganizationMemberOutputSchema
+    AddOrganizationMemberOutputSchema,
+    type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import { Result } from '../../../shared/result/Result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
-    ValidationError,
     ConflictError,
+    type DomainError,
     NotFoundError,
-    UnauthorizedError
+    UnauthorizedError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { User } from '@multitenantkit/domain-contracts/users';
+import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -29,8 +28,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository (for consistency)
  */
 export class AddOrganizationMember<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -67,7 +69,7 @@ export class AddOrganizationMember<
 
     protected async authorize(
         input: AddOrganizationMemberInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<void, DomainError>> {
         // Ensure organization exists for permission checks
         const organization = await this.adapters.persistence.organizationRepository.findById(
@@ -126,7 +128,7 @@ export class AddOrganizationMember<
         context: OperationContext
     ): Promise<Result<AddOrganizationMemberOutput, DomainError>> {
         // 1. Validate target user exists
-        let targetUser = await this.adapters.persistence.userRepository.findByUsername(
+        const targetUser = await this.adapters.persistence.userRepository.findByUsername(
             input.username
         );
 

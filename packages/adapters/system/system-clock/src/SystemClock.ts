@@ -1,4 +1,4 @@
-import { ClockPort } from '@multitenantkit/domain-contracts';
+import type { ClockPort } from '@multitenantkit/domain-contracts';
 
 /**
  * System Clock implementation using real system time

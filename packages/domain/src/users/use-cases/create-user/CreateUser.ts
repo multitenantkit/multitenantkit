@@ -1,4 +1,10 @@
-import { z } from 'zod';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import {
+    ConflictError,
+    type DomainError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors/index';
 import type {
     CreateUserInput,
     CreateUserOutput,
@@ -10,14 +16,8 @@ import {
     CreateUserOutputSchema,
     UserSchema
 } from '@multitenantkit/domain-contracts/users';
+import type { z } from 'zod';
 import { Result } from '../../../shared/result/Result';
-import {
-    DomainError,
-    ValidationError,
-    ConflictError
-} from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -30,8 +30,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
  */
 export class CreateUser<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

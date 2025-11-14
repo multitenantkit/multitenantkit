@@ -1,7 +1,7 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Principal, createPrincipal } from '@multitenantkit/domain-contracts/shared/auth';
-import { AuthService } from '@multitenantkit/api-contracts/shared/ports';
-import { SupabaseAuthInput } from './SupabaseAuthInput';
+import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import { createPrincipal, type Principal } from '@multitenantkit/domain-contracts/shared/auth';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseAuthInput } from './SupabaseAuthInput';
 
 /**
  * Configuration for Supabase Auth Service
@@ -20,7 +20,7 @@ export interface SupabaseAuthConfig {
 export class SupabaseAuthService implements AuthService<SupabaseAuthInput> {
     private supabase: SupabaseClient;
 
-    constructor(private config: SupabaseAuthConfig) {
+    constructor(config: SupabaseAuthConfig) {
         this.supabase = createClient(config.supabaseUrl, config.supabaseServiceKey);
     }
 
@@ -33,7 +33,7 @@ export class SupabaseAuthService implements AuthService<SupabaseAuthInput> {
     async authenticate(input: SupabaseAuthInput): Promise<Principal | null> {
         try {
             // Extract Authorization header
-            const authHeader = input.headers['authorization'] || input.headers['Authorization'];
+            const authHeader = input.headers.authorization ?? input.headers.Authorization;
 
             if (!authHeader) {
                 return null;

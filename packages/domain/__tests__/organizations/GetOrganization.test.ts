@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { GetOrganization } from '../../src/organizations/use-cases/get-organization/GetOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 function createOrganization(
     params: Partial<{
@@ -55,10 +55,9 @@ describe('GetOrganization use case', () => {
             await setup.uow.getUserRepository().insert({
                 id: ownerId,
                 externalId: principalExternalId,
-                email: 'owner@example.com',
+                username: principalExternalId,
                 createdAt: new Date('2025-01-01T00:00:00.000Z'),
-                updatedAt: new Date('2025-01-01T00:00:00.000Z'),
-                deletedAt: undefined
+                updatedAt: new Date('2025-01-01T00:00:00.000Z')
             });
 
             const useCase = new GetOrganization(adapters);
@@ -96,10 +95,9 @@ describe('GetOrganization use case', () => {
             await setup.uow.getUserRepository().insert({
                 id: ownerId,
                 externalId: principalExternalId,
-                email: 'owner@example.com',
+                username: principalExternalId,
                 createdAt: new Date('2025-01-01T00:00:00.000Z'),
-                updatedAt: new Date('2025-01-01T00:00:00.000Z'),
-                deletedAt: undefined
+                updatedAt: new Date('2025-01-01T00:00:00.000Z')
             });
 
             const useCase = new GetOrganization(adapters);
@@ -115,6 +113,7 @@ describe('GetOrganization use case', () => {
         it('should return custom fields when framework config provided', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
             type OrganizationCustom = { category: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -136,10 +135,9 @@ describe('GetOrganization use case', () => {
             await setup.uow.getUserRepository().insert({
                 id: ownerId,
                 externalId: principalExternalId,
-                email: 'owner@example.com',
+                username: principalExternalId,
                 createdAt: new Date('2025-01-01T00:00:00.000Z'),
-                updatedAt: new Date('2025-01-01T00:00:00.000Z'),
-                deletedAt: undefined
+                updatedAt: new Date('2025-01-01T00:00:00.000Z')
             });
 
             const useCase = new GetOrganization<OrganizationCustom>(
@@ -184,10 +182,9 @@ describe('GetOrganization use case', () => {
             await setup.uow.getUserRepository().insert({
                 id: outsiderId,
                 externalId: principalExternalId,
-                email: 'owner@example.com',
+                username: principalExternalId,
                 createdAt: new Date('2025-01-01T00:00:00.000Z'),
-                updatedAt: new Date('2025-01-01T00:00:00.000Z'),
-                deletedAt: undefined
+                updatedAt: new Date('2025-01-01T00:00:00.000Z')
             });
 
             const useCase = new GetOrganization(adapters);

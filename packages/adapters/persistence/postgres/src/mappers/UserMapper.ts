@@ -1,4 +1,4 @@
-import { User } from '@multitenantkit/domain-contracts';
+import type { User } from '@multitenantkit/domain-contracts';
 
 /**
  * Maps between User domain entity and PostgreSQL database format
@@ -6,6 +6,8 @@ import { User } from '@multitenantkit/domain-contracts';
  * Note: This mapper ONLY handles type conversions (Date ↔ string).
  * Field name mapping is handled by UserRepositoryConfigHelper using columnMapping.
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class UserMapper {
     /**
      * Convert database row to User entity with custom fields
@@ -35,7 +37,7 @@ export class UserMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in database row for user ${id}`);
                 return null;
             }
@@ -73,7 +75,7 @@ export class UserMapper {
         customMapper?: (dbRow: Record<string, any>) => TCustomFields
     ): (User & TCustomFields)[] {
         return dbRows
-            .map((row) => this.toDomainWithCustom(row, columnMap, customMapper))
+            .map((row) => UserMapper.toDomainWithCustom(row, columnMap, customMapper))
             .filter((user): user is User & TCustomFields => user !== null);
     }
 }

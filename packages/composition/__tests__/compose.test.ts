@@ -1,34 +1,57 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { compose, composeForTesting } from '../src/compose';
-import { Environment } from '../src/config/Environment';
 
-// Mock all dependencies
-vi.mock('multitenantkit/adapter-persistence-json', () => ({
-    JsonUnitOfWork: vi.fn().mockImplementation(() => ({ type: 'JsonUoW' })),
-    JsonUserRepository: vi.fn().mockImplementation(() => ({ type: 'JsonUserRepo' })),
-    JsonOrganizationRepository: vi
-        .fn()
-        .mockImplementation(() => ({ type: 'JsonOrganizationRepo' })),
-    JsonOrganizationMembershipRepository: vi
-        .fn()
-        .mockImplementation(() => ({ type: 'JsonOrganizationMembershipRepo' }))
-}));
-
-vi.mock('multitenantkit/adapter-persistence-postgres', () => ({
-    createPostgresRepositories: vi.fn().mockImplementation(() => ({
-        users: { type: 'PostgresUserRepo' },
-        organizations: { type: 'PostgresOrganizationRepo' },
-        organizationMemberships: { type: 'PostgresOrganizationMembershipRepo' }
+// Mock AdapterFactory to prevent real database configuration validation
+vi.mock('../src/factories/AdapterFactory', () => ({
+    createPostgresAdapters: vi.fn().mockImplementation(() => ({
+        uow: { type: 'PostgresUoW' },
+        userRepository: { type: 'PostgresUserRepo' },
+        organizationRepository: { type: 'PostgresOrganizationRepo' },
+        organizationMembershipRepository: { type: 'PostgresOrganizationMembershipRepo' }
     })),
-    createPostgresUnitOfWork: vi.fn().mockImplementation(() => ({ type: 'PostgresUoW' }))
+    createJsonAdapters: vi.fn().mockImplementation(() => ({
+        uow: { type: 'JsonUoW' },
+        userRepository: { type: 'JsonUserRepo' },
+        organizationRepository: { type: 'JsonOrganizationRepo' },
+        organizationMembershipRepository: { type: 'JsonOrganizationMembershipRepo' }
+    })),
+    createSystemAdapters: vi.fn().mockImplementation(() => ({
+        clock: { now: () => new Date() },
+        uuid: { generate: () => 'uuid' }
+    })),
+    createMetricsAdapter: vi.fn().mockImplementation(() => ({
+        type: 'HttpMetrics'
+    }))
 }));
 
-vi.mock('multitenantkit/adapter-system-system-clock', () => ({
-    SystemClock: vi.fn().mockImplementation(() => ({ now: () => new Date() }))
-}));
-
-vi.mock('multitenantkit/adapter-system-crypto-uuid', () => ({
-    CryptoUuid: vi.fn().mockImplementation(() => ({ generate: () => 'uuid' }))
+// Mock UseCaseFactory to return mock use cases
+vi.mock('../src/factories/UseCaseFactory', () => ({
+    createUseCases: vi.fn().mockImplementation(() => ({
+        users: {
+            createUser: vi.fn(),
+            getUser: vi.fn(),
+            updateUser: vi.fn(),
+            listUserOrganizations: vi.fn(),
+            deleteUser: vi.fn()
+        },
+        organizations: {
+            createOrganization: vi.fn(),
+            getOrganization: vi.fn(),
+            updateOrganization: vi.fn(),
+            listOrganizationMembers: vi.fn(),
+            deleteOrganization: vi.fn(),
+            archiveOrganization: vi.fn(),
+            restoreOrganization: vi.fn(),
+            transferOrganizationOwnership: vi.fn()
+        },
+        memberships: {
+            addOrganizationMember: vi.fn(),
+            removeOrganizationMember: vi.fn(),
+            updateOrganizationMemberRole: vi.fn(),
+            leaveOrganization: vi.fn(),
+            listOrganizationMembers: vi.fn()
+        }
+    }))
 }));
 
 describe('compose', () => {
@@ -44,10 +67,10 @@ describe('compose', () => {
 
     describe('Successful Composition', () => {
         it('should compose successfully with valid JSON configuration', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test',
                 LOG_LEVEL: 'error'
             };
@@ -61,12 +84,12 @@ describe('compose', () => {
         });
 
         it('should compose successfully with valid Postgres configuration', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'postgres',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'production',
                 LOG_LEVEL: 'info',
-                DATABASE_URL: 'postgresql://localhost:5432/testdb'
+                DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
             };
 
             const result = compose(envOverrides);
@@ -75,10 +98,10 @@ describe('compose', () => {
         });
 
         it('should return use cases with all slices', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -120,8 +143,8 @@ describe('compose', () => {
             process.env.PORT = '3000';
             process.env.NODE_ENV = 'development';
 
-            const envOverrides: Partial<Environment> = {
-                PORT: 8080, // Override
+            const envOverrides = {
+                PORT: '8080', // Override
                 LOG_LEVEL: 'debug' // Additional
             };
 
@@ -133,8 +156,8 @@ describe('compose', () => {
             process.env.DB_ADAPTER = 'json';
             process.env.DATA_DIR = '/default';
 
-            const envOverrides: Partial<Environment> = {
-                PORT: 9000,
+            const envOverrides = {
+                PORT: '9000',
                 DATA_DIR: '/override'
             };
 
@@ -143,10 +166,10 @@ describe('compose', () => {
         });
 
         it('should throw error for invalid DB_ADAPTER', () => {
-            const envOverrides: Partial<Environment> = {
-                DB_ADAPTER: 'invalid' as any,
+            const envOverrides = {
+                DB_ADAPTER: 'invalid',
                 DATA_DIR: '/test/data',
-                PORT: 3000
+                PORT: '3000'
             };
 
             expect(() => compose(envOverrides)).toThrow(
@@ -155,10 +178,10 @@ describe('compose', () => {
         });
 
         it('should throw error when DATA_DIR missing for JSON adapter', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -168,9 +191,9 @@ describe('compose', () => {
         });
 
         it('should throw error when Postgres config is incomplete', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'postgres',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'production',
                 DATABASE_URL: ''
             };
@@ -181,10 +204,10 @@ describe('compose', () => {
         });
 
         it('should throw error for invalid PORT', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 0, // Invalid
+                PORT: '0', // Invalid
                 NODE_ENV: 'test'
             };
 
@@ -192,11 +215,11 @@ describe('compose', () => {
         });
 
         it('should throw error for invalid NODE_ENV', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
-                NODE_ENV: 'invalid' as any
+                PORT: '3000',
+                NODE_ENV: 'invalid'
             };
 
             expect(() => compose(envOverrides)).toThrow(
@@ -205,12 +228,12 @@ describe('compose', () => {
         });
 
         it('should throw error for invalid LOG_LEVEL', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test',
-                LOG_LEVEL: 'invalid' as any
+                LOG_LEVEL: 'invalid'
             };
 
             expect(() => compose(envOverrides)).toThrow(
@@ -221,10 +244,10 @@ describe('compose', () => {
 
     describe('Framework Config Support', () => {
         it('should compose successfully with framework config', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -241,10 +264,10 @@ describe('compose', () => {
         });
 
         it('should pass framework config through composition layers', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -266,10 +289,10 @@ describe('compose', () => {
         it('should support custom user fields type parameter', () => {
             type CustomUserFields = { bio: string };
 
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -284,10 +307,10 @@ describe('compose', () => {
             type CustomOrganizationFields = { description: string };
             type CustomMembershipFields = { role: string };
 
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test'
             };
 
@@ -320,7 +343,7 @@ describe('compose', () => {
         });
 
         it('should allow overriding test defaults', () => {
-            const overrides: Partial<Environment> = {
+            const overrides = {
                 DATA_DIR: '/custom/test/data',
                 NODE_ENV: 'production',
                 PORT: 9999
@@ -330,7 +353,7 @@ describe('compose', () => {
         });
 
         it('should use JSON adapter by default', () => {
-            const overrides: Partial<Environment> = {
+            const overrides = {
                 DATA_DIR: '/test/data'
             };
 
@@ -341,16 +364,16 @@ describe('compose', () => {
         });
 
         it('should allow switching to Postgres adapter in tests', () => {
-            const overrides: Partial<Environment> = {
+            const overrides = {
                 DB_ADAPTER: 'postgres',
-                DATABASE_URL: 'postgresql://localhost:5432/testdb'
+                DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
             };
 
             expect(() => composeForTesting(overrides)).not.toThrow();
         });
 
         it('should merge test defaults with provided overrides', () => {
-            const overrides: Partial<Environment> = {
+            const overrides = {
                 DATA_DIR: '/test/data',
                 PORT: 4000 // Override default
                 // NODE_ENV and LOG_LEVEL should use test defaults
@@ -362,10 +385,10 @@ describe('compose', () => {
 
     describe('Integration Tests', () => {
         it('should create fully functional composition for JSON adapter', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'test',
                 LOG_LEVEL: 'error'
             };
@@ -379,12 +402,12 @@ describe('compose', () => {
         });
 
         it('should create fully functional composition for Postgres adapter', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'postgres',
-                PORT: 3000,
+                PORT: '3000',
                 NODE_ENV: 'production',
                 LOG_LEVEL: 'info',
-                DATABASE_URL: 'postgresql://localhost:5432/testdb'
+                DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb'
             };
 
             const { useCases } = compose(envOverrides);
@@ -396,10 +419,10 @@ describe('compose', () => {
         });
 
         it('should handle complete application composition flow', () => {
-            const envOverrides: Partial<Environment> = {
+            const envOverrides = {
                 DB_ADAPTER: 'json',
-                DATA_DIR: '/app/data',
-                PORT: 8080,
+                DATA_DIR: '/env/data',
+                PORT: '4000',
                 NODE_ENV: 'development',
                 LOG_LEVEL: 'debug'
             };

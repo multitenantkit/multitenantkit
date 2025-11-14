@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeListOrganizationMembersHandler,
-    listOrganizationMembersRoute,
-    listOrganizationMembersHandlerPackage
-} from '../../src/organizations/list-organization-members/listOrganizationMembers';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError
-} from '@multitenantkit/domain-contracts/shared/errors';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    listOrganizationMembersHandlerPackage,
+    listOrganizationMembersRoute,
+    makeListOrganizationMembersHandler
+} from '../../src/organizations/list-organization-members/listOrganizationMembers';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -233,7 +233,6 @@ describe('ListOrganizationMembers Handler', () => {
 
         it('should return empty members array when organization has no members', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000014';
-            const userId = '00000000-0000-4000-8000-000000000004';
             const organizationId = '00000000-0000-4000-8000-444444444444';
 
             const mockPaginatedResult = {
@@ -418,7 +417,6 @@ describe('ListOrganizationMembers Handler', () => {
     describe('Error Cases - Authorization', () => {
         it('should return 401 when user is not a member of the organization', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000014';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-888888888888';
             const unauthorizedError = new UnauthorizedError(
                 'Not authorized to access this organization'
@@ -452,7 +450,6 @@ describe('ListOrganizationMembers Handler', () => {
     describe('Error Cases - Validation', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000014';
-            const userId = '00000000-0000-4000-8000-000000000009';
             const organizationId = '00000000-0000-4000-8000-999999999999';
             const notFoundError = new NotFoundError('Organization', organizationId);
             mockListOrganizationMembersExecute.mockResolvedValue(mockResult.fail(notFoundError));
@@ -487,7 +484,6 @@ describe('ListOrganizationMembers Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000014';
-            const userId = '00000000-0000-4000-8000-000000000010';
             const organizationId = '00000000-0000-4000-8000-101010101010';
             const validationError = new ValidationError(
                 'Invalid organization ID',
@@ -526,7 +522,6 @@ describe('ListOrganizationMembers Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000014';
-            const userId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-111111111110';
             mockListOrganizationMembersExecute.mockRejectedValue(
                 new Error('Database connection lost')
@@ -800,7 +795,7 @@ describe('ListOrganizationMembers Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{}, {}, {}> = {} as any;
+            const frameworkConfig: FrameworkConfig = {} as any;
 
             const handlerPackage = listOrganizationMembersHandlerPackage(
                 mockUseCases,

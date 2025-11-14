@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateOrganization } from '../../src/organizations/use-cases/update-organization/UpdateOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 describe('UpdateOrganization use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -41,6 +41,7 @@ describe('UpdateOrganization use case', () => {
         await setup.userRepo.insert({
             id: ownerId,
             externalId: principalExternalOwnerId,
+            username: principalExternalOwnerId,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: undefined
@@ -59,6 +60,7 @@ describe('UpdateOrganization use case', () => {
         await setup.userRepo.insert({
             id: adminId,
             externalId: principalExternalAdminId,
+            username: principalExternalAdminId,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: undefined
@@ -67,13 +69,11 @@ describe('UpdateOrganization use case', () => {
         // Create admin organization membership
         await setup.uow.getOrganizationMembershipRepository().addMembership({
             id: '00000000-0000-4000-8000-000000000011',
+            username: principalExternalAdminId,
             organizationId: organizationId,
             userId: adminId,
             roleCode: 'admin',
-            invitedAt: undefined,
             joinedAt: new Date(),
-            leftAt: undefined,
-            deletedAt: undefined,
             createdAt: new Date(),
             updatedAt: new Date()
         });
@@ -83,6 +83,7 @@ describe('UpdateOrganization use case', () => {
         it('should update organization as owner', async () => {
             // Provide a custom field via framework config to satisfy input refine
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -112,6 +113,7 @@ describe('UpdateOrganization use case', () => {
 
         it('should update organization as admin member', async () => {
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -141,6 +143,7 @@ describe('UpdateOrganization use case', () => {
 
         it('should accept and return custom fields when framework config provided', async () => {
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -172,6 +175,7 @@ describe('UpdateOrganization use case', () => {
     describe('Error Cases - Validation', () => {
         it('should fail with NOT_FOUND when organization does not exist', async () => {
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -217,7 +221,8 @@ describe('UpdateOrganization use case', () => {
             const result = await useCase.execute(
                 { organizationId: organizationId, userId: ownerId } as any,
                 {
-                    actorUserId: ownerId
+                    actorUserId: ownerId,
+                    requestId: 'test-request-id'
                 }
             );
 
@@ -238,6 +243,7 @@ describe('UpdateOrganization use case', () => {
             await setup.uow.getOrganizationRepository().insert(badOrganization);
 
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -277,6 +283,7 @@ describe('UpdateOrganization use case', () => {
             await setup.uow.getOrganizationRepository().insert(organization);
 
             type OrganizationCustom = { category?: string };
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {

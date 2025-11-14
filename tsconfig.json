@@ -3,10 +3,10 @@
     "files": [],
     "references": [
         {
-            "path": "./packages/adapters/system/crypto-uuid",
+            "path": "./packages/adapters/system/crypto-uuid"
         },
         {
-            "path": "./packages/adapters/system/system-clock",
+            "path": "./packages/adapters/system/system-clock"
         },
         {
             "path": "./packages/contracts/domain-contracts"

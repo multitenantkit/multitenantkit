@@ -1,18 +1,18 @@
-import { z } from 'zod';
 import type {
-    RestoreOrganizationInput,
+    FrameworkConfig,
     IRestoreOrganization,
-    Organization,
     OperationContext,
-    FrameworkConfig
+    Organization,
+    RestoreOrganizationInput
 } from '@multitenantkit/domain-contracts';
 import {
-    RestoreOrganizationInputSchema,
+    type Adapters,
+    type NotFoundError,
     OrganizationSchema,
-    ValidationError,
-    NotFoundError,
-    Adapters
+    RestoreOrganizationInputSchema,
+    ValidationError
 } from '@multitenantkit/domain-contracts';
+import type { z } from 'zod';
 import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
 
@@ -37,8 +37,11 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
  */
 export class RestoreOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

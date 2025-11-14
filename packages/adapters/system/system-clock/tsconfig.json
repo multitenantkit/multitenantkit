@@ -1,16 +1,14 @@
 {
-  "extends": "../../../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "composite": true
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "references": [
-    {
-      "path": "../../../contracts/domain-contracts"
-    }
-  ]
+    "extends": "../../../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "composite": true
+    },
+    "include": ["src/**/*"],
+    "references": [
+        {
+            "path": "../../../contracts/domain-contracts"
+        }
+    ]
 }

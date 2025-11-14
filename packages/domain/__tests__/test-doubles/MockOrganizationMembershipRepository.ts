@@ -1,22 +1,25 @@
-import {
-    OrganizationMembership,
-    OrganizationMemberWithUserInfo,
-    FindMembersOptions
-} from '@multitenantkit/domain-contracts/organization-memberships';
-import { OrganizationMembershipRepository } from '@multitenantkit/domain-contracts/organization-memberships';
-import {
+import type {
     OperationContext,
-    User,
     Organization,
-    PaginatedResult
+    PaginatedResult,
+    User
 } from '@multitenantkit/domain-contracts';
+import type {
+    FindMembersOptions,
+    OrganizationMembership,
+    OrganizationMembershipRepository,
+    OrganizationMemberWithUserInfo
+} from '@multitenantkit/domain-contracts/organization-memberships';
 
 /**
  * Mock implementation of OrganizationMembershipRepository for testing
  */
 export class MockOrganizationMembershipRepository<
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TOrganizationMembershipCustomFields = {}
 > implements
         OrganizationMembershipRepository<
@@ -39,7 +42,7 @@ export class MockOrganizationMembershipRepository<
 
     async insert(
         membership: OrganizationMembership & TOrganizationMembershipCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         this.saveCallCount++;
         this.lastSavedMembership = membership;
@@ -109,10 +112,11 @@ export class MockOrganizationMembershipRepository<
         >[]
     > {
         // For testing purposes, return flat structure with mock user and organization
+        // TODO: update activeOnly
         const memberships = await this.findByOrganization(organizationId, activeOnly);
 
         return memberships.map((membership) => {
-            const user = this.mockUsers.get(membership.userId);
+            const user = membership.userId ? this.mockUsers.get(membership.userId) : null;
             const organization = this.mockOrganizations.get(membership.organizationId);
 
             if (!user || !organization) {
@@ -148,7 +152,7 @@ export class MockOrganizationMembershipRepository<
         // Set defaults
         const page = options?.page || 1;
         const pageSize = options?.pageSize || 20;
-        const activeOnly = options?.activeOnly || false;
+        const activeOnly = options?.includeActive || false;
 
         // Get all matching members
         const allMembers = await this.findByOrganizationWithUserInfo(organizationId, activeOnly);
@@ -184,37 +188,17 @@ export class MockOrganizationMembershipRepository<
 
     async update(
         membership: OrganizationMembership & TOrganizationMembershipCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         this.memberships.set(membership.id, membership);
     }
 
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         this.memberships.delete(id);
     }
 
     async findAll(): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]> {
         return Array.from(this.memberships.values());
-    }
-
-    async linkUsernameMembershipsToUserId(
-        username: string,
-        userId: string,
-        context?: OperationContext
-    ): Promise<void> {
-        // Update all memberships with matching username and null userId
-        for (const [id, membership] of this.memberships.entries()) {
-            if (
-                membership.username === username &&
-                (membership.userId === null || membership.userId === undefined)
-            ) {
-                this.memberships.set(id, {
-                    ...membership,
-                    userId,
-                    updatedAt: new Date()
-                });
-            }
-        }
     }
 
     // Test helper methods

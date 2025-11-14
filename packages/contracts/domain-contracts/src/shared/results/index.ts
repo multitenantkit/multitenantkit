@@ -1,3 +1,3 @@
-export type { IResult } from "./Result";
-export type { PaginatedResult, PaginationOptions, PaginationMetadata } from "./Pagination";
-export { PaginationMetadataSchema, createPaginatedResultSchema } from "./Pagination";
+export type { PaginatedResult, PaginationMetadata, PaginationOptions } from './Pagination';
+export { createPaginatedResultSchema, PaginationMetadataSchema } from './Pagination';
+export type { IResult } from './Result';

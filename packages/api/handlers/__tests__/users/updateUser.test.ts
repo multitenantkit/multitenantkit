@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     makeUpdateUserHandler,
-    updateUserRoute,
-    updateUserHandlerPackage
+    updateUserHandlerPackage,
+    updateUserRoute
 } from '../../src/users/update-user/updateUser';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { ValidationError, NotFoundError } from '@multitenantkit/domain-contracts/shared/errors';
-import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -29,7 +29,7 @@ const mockResult = {
 };
 
 type FrameworkConfigDefault = { email: string };
-const frameworkConfigDefault: FrameworkConfig<FrameworkConfigDefault, {}, {}> = {
+const frameworkConfigDefault: FrameworkConfig<FrameworkConfigDefault, undefined, undefined> = {
     users: {
         customFields: {
             customSchema: require('zod').z.object({
@@ -181,7 +181,7 @@ describe('UpdateUser Handler', () => {
         it('should support custom fields when framework config provided', async () => {
             const userId = '00000000-0000-4000-8000-000000000004';
             type UserCustom = { email: string; bio: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -380,7 +380,7 @@ describe('UpdateUser Handler', () => {
         it('should handle custom schema parsing errors', async () => {
             const userId = '00000000-0000-4000-8000-000000000008';
             type UserCustom = { bio: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -529,7 +529,7 @@ describe('UpdateUser Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ bio: string }, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<{ bio: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -558,7 +558,7 @@ describe('UpdateUser Handler', () => {
         });
 
         it('should enforce at least one field requirement with custom fields', () => {
-            const frameworkConfig: FrameworkConfig<{ bio: string }, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<{ bio: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({

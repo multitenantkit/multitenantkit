@@ -1,6 +1,6 @@
 import z from 'zod';
-import { OrganizationMembershipSchema } from '../../entities';
 import { UserSchema } from '../../../users';
+import { OrganizationMembershipSchema } from '../../entities';
 
 /**
  * Input schema for AcceptOrganizationInvitation use case
@@ -17,5 +17,9 @@ export const AcceptOrganizationInvitationInputSchema = z.object({
  */
 export const AcceptOrganizationInvitationOutputSchema = OrganizationMembershipSchema;
 
-export type AcceptOrganizationInvitationInput = z.infer<typeof AcceptOrganizationInvitationInputSchema>;
-export type AcceptOrganizationInvitationOutput = z.infer<typeof AcceptOrganizationInvitationOutputSchema>;
+export type AcceptOrganizationInvitationInput = z.infer<
+    typeof AcceptOrganizationInvitationInputSchema
+>;
+export type AcceptOrganizationInvitationOutput = z.infer<
+    typeof AcceptOrganizationInvitationOutputSchema
+>;

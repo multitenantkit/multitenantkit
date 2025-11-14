@@ -1,17 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeLeaveOrganizationHandler,
-    leaveOrganizationRoute,
-    leaveOrganizationHandlerPackage
-} from '../../src/organization-memberships/leave-organization/leaveOrganization';
 import type { UseCases } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError,
-    BusinessRuleError
-} from '@multitenantkit/domain-contracts/shared/errors';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    BusinessRuleError,
+    NotFoundError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    leaveOrganizationHandlerPackage,
+    leaveOrganizationRoute,
+    makeLeaveOrganizationHandler
+} from '../../src/organization-memberships/leave-organization/leaveOrganization';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -220,7 +219,6 @@ describe('LeaveOrganization Handler', () => {
     describe('Error Cases - Validation', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000004';
             const organizationId = '00000000-0000-4000-8000-888888888888';
             const notFoundError = new NotFoundError('Organization', organizationId);
             mockLeaveOrganizationExecute.mockResolvedValue(mockResult.fail(notFoundError));
@@ -284,7 +282,6 @@ describe('LeaveOrganization Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000006';
             const organizationId = '00000000-0000-4000-8000-101010101010';
             const validationError = new ValidationError(
                 'Invalid organization ID',
@@ -322,7 +319,6 @@ describe('LeaveOrganization Handler', () => {
     describe('Error Cases - Business Rules', () => {
         it('should return 422 when owner tries to leave organization', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000007';
             const organizationId = '00000000-0000-4000-8000-111111111110';
             const businessError = new BusinessRuleError(
                 'Organization owner cannot leave the organization'
@@ -351,7 +347,6 @@ describe('LeaveOrganization Handler', () => {
 
         it('should return 422 when member has already left', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-121212121212';
             const businessError = new BusinessRuleError('Member has already left the organization');
             mockLeaveOrganizationExecute.mockResolvedValue(mockResult.fail(businessError));
@@ -380,7 +375,6 @@ describe('LeaveOrganization Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000009';
             const organizationId = '00000000-0000-4000-8000-131313131313';
             mockLeaveOrganizationExecute.mockRejectedValue(new Error('Database connection lost'));
 

@@ -1,8 +1,12 @@
-import postgres from 'postgres';
-import { UnitOfWork, RepositoryBundle, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { PostgresUserRepository } from '../repositories/PostgresUserRepository';
-import { PostgresOrganizationRepository } from '../repositories/PostgresOrganizationRepository';
+import type {
+    FrameworkConfig,
+    RepositoryBundle,
+    UnitOfWork
+} from '@multitenantkit/domain-contracts';
+import type postgres from 'postgres';
 import { PostgresOrganizationMembershipRepository } from '../repositories/PostgresOrganizationMembershipRepository';
+import { PostgresOrganizationRepository } from '../repositories/PostgresOrganizationRepository';
+import { PostgresUserRepository } from '../repositories/PostgresUserRepository';
 
 /**
  * PostgreSQL-based Unit of Work implementation
@@ -14,8 +18,11 @@ import { PostgresOrganizationMembershipRepository } from '../repositories/Postgr
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export class PostgresUnitOfWork<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > implements
         UnitOfWork<

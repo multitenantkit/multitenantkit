@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { z } from 'zod';
-import { BaseUseCase } from '../../src/shared/use-case/BaseUseCase';
-import { Result } from '../../src/shared/result/Result';
-import { createTestSetup } from '../test-helpers/TestUtils';
 import type {
     Adapters,
     FrameworkConfig,
+    HookContext,
     OperationContext,
-    UseCaseHooks,
-    HookContext
+    UseCaseHooks
 } from '@multitenantkit/domain-contracts';
-import { ValidationError, BusinessRuleError, AbortedError } from '@multitenantkit/domain-contracts';
+import { AbortedError, BusinessRuleError, ValidationError } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { z } from 'zod';
+import { Result } from '../../src/shared/result/Result';
+import { BaseUseCase } from '../../src/shared/use-case/BaseUseCase';
+import { createTestSetup } from '../test-helpers/TestUtils';
 
 /**
  * Test use case implementation for testing hooks
@@ -33,7 +33,7 @@ class TestUseCase extends BaseUseCase<
 
     protected async executeBusinessLogic(
         input: { value: string },
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<{ result: string }, ValidationError | BusinessRuleError>> {
         if (input.value === 'FAIL') {
             return Result.fail(new BusinessRuleError('Business logic failed'));
@@ -233,11 +233,11 @@ describe('BaseUseCase - Hooks System', () => {
             await useCase.execute({ value: 'test' }, context);
 
             expect(capturedContext).not.toBeNull();
-            expect(capturedContext!.executionId).toBeDefined();
-            expect(typeof capturedContext!.executionId).toBe('string');
-            expect(capturedContext!.useCaseName).toBe('test-testUseCase');
-            expect(capturedContext!.shared).toEqual({});
-            expect(capturedContext!.stepResults).toBeDefined();
+            expect(capturedContext?.executionId).toBeDefined();
+            expect(typeof capturedContext?.executionId).toBe('string');
+            expect(capturedContext?.useCaseName).toBe('test-testUseCase');
+            expect(capturedContext?.shared).toEqual({});
+            expect(capturedContext?.stepResults).toBeDefined();
         });
 
         it('should provide stepResults with validatedInput and output', async () => {
@@ -751,8 +751,8 @@ describe('BaseUseCase - Hooks System', () => {
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
                 afterValidation: ({ stepResults }) => {
-                    const validated = stepResults.validatedInput!;
-                    if (blockedValues.includes(validated.value.toLowerCase())) {
+                    const validated = stepResults.validatedInput;
+                    if (validated && blockedValues.includes(validated.value.toLowerCase())) {
                         throw new ValidationError(`Value "${validated.value}" is not allowed`);
                     }
                 }
@@ -781,13 +781,13 @@ describe('BaseUseCase - Hooks System', () => {
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
                 afterExecution: async ({ stepResults }) => {
-                    const output = stepResults.output!;
+                    const output = stepResults.output;
                     // Side effect - send email (wrapped in try/catch to not abort)
                     try {
-                        if (output.result === 'FAIL-EMAIL') {
+                        if (output?.result === 'FAIL-EMAIL') {
                             throw new Error('Email service unavailable');
                         }
-                        sentEmails.push(`Email sent for: ${output.result}`);
+                        sentEmails.push(`Email sent for: ${output?.result}`);
                     } catch (error: any) {
                         emailErrors.push(error.message);
                         // Caught - execution continues

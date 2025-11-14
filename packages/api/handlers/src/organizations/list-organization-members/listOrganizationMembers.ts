@@ -1,20 +1,20 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
-import { buildOperationContext } from '../../utils/auditContext';
-import { ResponseBuilder } from '../../utils/responseBuilder';
-import { applyResponseTransformer } from '../../utils/transformResponse';
-import { validateWithSchema } from '../../utils/schemaValidator';
 import type { PaginatedResponse } from '@multitenantkit/api-contracts';
 import {
-    ListOrganizationMembersRequest,
+    type ListOrganizationMembersRequest,
     ListOrganizationMembersRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
-import { UserSchema } from '@multitenantkit/domain-contracts/users';
-import { OrganizationSchema } from '@multitenantkit/domain-contracts/organizations';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts/organization-memberships';
+import { OrganizationSchema } from '@multitenantkit/domain-contracts/organizations';
+import { type IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { UserSchema } from '@multitenantkit/domain-contracts/users';
 import { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
+import { buildOperationContext } from '../../utils/auditContext';
+import { ResponseBuilder } from '../../utils/responseBuilder';
+import { validateWithSchema } from '../../utils/schemaValidator';
+import { applyResponseTransformer } from '../../utils/transformResponse';
 
 /**
  * Helper to merge base Zod object with optional custom-fields Zod object.
@@ -52,8 +52,11 @@ export const listOrganizationMembersRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom fields
  */
 export function makeListOrganizationMembersHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     UCF extends z.AnyZodObject = z.ZodObject<{}>,
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TCF extends z.AnyZodObject = z.ZodObject<{}>,
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     MCF extends z.AnyZodObject = z.ZodObject<{}>
 >(
     useCases: UseCases,
@@ -175,7 +178,8 @@ export function makeListOrganizationMembersHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizations?.ListOrganizationMembers;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizations?.ListOrganizationMembers;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -225,8 +229,11 @@ export function makeListOrganizationMembersHandler<
  * @param frameworkConfig - Optional framework configuration for custom fields
  */
 export function listOrganizationMembersHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     UCF extends z.AnyZodObject = z.ZodObject<{}>,
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TCF extends z.AnyZodObject = z.ZodObject<{}>,
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     MCF extends z.AnyZodObject = z.ZodObject<{}>
 >(
     useCases: UseCases,

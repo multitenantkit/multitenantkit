@@ -1,18 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeAddOrganizationMemberHandler,
-    addOrganizationMemberRoute,
-    addOrganizationMemberHandlerPackage
-} from '../../src/organization-memberships/add-organization-member/addOrganizationMember';
 import type { UseCases } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError,
-    ConflictError,
-    BusinessRuleError
-} from '@multitenantkit/domain-contracts/shared/errors';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    BusinessRuleError,
+    ConflictError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    addOrganizationMemberHandlerPackage,
+    addOrganizationMemberRoute,
+    makeAddOrganizationMemberHandler
+} from '../../src/organization-memberships/add-organization-member/addOrganizationMember';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -61,7 +61,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Happy Path', () => {
         it('should return 201 with membership data when use case succeeds', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000001';
             const organizationId = '00000000-0000-4000-8000-111111111111';
             const targetUserId = '00000000-0000-4000-8000-222222222222';
             const username = 'testuser';
@@ -106,7 +105,7 @@ describe('AddOrganizationMember Handler', () => {
                 updatedAt: new Date('2025-01-15T00:00:00.000Z'),
                 leftAt: undefined
             });
-            expect(response.headers?.['Location']).toBe(
+            expect(response.headers?.Location).toBe(
                 `/organizations/${organizationId}/members/${targetUserId}`
             );
             expect(response.headers?.['X-Request-ID']).toBe('req-123');
@@ -132,7 +131,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should include Location header with membership URL', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000002';
             const organizationId = '00000000-0000-4000-8000-444444444444';
             const targetUserId = '00000000-0000-4000-8000-555555555555';
             const username = 'adminuser';
@@ -166,14 +164,13 @@ describe('AddOrganizationMember Handler', () => {
                 requestId: 'req-location'
             });
 
-            expect(response.headers?.['Location']).toBe(
+            expect(response.headers?.Location).toBe(
                 `/organizations/${organizationId}/members/${targetUserId}`
             );
         });
 
         it('should handle adding member with admin role', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000003';
             const organizationId = '00000000-0000-4000-8000-777777777777';
             const targetUserId = '00000000-0000-4000-8000-888888888888';
             const username = 'newadmin';
@@ -213,7 +210,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should handle reactivating a member who previously left', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000004';
             const organizationId = '00000000-0000-4000-8000-101010101010';
             const targetUserId = '00000000-0000-4000-8000-111111111111';
             const username = 'reactivateduser';
@@ -291,7 +287,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Error Cases - Authorization', () => {
         it('should return 401 when user is not authorized to add members', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000005';
             const organizationId = '00000000-0000-4000-8000-151515151515';
             const unauthorizedError = new UnauthorizedError(
                 'Only organization owners and admins can add members'
@@ -328,7 +323,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Error Cases - Validation', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000006';
             const organizationId = '00000000-0000-4000-8000-171717171717';
             const notFoundError = new NotFoundError('Organization', organizationId);
             mockAddOrganizationMemberExecute.mockResolvedValue(mockResult.fail(notFoundError));
@@ -366,7 +360,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should return 409 when member already exists', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000007';
             const organizationId = '00000000-0000-4000-8000-191919191919';
             const targetUserId = '00000000-0000-4000-8000-202020202020';
             const targetUsername = 'conflictuser';
@@ -406,7 +399,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-212121212121';
             const validationError = new ValidationError('Invalid role code', 'roleCode');
             mockAddOrganizationMemberExecute.mockResolvedValue(mockResult.fail(validationError));
@@ -443,7 +435,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should return 422 for business rule violations', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000009';
             const organizationId = '00000000-0000-4000-8000-232323232323';
             const businessError = new BusinessRuleError(
                 'Cannot add more than 10 members to a organization'
@@ -478,7 +469,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000010';
             const organizationId = '00000000-0000-4000-8000-252525252525';
             mockAddOrganizationMemberExecute.mockRejectedValue(
                 new Error('Database connection lost')
@@ -519,7 +509,6 @@ describe('AddOrganizationMember Handler', () => {
             // Note: We trust the domain layer to return valid data
             // Response validation was removed to avoid type conflicts with nullish transform
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-272727272727';
             const targetUserId = '00000000-0000-4000-8000-282828282828';
             const targetUsername = 'passthroughuser';
@@ -568,7 +557,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Edge Cases', () => {
         it('should handle empty string request ID', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000012';
             const organizationId = '00000000-0000-4000-8000-292929292929';
             const targetUserId = '00000000-0000-4000-8000-303030303030';
             const targetUsername = 'emptyreqid';
@@ -608,7 +596,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should handle membership with null leftAt', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000013';
             const organizationId = '00000000-0000-4000-8000-323232323232';
             const targetUserId = '00000000-0000-4000-8000-333333333331';
             const targetUsername = 'nullleftuser';
@@ -650,7 +637,6 @@ describe('AddOrganizationMember Handler', () => {
 
         it('should handle membership with leftAt date (coverage for ?? branch)', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000017';
             const organizationId = '00000000-0000-4000-8000-424242424242';
             const targetUserId = '00000000-0000-4000-8000-434343434343';
             const targetUsername = 'leftatuser';
@@ -694,7 +680,6 @@ describe('AddOrganizationMember Handler', () => {
     describe('Integration - Operation Context', () => {
         it('should build correct operation context for audit', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000014';
             const organizationId = '00000000-0000-4000-8000-353535353535';
             const targetUserId = '00000000-0000-4000-8000-363636363636';
             const username = 'audituser';

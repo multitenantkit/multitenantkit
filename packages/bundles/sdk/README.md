@@ -1,4 +1,4 @@
-# multitenantkit/sdk
+# @multitenantkit/sdk
 
 Complete SDK for building multi-tenant SaaS backends - includes all adapters and options.
 
@@ -8,29 +8,30 @@ This SDK bundles all available packages from the MultiTenantKit framework:
 
 ### Core
 
-- `multitenantkit/domain-contracts` - Domain schemas and types
-- `multitenantkit/api-contracts` - API HTTP schemas
-- `multitenantkit/domain` - Business logic and use cases
-- `multitenantkit/composition` - Dependency injection and orchestration
+- `@multitenantkit/domain-contracts` - Domain schemas and types
+- `@multitenantkit/api-contracts` - API HTTP schemas
+- `@multitenantkit/domain` - Business logic and use cases
+- `@multitenantkit/composition` - Dependency injection and orchestration
 
 ### Persistence Adapters
 
-- `multitenantkit/adapter-persistence-json` - JSON file persistence (development)
-- `multitenantkit/adapter-persistence-postgres` - PostgreSQL persistence (production)
+- `@multitenantkit/adapter-persistence-json` - JSON file persistence (development)
+- `@multitenantkit/adapter-persistence-postgres` - PostgreSQL persistence (production)
 
 ### Authentication
 
-- `multitenantkit/adapter-auth-supabase` - Supabase authentication
+- `@multitenantkit/adapter-auth-supabase` - Supabase authentication
 
 ### API Layer
 
-- `multitenantkit/api-handlers` - Transport-agnostic HTTP handlers
-- `multitenantkit/adapter-transport-express` - Express.js adapter
+- `@multitenantkit/api-handlers` - Transport-agnostic HTTP handlers
+- `@multitenantkit/adapter-transport-express` - Express.js adapter
 
 ### System Adapters
 
-- `multitenantkit/adapter-system-crypto-uuid` - UUID generator
-- `multitenantkit/adapter-system-system-clock` - System clock
+- `@multitenantkit/adapter-system-crypto-uuid` - UUID generator
+- `@multitenantkit/adapter-system-system-clock` - System clock
+- `@multitenantkit/adapter-metrics-http` - HTTP metrics and observability
 
 ## 🚀 Installation
 
@@ -49,10 +50,10 @@ npm install /path/to/multitenantkit/dist-packages/*.tgz
 
 **Important:** The SDK requires all its peer dependencies to be installed. Installing only the SDK tarball will not work.
 
-### From npm Registry (when published)
+### From npm Registry
 
 ```bash
-npm install multitenantkit/sdk
+npm install @multitenantkit/sdk
 ```
 
 ## 📖 Usage
@@ -125,7 +126,7 @@ const repo = new JsonAdapter.JsonUserRepository(/* ... */);
 
 ## 📚 Alternative Packages
 
-- **`multitenantkit/bundle-express-starter`**: Production-ready Express setup with PostgreSQL (coming soon)
+- **`@multitenantkit/express-starter`**: Production-ready Express setup with PostgreSQL (coming soon)
 - **Individual packages**: Maximum control, smallest bundle size
 
 ## 🏗️ Architecture

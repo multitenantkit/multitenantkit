@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { ErrorMapper } from '../../src/errors/ErrorMapper';
 import {
-    ValidationError,
-    NotFoundError,
-    ConflictError,
     BusinessRuleError,
+    ConflictError,
+    InfrastructureError,
+    NotFoundError,
     UnauthorizedError,
-    InfrastructureError
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors';
+import { describe, expect, it } from 'vitest';
+import { ErrorMapper } from '../../src/errors/ErrorMapper';
 
 describe('ErrorMapper', () => {
     describe('getHttpStatus', () => {

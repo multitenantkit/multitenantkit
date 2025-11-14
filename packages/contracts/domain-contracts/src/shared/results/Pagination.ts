@@ -27,7 +27,7 @@ export interface PaginationMetadata {
 /**
  * Paginated result with metadata
  * Generic container for any paginated data (flat structure for repositories)
- * 
+ *
  * @template T - The type of items in the result set
  */
 export interface PaginatedResult<T> {
@@ -55,10 +55,10 @@ export const PaginationMetadataSchema = z.object({
 
 /**
  * Factory function to create a paginated result schema for any item type
- * 
+ *
  * @param itemSchema - Zod schema for the items
  * @returns Zod schema for paginated result with the given item type
- * 
+ *
  * @example
  * const UserPaginatedSchema = createPaginatedResultSchema(UserSchema);
  */

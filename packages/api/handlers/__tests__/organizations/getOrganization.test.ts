@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeGetOrganizationHandler,
-    getOrganizationRoute,
-    getOrganizationHandlerPackage
-} from '../../src/organizations/get-organization/getOrganization';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import {
     NotFoundError,
-    ValidationError,
-    UnauthorizedError
+    UnauthorizedError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors';
-import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    getOrganizationHandlerPackage,
+    getOrganizationRoute,
+    makeGetOrganizationHandler
+} from '../../src/organizations/get-organization/getOrganization';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -147,7 +147,7 @@ describe('GetOrganization Handler', () => {
             const organizationId = '00000000-0000-4000-8000-333333333333';
 
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -257,7 +257,6 @@ describe('GetOrganization Handler', () => {
     describe('Error Cases - Use Case Failures', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000005';
             const organizationId = '00000000-0000-4000-8000-999999999999';
             const notFoundError = new NotFoundError('Organization', organizationId);
             mockGetOrganizationExecute.mockResolvedValue(mockResult.fail(notFoundError));
@@ -294,7 +293,6 @@ describe('GetOrganization Handler', () => {
 
         it('should return 401 when user is not a member of the organization', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000006';
             const organizationId = '00000000-0000-4000-8000-666666666666';
             const unauthorizedError = new UnauthorizedError(
                 'Not authorized to access this organization'
@@ -325,7 +323,6 @@ describe('GetOrganization Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000007';
             const organizationId = 'invalid-uuid';
             const validationError = new ValidationError(
                 'Invalid organization ID format',
@@ -365,7 +362,6 @@ describe('GetOrganization Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-777777777777';
             mockGetOrganizationExecute.mockRejectedValue(new Error('Database connection lost'));
 
@@ -556,15 +552,16 @@ describe('GetOrganization Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{}, { description: string }, {}> = {
-                organizations: {
-                    customFields: {
-                        customSchema: require('zod').z.object({
-                            description: require('zod').z.string()
-                        })
+            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
+                {
+                    organizations: {
+                        customFields: {
+                            customSchema: require('zod').z.object({
+                                description: require('zod').z.string()
+                            })
+                        }
                     }
-                }
-            } as any;
+                } as any;
 
             const handlerPackage = getOrganizationHandlerPackage(mockUseCases, frameworkConfig);
 

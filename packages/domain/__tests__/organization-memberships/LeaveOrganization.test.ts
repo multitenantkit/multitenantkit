@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import type { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LeaveOrganization } from '../../src/organization-memberships/use-cases/leave-organization/LeaveOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
 
 describe('LeaveOrganization use case', () => {
     let setup: ReturnType<typeof createTestSetup>;

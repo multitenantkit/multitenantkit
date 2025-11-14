@@ -1,15 +1,15 @@
-import type { OperationContext, PaginationOptions, PaginatedResult } from '../../shared';
+import type { OperationContext, PaginatedResult, PaginationOptions } from '../../shared';
 import type { OrganizationMembership, OrganizationMemberWithUserInfo } from '../entities';
 
 /**
  * Options for finding organization members with pagination and filtering
  * Extends base pagination options with domain-specific filters
- * 
+ *
  * Filter conditions can be combined:
  * - activeMembers: joinedAt NOT NULL, leftAt NULL, deletedAt NULL
  * - pendingInvitations: invitedAt NOT NULL, joinedAt NULL, leftAt NULL, deletedAt NULL
  * - removedMembers: leftAt NOT NULL OR deletedAt NOT NULL
- * 
+ *
  * Examples:
  * - { includeActive: true } - Only active members
  * - { includeActive: true, includePending: true } - Active + pending invitations
@@ -35,8 +35,11 @@ export interface FindMembersOptions extends PaginationOptions {
  *                                         Default is empty object for backward compatibility
  */
 export interface OrganizationMembershipRepository<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > {
     /**
@@ -44,34 +47,51 @@ export interface OrganizationMembershipRepository<
      * @param membership The membership entity to insert (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    insert(membership: OrganizationMembership & TOrganizationMembershipCustomFields, context?: OperationContext): Promise<void>;
+    insert(
+        membership: OrganizationMembership & TOrganizationMembershipCustomFields,
+        context?: OperationContext
+    ): Promise<void>;
 
     /**
      * Update an existing organization membership
      * @param membership The membership entity to update (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    update(membership: OrganizationMembership & TOrganizationMembershipCustomFields, context?: OperationContext): Promise<void>;
+    update(
+        membership: OrganizationMembership & TOrganizationMembershipCustomFields,
+        context?: OperationContext
+    ): Promise<void>;
 
     /**
      * Find a organization membership by its ID
      */
-    findById(id: string): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
+    findById(
+        id: string
+    ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
 
     /**
      * Find a organization membership by user and organization
      */
-    findByUserIdAndOrganizationId(userId: string, organizationId: string): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
+    findByUserIdAndOrganizationId(
+        userId: string,
+        organizationId: string
+    ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
 
     /**
      * Find a organization membership by username and organization
      */
-    findByUsernameAndOrganizationId(username: string, organizationId: string): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
+    findByUsernameAndOrganizationId(
+        username: string,
+        organizationId: string
+    ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields) | null>;
 
     /**
      * Find all organization memberships for a specific organization
      */
-    findByOrganization(organizationId: string, activeOnly?: boolean): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]>;
+    findByOrganization(
+        organizationId: string,
+        activeOnly?: boolean
+    ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]>;
 
     /**
      * Find organization memberships with user and organization information (for display purposes)
@@ -81,7 +101,13 @@ export interface OrganizationMembershipRepository<
     findByOrganizationWithUserInfo(
         organizationId: string,
         activeOnly?: boolean
-    ): Promise<OrganizationMemberWithUserInfo<TUserCustomFields, TOrganizationCustomFields, TOrganizationMembershipCustomFields>[]>;
+    ): Promise<
+        OrganizationMemberWithUserInfo<
+            TUserCustomFields,
+            TOrganizationCustomFields,
+            TOrganizationMembershipCustomFields
+        >[]
+    >;
 
     /**
      * Find organization memberships with user and organization information with pagination
@@ -91,19 +117,22 @@ export interface OrganizationMembershipRepository<
     findByOrganizationWithUserInfoPaginated(
         organizationId: string,
         options?: FindMembersOptions
-    ): Promise<PaginatedResult<OrganizationMemberWithUserInfo<TUserCustomFields, TOrganizationCustomFields, TOrganizationMembershipCustomFields>>>;
+    ): Promise<
+        PaginatedResult<
+            OrganizationMemberWithUserInfo<
+                TUserCustomFields,
+                TOrganizationCustomFields,
+                TOrganizationMembershipCustomFields
+            >
+        >
+    >;
 
     /**
      * Find all organization memberships for a specific user
      */
-    findByUser(userId: string): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]>;
-
-    /**
-     * Update an existing organization membership
-     * @param membership The membership entity to update (with optional custom fields)
-     * @param context Optional operation context for audit logging
-     */
-    update(membership: OrganizationMembership & TOrganizationMembershipCustomFields, context?: OperationContext): Promise<void>;
+    findByUser(
+        userId: string
+    ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]>;
 
     /**
      * Delete a organization membership by ID
@@ -116,16 +145,4 @@ export interface OrganizationMembershipRepository<
      * Find all organization memberships (for admin purposes)
      */
     findAll(): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]>;
-
-    /**
-     * Link pending memberships (with username but no userId) to a registered user
-     * Updates all memberships where username matches and userId is null
-     * This is called when a user registers/authenticates to link their pending invitations
-     * 
-     * @param username The username to search for
-     * @param userId The user ID to set on matching memberships
-     * @param context Optional operation context for audit logging
-     * @returns Promise that resolves when the update is complete
-     */
-    linkUsernameMembershipsToUserId(username: string, userId: string, context?: OperationContext): Promise<void>;
 }

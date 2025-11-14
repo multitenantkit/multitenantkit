@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
-import { ErrorMapper, HttpErrorResponse } from '../errors/ErrorMapper';
+import type { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../errors/ErrorMapper';
 
 /**
  * Options for schema validation

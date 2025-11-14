@@ -1,12 +1,12 @@
-import postgres from 'postgres';
-import { OrganizationMapper } from '../mappers/OrganizationMapper';
-import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    Organization,
-    OrganizationRepository,
-    OrganizationRepositoryConfigHelper,
-    FrameworkConfig
+    type FrameworkConfig,
+    type Organization,
+    type OrganizationRepository,
+    OrganizationRepositoryConfigHelper
 } from '@multitenantkit/domain-contracts';
+import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type postgres from 'postgres';
+import { OrganizationMapper } from '../mappers/OrganizationMapper';
 
 /**
  * PostgreSQL implementation of OrganizationRepository
@@ -18,10 +18,10 @@ import {
  * Note: Custom fields are handled at the mapper level. This repository
  * returns Organization which may include custom fields from the database.
  */
+// biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default for optional custom fields
 export class PostgresOrganizationRepository<TCustomFields = {}>
     implements OrganizationRepository<TCustomFields>
 {
-    private readonly frameworkConfig?: FrameworkConfig<any, TCustomFields, any>;
     private readonly configHelper: OrganizationRepositoryConfigHelper<TCustomFields>;
     private readonly schemaName?: string;
     private readonly tableName: string;
@@ -30,9 +30,6 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
         private readonly sql: postgres.Sql,
         frameworkConfig?: FrameworkConfig<any, TCustomFields, any>
     ) {
-        // Store complete framework config
-        this.frameworkConfig = frameworkConfig;
-
         // Extract organization custom fields config from framework config
         const organizationConfig = frameworkConfig?.organizations?.customFields;
 
@@ -67,7 +64,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
         try {
             const tableName = this.getQualifiedTableName();
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('ownerUserId'))} as owner_user_id,
                     ${this.sql(this.configHelper.getColumnName('createdAt'))} as created_at,
@@ -75,7 +72,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ${this.sql(this.configHelper.getColumnName('archivedAt'))} as archived_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(tableName)} 
+                FROM ${this.sql(tableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('id'))} = ${id}
                 LIMIT 1
             `;
@@ -91,8 +88,9 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ? (dbRow) => this.configHelper.customFieldsToDomain(dbRow)
                     : undefined
             );
-        } catch (error: any) {
-            throw new Error(`Failed to find organization by ID: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to find organization by ID: ${message}`);
         }
     }
 
@@ -103,7 +101,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
         try {
             const tableName = this.getQualifiedTableName();
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('ownerUserId'))} as owner_user_id,
                     ${this.sql(this.configHelper.getColumnName('createdAt'))} as created_at,
@@ -111,7 +109,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ${this.sql(this.configHelper.getColumnName('archivedAt'))} as archived_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(tableName)} 
+                FROM ${this.sql(tableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('ownerUserId'))} = ${ownerUserId}
                 ORDER BY ${this.sql(this.configHelper.getColumnName('createdAt'))} DESC
             `;
@@ -123,8 +121,9 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ? (dbRow) => this.configHelper.customFieldsToDomain(dbRow)
                     : undefined
             );
-        } catch (error: any) {
-            throw new Error(`Failed to find organizations by owner: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to find organizations by owner: ${message}`);
         }
     }
 
@@ -135,7 +134,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
      */
     async insert(
         organization: Organization & TCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         try {
             // Build base columns with mapped column names
@@ -170,9 +169,10 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
             await this.sql`
                 INSERT INTO ${this.sql(tableName)} ${this.sql(columns)}
             `;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.log(error);
-            throw new Error(`Failed to save organization: ${error.message}`);
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to save organization: ${message}`);
         }
     }
 
@@ -183,7 +183,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
      */
     async update(
         organization: Organization & TCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         try {
             // Build base columns with mapped column names
@@ -239,9 +239,10 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
             SET ${this.sql(setColumns)}
             WHERE ${this.sql(idColumn)} = ${idValue}
         `;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.log(error);
-            throw new Error(`Failed to update organization: ${error.message}`);
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to update organization: ${message}`);
         }
     }
 
@@ -250,15 +251,16 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
      * @param id The organization ID to delete
      * @param context Optional operation context for audit logging
      */
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         try {
             const tableName = this.getQualifiedTableName();
             await this.sql`
-                DELETE FROM ${this.sql(tableName)} 
+                DELETE FROM ${this.sql(tableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('id'))} = ${id}
             `;
-        } catch (error: any) {
-            throw new Error(`Failed to delete organization: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to delete organization: ${message}`);
         }
     }
 
@@ -273,7 +275,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
         try {
             const tableName = this.getQualifiedTableName();
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('ownerUserId'))} as owner_user_id,
                     ${this.sql(this.configHelper.getColumnName('createdAt'))} as created_at,
@@ -281,7 +283,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ${this.sql(this.configHelper.getColumnName('archivedAt'))} as archived_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(tableName)} 
+                FROM ${this.sql(tableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('id'))} = ANY(${ids})
                 ORDER BY ${this.sql(this.configHelper.getColumnName('createdAt'))} DESC
             `;
@@ -293,8 +295,9 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ? (dbRow) => this.configHelper.customFieldsToDomain(dbRow)
                     : undefined
             );
-        } catch (error: any) {
-            throw new Error(`Failed to find organizations by IDs: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to find organizations by IDs: ${message}`);
         }
     }
 
@@ -308,9 +311,10 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                 SELECT COUNT(*) as count FROM ${this.sql(tableName)}
             `;
 
-            return parseInt(rows[0]?.count || '0');
-        } catch (error: any) {
-            throw new Error(`Failed to count organizations: ${error.message}`);
+            return parseInt(rows[0]?.count || '0', 10);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to count organizations: ${message}`);
         }
     }
 
@@ -331,7 +335,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
 
             // Build base SELECT clause with column mapping
             const selectClause = this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('ownerUserId'))} as owner_user_id,
                     ${this.sql(this.configHelper.getColumnName('createdAt'))} as created_at,
@@ -345,7 +349,7 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
             const ownerColumn = this.configHelper.getColumnName('ownerUserId');
             const createdAtColumn = this.configHelper.getColumnName('createdAt');
 
-            let query;
+            let query: postgres.PendingQuery<postgres.Row[]>;
 
             if (options?.status && options?.ownerUserId) {
                 // Both status and owner filters
@@ -406,8 +410,9 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                     ? (dbRow) => this.configHelper.customFieldsToDomain(dbRow)
                     : undefined
             );
-        } catch (error: any) {
-            throw new Error(`Failed to find organizations: ${error.message}`);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to find organizations: ${message}`);
         }
     }
 
@@ -442,9 +447,10 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
                 WHERE ${this.sql(this.configHelper.getColumnName('ownerUserId'))} = ${ownerUserId}
             `;
 
-            return parseInt(rows[0]?.count || '0');
-        } catch (error: any) {
-            throw new Error(`Failed to count organizations by owner: ${error.message}`);
+            return parseInt(rows[0]?.count || '0', 10);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to count organizations by owner: ${message}`);
         }
     }
 }

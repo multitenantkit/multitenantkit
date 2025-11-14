@@ -1,19 +1,19 @@
-import { z } from 'zod';
 import type {
-    UpdateUserInput,
+    FrameworkConfig,
     IUpdateUser,
-    User,
     OperationContext,
-    FrameworkConfig
+    UpdateUserInput,
+    User
 } from '@multitenantkit/domain-contracts';
 import {
+    type Adapters,
+    type ConflictError,
+    type NotFoundError,
     UpdateUserInputSchema,
     UserSchema,
-    ValidationError,
-    NotFoundError,
-    ConflictError,
-    Adapters
+    ValidationError
 } from '@multitenantkit/domain-contracts';
+import { z } from 'zod';
 import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
 
@@ -27,8 +27,11 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
  */
 export class UpdateUser<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

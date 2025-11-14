@@ -1,5 +1,5 @@
-import { OrganizationMembership } from '@multitenantkit/domain-contracts';
-import { OrganizationMembershipJsonData } from '../storage/schemas';
+import type { OrganizationMembership } from '@multitenantkit/domain-contracts';
+import type { OrganizationMembershipJsonData } from '../storage/schemas';
 
 /**
  * Maps between OrganizationMembership domain entity and JSON storage format
@@ -7,6 +7,7 @@ import { OrganizationMembershipJsonData } from '../storage/schemas';
  * Note: This mapper handles type conversions (Date ↔ string).
  * For advanced field mapping, use toDomainWithCustom with columnMapping.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class OrganizationMembershipMapper {
     /**
      * Convert OrganizationMembership entity to JSON data for storage
@@ -39,24 +40,24 @@ export class OrganizationMembershipMapper {
             const leftAt = jsonData.leftAt ? new Date(jsonData.leftAt) : undefined;
             const deletedAt = jsonData.deletedAt ? new Date(jsonData.deletedAt) : undefined;
 
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for membership ${jsonData.id}`);
                 return null;
             }
 
-            if (invitedAt && isNaN(invitedAt.getTime())) {
+            if (invitedAt && Number.isNaN(invitedAt.getTime())) {
                 return null;
             }
 
-            if (joinedAt && isNaN(joinedAt.getTime())) {
+            if (joinedAt && Number.isNaN(joinedAt.getTime())) {
                 return null;
             }
 
-            if (leftAt && isNaN(leftAt.getTime())) {
+            if (leftAt && Number.isNaN(leftAt.getTime())) {
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 return null;
             }
 
@@ -87,7 +88,7 @@ export class OrganizationMembershipMapper {
         jsonDataArray: OrganizationMembershipJsonData[]
     ): OrganizationMembership[] {
         return jsonDataArray
-            .map(this.toDomain)
+            .map(OrganizationMembershipMapper.toDomain)
             .filter((membership): membership is OrganizationMembership => membership !== null);
     }
 
@@ -95,7 +96,7 @@ export class OrganizationMembershipMapper {
      * Convert array of OrganizationMembership entities to array of JSON data
      */
     static toJsonArray(memberships: OrganizationMembership[]): OrganizationMembershipJsonData[] {
-        return memberships.map(this.toJson);
+        return memberships.map(OrganizationMembershipMapper.toJson);
     }
 
     /**
@@ -134,25 +135,25 @@ export class OrganizationMembershipMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate required dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for membership ${id}`);
                 return null;
             }
 
             // Validate optional dates
-            if (invitedAt && isNaN(invitedAt.getTime())) {
+            if (invitedAt && Number.isNaN(invitedAt.getTime())) {
                 return null;
             }
 
-            if (joinedAt && isNaN(joinedAt.getTime())) {
+            if (joinedAt && Number.isNaN(joinedAt.getTime())) {
                 return null;
             }
 
-            if (leftAt && isNaN(leftAt.getTime())) {
+            if (leftAt && Number.isNaN(leftAt.getTime())) {
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 return null;
             }
 
@@ -197,7 +198,9 @@ export class OrganizationMembershipMapper {
         customMapper?: (jsonData: Record<string, any>) => TCustomFields
     ): (OrganizationMembership & TCustomFields)[] {
         return jsonDataArray
-            .map((data) => this.toDomainWithCustom(data, columnMap, customMapper))
+            .map((data) =>
+                OrganizationMembershipMapper.toDomainWithCustom(data, columnMap, customMapper)
+            )
             .filter(
                 (membership): membership is OrganizationMembership & TCustomFields =>
                     membership !== null

@@ -1,12 +1,12 @@
-import postgres from 'postgres';
 import {
-    User,
-    UserRepository,
-    UserRepositoryConfigHelper,
-    FrameworkConfig
+    type FrameworkConfig,
+    type User,
+    type UserRepository,
+    UserRepositoryConfigHelper
 } from '@multitenantkit/domain-contracts';
-import { UserMapper } from '../mappers/UserMapper';
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type postgres from 'postgres';
+import { UserMapper } from '../mappers/UserMapper';
 
 /**
  * PostgreSQL implementation of UserRepository
@@ -16,8 +16,8 @@ import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
  * - TCustomFields: Additional fields beyond the base User
  * - Column mapping: Map framework field names to custom database column names
  */
+// biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default for optional custom fields
 export class PostgresUserRepository<TCustomFields = {}> implements UserRepository {
-    private readonly frameworkConfig?: FrameworkConfig<TCustomFields, any, any>;
     private readonly configHelper: UserRepositoryConfigHelper<TCustomFields>;
     private readonly schemaName?: string;
     private readonly tableName: string;
@@ -27,9 +27,6 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
         private readonly sql: postgres.Sql,
         frameworkConfig?: FrameworkConfig<TCustomFields, any, any>
     ) {
-        // Store complete framework config
-        this.frameworkConfig = frameworkConfig;
-
         // Extract user custom fields config from framework config
         const userConfig = frameworkConfig?.users?.customFields;
 
@@ -58,7 +55,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
     async findById(id: string): Promise<(User & TCustomFields) | null> {
         try {
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('externalId'))} as external_id,
                     ${this.sql(this.configHelper.getColumnName('username'))} as username,
@@ -66,7 +63,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
                     ${this.sql(this.configHelper.getColumnName('updatedAt'))} as updated_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(this.fullTableName)} 
+                FROM ${this.sql(this.fullTableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('id'))} = ${id}
                 LIMIT 1
             `;
@@ -93,7 +90,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
     async findByUsername(username: string): Promise<(User & TCustomFields) | null> {
         try {
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('externalId'))} as external_id,
                     ${this.sql(this.configHelper.getColumnName('username'))} as username,
@@ -101,7 +98,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
                     ${this.sql(this.configHelper.getColumnName('updatedAt'))} as updated_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(this.fullTableName)} 
+                FROM ${this.sql(this.fullTableName)}
                 WHERE LOWER((${this.sql(this.configHelper.getColumnName('username'))})::text) = LOWER((${username})::text)
                 LIMIT 1
             `;
@@ -128,7 +125,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
     async findByExternalId(externalId: string): Promise<(User & TCustomFields) | null> {
         try {
             const rows = await this.sql`
-                SELECT 
+                SELECT
                     ${this.sql(this.configHelper.getColumnName('id'))} as id,
                     ${this.sql(this.configHelper.getColumnName('externalId'))} as external_id,
                     ${this.sql(this.configHelper.getColumnName('username'))} as username,
@@ -136,7 +133,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
                     ${this.sql(this.configHelper.getColumnName('updatedAt'))} as updated_at,
                     ${this.sql(this.configHelper.getColumnName('deletedAt'))} as deleted_at
                     ${this.configHelper.hasCustomFields ? this.sql`, *` : this.sql``}
-                FROM ${this.sql(this.fullTableName)} 
+                FROM ${this.sql(this.fullTableName)}
                 WHERE LOWER((${this.sql(this.configHelper.getColumnName('externalId'))})::text) = LOWER((${externalId})::text)
                 LIMIT 1
             `;
@@ -162,7 +159,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
      * @param user The user entity to save (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    async insert(user: User & TCustomFields, context?: OperationContext): Promise<void> {
+    async insert(user: User & TCustomFields, _context?: OperationContext): Promise<void> {
         try {
             // Build columns object with mapped column names
             const columns: Record<string, any> = {
@@ -192,7 +189,7 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
      * @param user The user entity to update (with optional custom fields)
      * @param context Optional operation context for audit logging
      */
-    async update(user: User & TCustomFields, context?: OperationContext): Promise<void> {
+    async update(user: User & TCustomFields, _context?: OperationContext): Promise<void> {
         try {
             const columns: Record<string, any> = {
                 [this.configHelper.getColumnName('id')]: user.id,
@@ -247,10 +244,10 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
      * @param id The user ID to delete
      * @param context Optional operation context for audit logging
      */
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         try {
             await this.sql`
-                DELETE FROM ${this.sql(this.fullTableName)} 
+                DELETE FROM ${this.sql(this.fullTableName)}
                 WHERE ${this.sql(this.configHelper.getColumnName('id'))} = ${id}
             `;
         } catch (error: any) {

@@ -1,29 +1,29 @@
-import { HandlerPackage } from './types';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import {
+    acceptOrganizationInvitationHandlerPackage,
+    addOrganizationMemberHandlerPackage,
+    leaveOrganizationHandlerPackage,
+    removeOrganizationMemberHandlerPackage,
+    updateOrganizationMemberRoleHandlerPackage
+} from './organization-memberships';
+import {
+    archiveOrganizationHandlerPackage,
+    createOrganizationHandlerPackage,
+    deleteOrganizationHandlerPackage,
+    getOrganizationHandlerPackage,
+    listOrganizationMembersHandlerPackage,
+    restoreOrganizationHandlerPackage,
+    transferOrganizationOwnershipHandlerPackage,
+    updateOrganizationHandlerPackage
+} from './organizations';
+import type { HandlerPackage } from './types';
 import {
     createUserHandlerPackage,
+    deleteUserHandlerPackage,
     getUserHandlerPackage,
-    updateUserHandlerPackage,
     listUserOrganizationsHandlerPackage,
-    deleteUserHandlerPackage
+    updateUserHandlerPackage
 } from './users';
-import {
-    createOrganizationHandlerPackage,
-    getOrganizationHandlerPackage,
-    updateOrganizationHandlerPackage,
-    listOrganizationMembersHandlerPackage,
-    deleteOrganizationHandlerPackage,
-    archiveOrganizationHandlerPackage,
-    restoreOrganizationHandlerPackage,
-    transferOrganizationOwnershipHandlerPackage
-} from './organizations';
-import {
-    addOrganizationMemberHandlerPackage,
-    acceptOrganizationInvitationHandlerPackage,
-    removeOrganizationMemberHandlerPackage,
-    updateOrganizationMemberRoleHandlerPackage,
-    leaveOrganizationHandlerPackage
-} from './organization-memberships';
 
 /**
  * Build all HTTP handler packages from use cases
@@ -39,8 +39,11 @@ import {
  * @returns Array of handler packages ready for transport layer
  */
 export function buildHandlers<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -14,6 +14,7 @@ import {
  * - Type-safe access to custom fields and mappers
  * - Composition over inheritance approach
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class OrganizationMembershipRepositoryConfigHelper<TCustomFields = {}> {
     /**
      * Resolved column mapping (generated from namingStrategy + user overrides)
@@ -213,7 +214,6 @@ export class OrganizationMembershipRepositoryConfigHelper<TCustomFields = {}> {
             case 'PascalCase':
                 // camelCase → PascalCase: invitedBy → InvitedBy
                 return key.charAt(0).toUpperCase() + key.slice(1);
-            case 'camelCase':
             default:
                 // No transformation
                 return key;

@@ -1,6 +1,6 @@
-import type { IResult } from '../results/Result';
-import type { IDomainError } from '../errors/IDomainError';
 import type { Principal } from '../auth/Principal';
+import type { IDomainError } from '../errors/IDomainError';
+import type { IResult } from '../results/Result';
 
 /**
  * Context available to response transformers
@@ -64,10 +64,10 @@ export interface ResponseTransformerContext<TInput, TOutput> {
  * const removeInternalId: ResponseTransformer<GetUserInput, User> = async (context) => {
  *     const { response } = context;
  *     const data = response.body.data;
- *     
+ *
  *     // Remove internal fields
  *     const { internalId, ...publicData } = data;
- *     
+ *
  *     return {
  *         ...response,
  *         body: {
@@ -93,9 +93,12 @@ export type ResponseTransformer<TInput = any, TOutput = any> = (
  * This type is used in FrameworkConfig to provide type-safe transformer configuration.
  */
 export interface HandlerResponseTransformers<
-    TUserCustomFields = {},
-    TOrganizationCustomFields = {},
-    TOrganizationMembershipCustomFields = {}
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TOrganizationMembershipCustomFields = {}
 > {
     /**
      * Response transformers for user-related handlers

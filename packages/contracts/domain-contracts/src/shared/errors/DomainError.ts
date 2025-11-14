@@ -1,4 +1,4 @@
-import type { IDomainError } from "./IDomainError";
+import type { IDomainError } from './IDomainError';
 
 type NormalizedError = {
     name?: string;
@@ -14,24 +14,22 @@ function normalizeError(err: unknown): NormalizedError {
         const ownNames = Object.getOwnPropertyNames(err) as (keyof Error)[];
         const plain: Record<string, unknown> = {};
         for (const key of ownNames) {
-            // @ts-ignore - dynamic access
             plain[key as string] = (err as any)[key];
         }
         // If the error has extra "enumerable" properties in custom classes, include them as well
         for (const key of Object.keys(err as object)) {
-            // @ts-ignore
             plain[key] = (err as any)[key];
         }
         // Ensure minimum message
         return {
             message: err.message ?? String(err),
-            ...plain,
+            ...plain
         };
     }
 
-    if (typeof err === "object" && err !== null) {
+    if (typeof err === 'object' && err !== null) {
         // If it's an object, clone it (it might have enumerable properties)
-        return { message: "Non-Error thrown", ...(err as any) };
+        return { message: 'Non-Error thrown', ...(err as any) };
     }
 
     // If it's a string, number, etc.
@@ -47,11 +45,7 @@ export abstract class DomainError extends Error implements IDomainError {
     public readonly code?: string;
     public readonly details?: Record<string, unknown>;
 
-    constructor(
-        message: string,
-        code?: string,
-        details?: Record<string, unknown>
-    ) {
+    constructor(message: string, code?: string, details?: Record<string, unknown>) {
         super(message);
         this.name = this.constructor.name;
         this.code = code;
@@ -74,20 +68,12 @@ export abstract class DomainError extends Error implements IDomainError {
  * Error thrown when a requested resource is not found
  */
 export class NotFoundError extends DomainError {
-    constructor(
-        resource: string,
-        identifier: string,
-        details?: Record<string, unknown>
-    ) {
-        super(
-            `${resource} with identifier '${identifier}' not found`,
-            "NOT_FOUND",
-            {
-                resource,
-                identifier,
-                ...details,
-            }
-        );
+    constructor(resource: string, identifier: string, details?: Record<string, unknown>) {
+        super(`${resource} with identifier '${identifier}' not found`, 'NOT_FOUND', {
+            resource,
+            identifier,
+            ...details
+        });
     }
 }
 
@@ -97,12 +83,8 @@ export class NotFoundError extends DomainError {
 export class ValidationError extends DomainError {
     public readonly field?: string;
 
-    constructor(
-        message: string,
-        field?: string,
-        details?: Record<string, unknown>
-    ) {
-        super(message, "VALIDATION_ERROR", { field, ...details });
+    constructor(message: string, field?: string, details?: Record<string, unknown>) {
+        super(message, 'VALIDATION_ERROR', { field, ...details });
         this.field = field;
     }
 }
@@ -112,7 +94,7 @@ export class ValidationError extends DomainError {
  */
 export class BusinessRuleError extends DomainError {
     constructor(message: string, details?: Record<string, unknown>) {
-        super(message, "BUSINESS_RULE_VIOLATION", details);
+        super(message, 'BUSINESS_RULE_VIOLATION', details);
     }
 }
 
@@ -120,20 +102,12 @@ export class BusinessRuleError extends DomainError {
  * Error thrown when trying to create a resource that already exists
  */
 export class ConflictError extends DomainError {
-    constructor(
-        resource: string,
-        identifier: string,
-        details?: Record<string, unknown>
-    ) {
-        super(
-            `${resource} with identifier '${identifier}' already exists`,
-            "CONFLICT",
-            {
-                resource,
-                identifier,
-                ...details,
-            }
-        );
+    constructor(resource: string, identifier: string, details?: Record<string, unknown>) {
+        super(`${resource} with identifier '${identifier}' already exists`, 'CONFLICT', {
+            resource,
+            identifier,
+            ...details
+        });
     }
 }
 
@@ -141,16 +115,12 @@ export class ConflictError extends DomainError {
  * Error thrown when access is denied
  */
 export class UnauthorizedError extends DomainError {
-    constructor(
-        action: string,
-        resource?: string,
-        details?: Record<string, unknown>
-    ) {
+    constructor(action: string, resource?: string, details?: Record<string, unknown>) {
         const message = resource
             ? `Not authorized to ${action} on ${resource}`
             : `Not authorized to ${action}`;
 
-        super(message, "UNAUTHORIZED", { action, resource, ...details });
+        super(message, 'UNAUTHORIZED', { action, resource, ...details });
     }
 }
 
@@ -159,7 +129,7 @@ export class UnauthorizedError extends DomainError {
  */
 export class InfrastructureError extends DomainError {
     constructor(message: string, details?: Record<string, unknown>) {
-        super(message, "INFRASTRUCTURE_ERROR", details);
+        super(message, 'INFRASTRUCTURE_ERROR', details);
     }
 }
 
@@ -172,11 +142,7 @@ export class AbortedError extends DomainError {
     public readonly reason: string;
 
     constructor(reason: string, details?: Record<string, unknown>) {
-        super(
-            `Use case execution aborted: ${reason}`,
-            "ABORTED",
-            { reason, ...details }
-        );
+        super(`Use case execution aborted: ${reason}`, 'ABORTED', { reason, ...details });
         this.reason = reason;
     }
 }

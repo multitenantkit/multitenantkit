@@ -1,25 +1,48 @@
 {
-  "name": "@multitenantkit/adapter-system-system-clock",
-  "version": "1.0.0",
-  "description": "System Clock adapter using real system time",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/SystemClock.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/SystemClock.d.ts",
-      "import": "./dist/index.js"
+    "name": "@multitenantkit/adapter-system-system-clock",
+    "version": "0.1.0",
+    "description": "System Clock adapter using real system time",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "adapter",
+        "clock",
+        "time",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/system/system-clock"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/SystemClock.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/SystemClock.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
     }
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@multitenantkit/domain-contracts": "*"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
-  }
 }

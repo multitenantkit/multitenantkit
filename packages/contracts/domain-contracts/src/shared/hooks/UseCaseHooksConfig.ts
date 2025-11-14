@@ -1,60 +1,56 @@
-import type { IDomainError } from '../errors/IDomainError';
-import type { UseCaseHooks } from './UseCaseHooks';
-
+// Organization Membership use case types
+import type {
+    AddOrganizationMemberInput,
+    AddOrganizationMemberOutput,
+    LeaveOrganizationInput,
+    LeaveOrganizationOutput,
+    RemoveOrganizationMemberInput,
+    RemoveOrganizationMemberOutput,
+    UpdateOrganizationMemberRoleInput,
+    UpdateOrganizationMemberRoleOutput
+} from '../../organization-memberships/use-cases';
+import type { Organization } from '../../organizations/entities';
+// Organization use case types
+import type {
+    CreateOrganizationInput,
+    CreateOrganizationOutput,
+    DeleteOrganizationInput,
+    GetOrganizationInput,
+    GetOrganizationOutput,
+    ListOrganizationMembersInput,
+    ListOrganizationMembersOutput,
+    RestoreOrganizationInput,
+    TransferOrganizationOwnershipInput,
+    TransferOrganizationOwnershipOutput,
+    UpdateOrganizationInput,
+    UpdateOrganizationOutput
+} from '../../organizations/use-cases';
 // Domain entity types
 import type { User } from '../../users/entities';
-import type { Organization } from '../../organizations/entities';
-import type { OrganizationMembership } from '../../organization-memberships/entities';
 
 // User use case types
 import type {
     CreateUserInput,
     CreateUserOutput,
+    DeleteUserInput,
     GetUserInput,
-    UpdateUserInput,
     ListUserOrganizationsInput,
     ListUserOrganizationsOutput,
-    DeleteUserInput,
+    UpdateUserInput
 } from '../../users/use-cases';
-
-// Organization use case types
-import type {
-    CreateOrganizationInput,
-    CreateOrganizationOutput,
-    GetOrganizationInput,
-    GetOrganizationOutput,
-    UpdateOrganizationInput,
-    UpdateOrganizationOutput,
-    ListOrganizationMembersInput,
-    ListOrganizationMembersOutput,
-    DeleteOrganizationInput,
-    RestoreOrganizationInput,
-    TransferOrganizationOwnershipInput,
-    TransferOrganizationOwnershipOutput,
-} from '../../organizations/use-cases';
-
-// Organization Membership use case types
-import type {
-    AddOrganizationMemberInput,
-    AddOrganizationMemberOutput,
-    RemoveOrganizationMemberInput,
-    RemoveOrganizationMemberOutput,
-    UpdateOrganizationMemberRoleInput,
-    UpdateOrganizationMemberRoleOutput,
-    LeaveOrganizationInput,
-    LeaveOrganizationOutput,
-} from '../../organization-memberships/use-cases';
+import type { IDomainError } from '../errors/IDomainError';
+import type { UseCaseHooks } from './UseCaseHooks';
 
 /**
  * Type-safe configuration of hooks per use case
  * Defines all available use cases in the framework with their specific Input/Output/Error types
- * 
+ *
  * This provides:
  * - ✅ Autocompletion of use case names
  * - ✅ Type-safe input/output/error types for each hook
  * - ✅ Compile-time validation of hook configurations
  * - ✅ Refactoring safety (renaming a use case updates all references)
- * 
+ *
  * @example
  * ```typescript
  * const config: UseCaseHooksConfig = {
@@ -104,7 +100,11 @@ export interface UseCaseHooksConfig {
      * Hooks for ListUserOrganizations use case
      * Lists all organizations a user belongs to
      */
-    ListUserOrganizations?: UseCaseHooks<ListUserOrganizationsInput, ListUserOrganizationsOutput, IDomainError>;
+    ListUserOrganizations?: UseCaseHooks<
+        ListUserOrganizationsInput,
+        ListUserOrganizationsOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for DeleteUser use case
@@ -120,7 +120,11 @@ export interface UseCaseHooksConfig {
      * Hooks for CreateOrganization use case
      * Creates a new organization with the user as owner
      */
-    CreateOrganization?: UseCaseHooks<CreateOrganizationInput, CreateOrganizationOutput, IDomainError>;
+    CreateOrganization?: UseCaseHooks<
+        CreateOrganizationInput,
+        CreateOrganizationOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for GetOrganization use case
@@ -132,13 +136,21 @@ export interface UseCaseHooksConfig {
      * Hooks for UpdateOrganization use case
      * Updates organization information (requires owner/admin permissions)
      */
-    UpdateOrganization?: UseCaseHooks<UpdateOrganizationInput, UpdateOrganizationOutput, IDomainError>;
+    UpdateOrganization?: UseCaseHooks<
+        UpdateOrganizationInput,
+        UpdateOrganizationOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for ListOrganizationMembers use case
      * Lists all members of a organization with their roles
      */
-    ListOrganizationMembers?: UseCaseHooks<ListOrganizationMembersInput, ListOrganizationMembersOutput, IDomainError>;
+    ListOrganizationMembers?: UseCaseHooks<
+        ListOrganizationMembersInput,
+        ListOrganizationMembersOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for DeleteOrganization use case
@@ -170,13 +182,21 @@ export interface UseCaseHooksConfig {
      * Hooks for AddOrganizationMember use case
      * Adds a new member to a organization (requires owner/admin permissions)
      */
-    AddOrganizationMember?: UseCaseHooks<AddOrganizationMemberInput, AddOrganizationMemberOutput, IDomainError>;
+    AddOrganizationMember?: UseCaseHooks<
+        AddOrganizationMemberInput,
+        AddOrganizationMemberOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for RemoveOrganizationMember use case
      * Removes a member from a organization (requires owner/admin permissions)
      */
-    RemoveOrganizationMember?: UseCaseHooks<RemoveOrganizationMemberInput, RemoveOrganizationMemberOutput, IDomainError>;
+    RemoveOrganizationMember?: UseCaseHooks<
+        RemoveOrganizationMemberInput,
+        RemoveOrganizationMemberOutput,
+        IDomainError
+    >;
 
     /**
      * Hooks for UpdateOrganizationMemberRole use case

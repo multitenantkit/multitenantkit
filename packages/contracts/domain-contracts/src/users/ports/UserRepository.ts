@@ -1,5 +1,5 @@
-import type { User } from '../entities';
 import type { OperationContext } from '../../shared';
+import type { User } from '../entities';
 
 /**
  * Repository port for User entity
@@ -9,6 +9,7 @@ import type { OperationContext } from '../../shared';
  * @template TCustomFields - Additional fields beyond the base User
  *                           Default is empty object for backward compatibility
  */
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export interface UserRepository<TCustomFields = {}> {
     /**
      * Find a user by their ID

@@ -1,7 +1,7 @@
-export type { OrganizationRepository } from './OrganizationRepository';
 export type {
-    OrganizationCustomFieldsConfig,
-    OrganizationBaseField
+    OrganizationBaseField,
+    OrganizationCustomFieldsConfig
 } from './OrganizationCustomFieldsConfig';
 export { ORGANIZATION_BASE_FIELDS } from './OrganizationCustomFieldsConfig';
+export type { OrganizationRepository } from './OrganizationRepository';
 export { OrganizationRepositoryConfigHelper } from './OrganizationRepositoryConfigHelper';

@@ -1,41 +1,40 @@
 // Users use cases
-import {
-    CreateUser,
-    GetUser,
-    UpdateUser,
-    ListUserOrganizations,
-    DeleteUser
-} from '@multitenantkit/domain/users';
-
-// Organizations use cases
-import {
-    CreateOrganization,
-    GetOrganization,
-    UpdateOrganization,
-    ListOrganizationMembers,
-    DeleteOrganization,
-    ArchiveOrganization,
-    RestoreOrganization,
-    TransferOrganizationOwnership
-} from '@multitenantkit/domain/organizations';
 
 // Memberships use cases
 import {
-    AddOrganizationMember,
     AcceptOrganizationInvitation,
+    AddOrganizationMember,
+    LeaveOrganization,
     RemoveOrganizationMember,
-    UpdateOrganizationMemberRole,
-    LeaveOrganization
+    UpdateOrganizationMemberRole
 } from '@multitenantkit/domain/organization-memberships';
 
+// Organizations use cases
+import {
+    ArchiveOrganization,
+    CreateOrganization,
+    DeleteOrganization,
+    GetOrganization,
+    ListOrganizationMembers,
+    RestoreOrganization,
+    TransferOrganizationOwnership,
+    UpdateOrganization
+} from '@multitenantkit/domain/organizations';
+import {
+    CreateUser,
+    DeleteUser,
+    GetUser,
+    ListUserOrganizations,
+    UpdateUser
+} from '@multitenantkit/domain/users';
 import type {
-    UseCases,
-    UserUseCases,
-    OrganizationUseCases,
+    Adapters,
+    FrameworkConfig,
     MembershipUseCases,
-    FrameworkConfig
+    OrganizationUseCases,
+    UseCases,
+    UserUseCases
 } from '@multitenantkit/domain-contracts';
-import { Adapters } from '@multitenantkit/domain-contracts';
 
 /**
  * Factory function to create user use cases
@@ -47,8 +46,11 @@ import { Adapters } from '@multitenantkit/domain-contracts';
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
  */
 function createUserUseCases<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     adapters: Adapters<
@@ -96,8 +98,11 @@ function createUserUseCases<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
  */
 function createOrganizationUseCases<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     adapters: Adapters<
@@ -164,8 +169,11 @@ function createOrganizationUseCases<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
  */
 function createMembershipUseCases<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     adapters: Adapters<
@@ -212,8 +220,11 @@ function createMembershipUseCases<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
  */
 export function createUseCases<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     adapters: Adapters<

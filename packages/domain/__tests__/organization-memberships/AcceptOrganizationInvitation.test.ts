@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AcceptOrganizationInvitation } from '../../src/organization-memberships/use-cases/accept-organization-invitation/AcceptOrganizationInvitation';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
 
 describe('AcceptOrganizationInvitation use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -61,13 +61,11 @@ describe('AcceptOrganizationInvitation use case', () => {
             await setup.uow.getOrganizationMembershipRepository().insert({
                 id: invitedMembershipId,
                 username,
-                userId: undefined, // Not set yet
+                // userId not set yet (pending invitation)
                 organizationId,
                 roleCode: 'member',
                 invitedAt: new Date(),
-                joinedAt: undefined, // Not accepted yet
-                leftAt: undefined,
-                deletedAt: undefined,
+                // joinedAt, leftAt, deletedAt omitted (not accepted yet)
                 createdAt: new Date(),
                 updatedAt: new Date()
             });

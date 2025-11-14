@@ -1,11 +1,11 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
 import {
-    RemoveOrganizationMemberRequest,
+    type RemoveOrganizationMemberRequest,
     RemoveOrganizationMemberRequestSchema
 } from '@multitenantkit/api-contracts/organization-memberships';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { applyResponseTransformer } from '../../utils/transformResponse';
 
@@ -85,7 +85,9 @@ export function makeRemoveOrganizationMemberHandler(
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizationMemberships?.RemoveOrganizationMember;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizationMemberships
+                        ?.RemoveOrganizationMember;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },

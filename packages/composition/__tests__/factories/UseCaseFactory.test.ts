@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { createUseCases } from '../../src/factories/UseCaseFactory';
 import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { describe, expect, it } from 'vitest';
+import { createUseCases } from '../../src/factories/UseCaseFactory';
 
 // Create minimal mock adapters for testing
 function createMockAdapters(): Adapters {
@@ -69,7 +69,7 @@ describe('UseCaseFactory', () => {
             const frameworkConfig: FrameworkConfig<{ bio: string }> = {
                 users: {
                     customFields: {
-                        customSchema: z.z.object({ bio: z.z.string() })
+                        customSchema: z.object({ bio: z.string() })
                     }
                 }
             };
@@ -83,7 +83,7 @@ describe('UseCaseFactory', () => {
             const frameworkConfig: FrameworkConfig<{ bio: string }> = {
                 users: {
                     customFields: {
-                        customSchema: z.z.object({ bio: z.z.string() })
+                        customSchema: z.object({ bio: z.string() })
                     }
                 }
             };
@@ -101,10 +101,11 @@ describe('UseCaseFactory', () => {
         it('should pass framework config to organization use cases', () => {
             const adapters = createMockAdapters();
             const z = require('zod');
+            // biome-ignore lint/complexity/noBannedTypes: ignore
             const frameworkConfig: FrameworkConfig<{}, { description: string }> = {
                 organizations: {
                     customFields: {
-                        customSchema: z.z.object({ description: z.z.string() })
+                        customSchema: z.object({ description: z.string() })
                     }
                 }
             };
@@ -241,7 +242,7 @@ describe('UseCaseFactory', () => {
     describe('Generic Type Support', () => {
         it('should support custom user fields type parameter', () => {
             type CustomUserFields = { bio: string };
-            const adapters = createMockAdapters();
+            const adapters = createMockAdapters() as Adapters<CustomUserFields>;
 
             const useCases = createUseCases<CustomUserFields>(adapters);
 
@@ -251,8 +252,10 @@ describe('UseCaseFactory', () => {
 
         it('should support custom organization fields type parameter', () => {
             type CustomOrganizationFields = { description: string };
-            const adapters = createMockAdapters();
+            // biome-ignore lint/complexity/noBannedTypes: ignore
+            const adapters = createMockAdapters() as Adapters<{}, CustomOrganizationFields>;
 
+            // biome-ignore lint/complexity/noBannedTypes: ignore
             const useCases = createUseCases<{}, CustomOrganizationFields>(adapters);
 
             // Should compile without errors
@@ -263,7 +266,11 @@ describe('UseCaseFactory', () => {
             type CustomUserFields = { bio: string };
             type CustomOrganizationFields = { description: string };
             type CustomMembershipFields = { role: string };
-            const adapters = createMockAdapters();
+            const adapters = createMockAdapters() as Adapters<
+                CustomUserFields,
+                CustomOrganizationFields,
+                CustomMembershipFields
+            >;
 
             const useCases = createUseCases<
                 CustomUserFields,

@@ -1,5 +1,5 @@
-import type { OperationContext } from '../OperationContext';
 import type { Adapters } from '../adapters';
+import type { OperationContext } from '../OperationContext';
 
 /**
  * Unified context object provided to all hooks during use case execution
@@ -42,7 +42,6 @@ import type { Adapters } from '../adapters';
 export interface HookContext<
     TInput = any,
     TOutput = any,
-    TError = any,
     TUserCustomFields = any,
     TOrganizationCustomFields = any,
     TOrganizationMembershipCustomFields = any

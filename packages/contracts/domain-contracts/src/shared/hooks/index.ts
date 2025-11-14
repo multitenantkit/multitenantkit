@@ -38,9 +38,8 @@
  */
 
 export type { HookContext } from './HookContext';
-export type { UseCaseHooks } from './UseCaseHooks';
-export type { UseCaseHooksConfig } from './UseCaseHooksConfig';
-
 // Legacy export kept for backwards compatibility during migration
 // @deprecated Use HookContext instead
 export type { HookExecutionContext } from './HookExecutionContext';
+export type { UseCaseHooks } from './UseCaseHooks';
+export type { UseCaseHooksConfig } from './UseCaseHooksConfig';

@@ -1,17 +1,17 @@
-import { JsonStorage } from '../storage/JsonStorage';
-import { OrganizationMembershipMapper } from '../mappers/OrganizationMembershipMapper';
-import { OrganizationMembershipJsonData } from '../storage/schemas';
-import { join } from 'path';
-import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import {
-    OrganizationMembership,
-    OrganizationMemberWithUserInfo,
-    OrganizationMembershipRepository,
-    UserRepository,
-    OrganizationRepository,
+import { join } from 'node:path';
+import type {
     FindMembersOptions,
-    PaginatedResult
+    OrganizationMembership,
+    OrganizationMembershipRepository,
+    OrganizationMemberWithUserInfo,
+    OrganizationRepository,
+    PaginatedResult,
+    UserRepository
 } from '@multitenantkit/domain-contracts';
+import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
+import { OrganizationMembershipMapper } from '../mappers/OrganizationMembershipMapper';
+import { JsonStorage } from '../storage/JsonStorage';
+import type { OrganizationMembershipJsonData } from '../storage/schemas';
 
 /**
  * JSON-based implementation of OrganizationMembershipRepository
@@ -26,8 +26,11 @@ import {
  * but maintains the same signature for consistency with other adapters
  */
 export class JsonOrganizationMembershipRepository<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > implements
         OrganizationMembershipRepository<
@@ -53,7 +56,7 @@ export class JsonOrganizationMembershipRepository<
 
     async insert(
         membership: OrganizationMembership & TOrganizationMembershipCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         const jsonData = OrganizationMembershipMapper.toJson(membership);
@@ -150,7 +153,7 @@ export class JsonOrganizationMembershipRepository<
 
     async update(
         membership: OrganizationMembership & TOrganizationMembershipCustomFields,
-        context?: OperationContext
+        _context?: OperationContext
     ): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         const jsonData = OrganizationMembershipMapper.toJson(membership);
@@ -167,7 +170,7 @@ export class JsonOrganizationMembershipRepository<
         });
     }
 
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         await this.storage.update((memberships) =>
             memberships.filter((membership) => membership.id !== id)
@@ -356,38 +359,5 @@ export class JsonOrganizationMembershipRepository<
         return OrganizationMembershipMapper.toDomainArray(
             jsonDataArray
         ) as (OrganizationMembership & TOrganizationMembershipCustomFields)[];
-    }
-
-    /**
-     * Link pending memberships (with username but no userId) to a registered user
-     * Updates all memberships where username matches and userId is null
-     */
-    async linkUsernameMembershipsToUserId(
-        username: string,
-        userId: string,
-        context?: OperationContext
-    ): Promise<void> {
-        // Note: JSON adapter ignores audit context as it doesn't support audit logging
-        try {
-            // Update all memberships with matching username and null userId
-            await this.storage.update((memberships) =>
-                memberships.map((membership) => {
-                    // Only update if username matches and userId is null/undefined
-                    if (
-                        membership.username === username &&
-                        (membership.userId === null || membership.userId === undefined)
-                    ) {
-                        return {
-                            ...membership,
-                            userId,
-                            updatedAt: new Date().toISOString()
-                        };
-                    }
-                    return membership;
-                })
-            );
-        } catch (error: any) {
-            throw new Error(`Failed to link username memberships to userId: ${error.message}`);
-        }
     }
 }

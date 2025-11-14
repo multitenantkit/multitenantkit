@@ -1,17 +1,17 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import {
-    TransferOrganizationOwnershipRequest,
+    type TransferOrganizationOwnershipRequest,
     TransferOrganizationOwnershipRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import {
-    type UseCases,
     type FrameworkConfig,
     type Organization,
-    OrganizationSchema
+    OrganizationSchema,
+    type UseCases
 } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { applyResponseTransformer } from '../../utils/transformResponse';
@@ -46,8 +46,11 @@ export const transferOrganizationOwnershipRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeTransferOrganizationOwnershipHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -120,7 +123,9 @@ export function makeTransferOrganizationOwnershipHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizations?.TransferOrganizationOwnership;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizations
+                        ?.TransferOrganizationOwnership;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -169,8 +174,11 @@ export function makeTransferOrganizationOwnershipHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function transferOrganizationOwnershipHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -15,21 +15,7 @@
 
 // Client and Configuration
 export { DatabaseClient } from './client/PostgresClient';
-export { DatabaseConfig, createDatabaseConfig, PostgresDBEnvVars } from './client/PostgresConfig';
-
-// Repositories
-export { PostgresUserRepository } from './repositories/PostgresUserRepository';
-export { PostgresOrganizationRepository } from './repositories/PostgresOrganizationRepository';
-export { PostgresOrganizationMembershipRepository } from './repositories/PostgresOrganizationMembershipRepository';
-
-// Mappers (reused from JSON adapter patterns)
-export { UserMapper } from './mappers/UserMapper';
-export { OrganizationMapper } from './mappers/OrganizationMapper';
-export { OrganizationMembershipMapper } from './mappers/OrganizationMembershipMapper';
-
-// Unit of Work
-export { PostgresUnitOfWork } from './uow/PostgresUnitOfWork';
-
+export { createDatabaseConfig, DatabaseConfig, PostgresDBEnvVars } from './client/PostgresConfig';
 // Factory Functions and Configuration
 export {
     createPostgresRepositories,
@@ -37,3 +23,14 @@ export {
     DatabaseFactoryOptions,
     PostgresRepositoryBundle
 } from './factory/PostgresFactory';
+export { OrganizationMapper } from './mappers/OrganizationMapper';
+export { OrganizationMembershipMapper } from './mappers/OrganizationMembershipMapper';
+
+// Mappers (reused from JSON adapter patterns)
+export { UserMapper } from './mappers/UserMapper';
+export { PostgresOrganizationMembershipRepository } from './repositories/PostgresOrganizationMembershipRepository';
+export { PostgresOrganizationRepository } from './repositories/PostgresOrganizationRepository';
+// Repositories
+export { PostgresUserRepository } from './repositories/PostgresUserRepository';
+// Unit of Work
+export { PostgresUnitOfWork } from './uow/PostgresUnitOfWork';

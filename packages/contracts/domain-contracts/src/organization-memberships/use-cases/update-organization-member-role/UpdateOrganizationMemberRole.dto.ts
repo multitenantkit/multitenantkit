@@ -1,6 +1,6 @@
 import z from 'zod';
-import { OrganizationMembershipSchema } from '../../entities';
 import { UserSchema } from '../../../users';
+import { OrganizationMembershipSchema } from '../../entities';
 
 /**
  * Input schema - includes userId for ownership validation
@@ -17,5 +17,9 @@ export const UpdateOrganizationMemberRoleInputSchema = z.object({
  */
 export const UpdateOrganizationMemberRoleOutputSchema = OrganizationMembershipSchema;
 
-export type UpdateOrganizationMemberRoleInput = z.infer<typeof UpdateOrganizationMemberRoleInputSchema>;
-export type UpdateOrganizationMemberRoleOutput = z.infer<typeof UpdateOrganizationMemberRoleOutputSchema>;
+export type UpdateOrganizationMemberRoleInput = z.infer<
+    typeof UpdateOrganizationMemberRoleInputSchema
+>;
+export type UpdateOrganizationMemberRoleOutput = z.infer<
+    typeof UpdateOrganizationMemberRoleOutputSchema
+>;

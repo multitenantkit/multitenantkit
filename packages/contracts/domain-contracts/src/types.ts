@@ -4,31 +4,30 @@
  */
 
 import type {
-    ICreateUser,
-    IGetUser,
-    IUpdateUser,
-    IListUserOrganizations,
-    IDeleteUser
-} from './users';
-
-import type {
-    ICreateOrganization,
-    IGetOrganization,
-    IUpdateOrganization,
-    IListOrganizationMembers,
-    IDeleteOrganization,
-    IArchiveOrganization,
-    IRestoreOrganization,
-    ITransferOrganizationOwnership
-} from './organizations';
-
-import type {
-    IAddOrganizationMember,
     IAcceptOrganizationInvitation,
+    IAddOrganizationMember,
+    ILeaveOrganization,
     IRemoveOrganizationMember,
-    IUpdateOrganizationMemberRole,
-    ILeaveOrganization
+    IUpdateOrganizationMemberRole
 } from './organization-memberships';
+
+import type {
+    IArchiveOrganization,
+    ICreateOrganization,
+    IDeleteOrganization,
+    IGetOrganization,
+    IListOrganizationMembers,
+    IRestoreOrganization,
+    ITransferOrganizationOwnership,
+    IUpdateOrganization
+} from './organizations';
+import type {
+    ICreateUser,
+    IDeleteUser,
+    IGetUser,
+    IListUserOrganizations,
+    IUpdateUser
+} from './users';
 
 export interface UserUseCases {
     createUser: ICreateUser;

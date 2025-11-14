@@ -1,8 +1,10 @@
-import { type User, type UserRepository } from '@multitenantkit/domain-contracts';
+import type { User, UserRepository } from '@multitenantkit/domain-contracts';
 
 /**
  * Mock implementation of UserRepository for testing
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class MockUserRepository<TCustomFields = {}> implements UserRepository<TCustomFields> {
     public readonly users = new Map<string, User & TCustomFields>();
     public shouldThrowOnSave = false;

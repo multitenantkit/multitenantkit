@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    makeGetUserHandler,
-    getUserRoute,
-    getUserHandlerPackage
-} from '../../src/users/get-user/getUser';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+    getUserHandlerPackage,
+    getUserRoute,
+    makeGetUserHandler
+} from '../../src/users/get-user/getUser';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -119,7 +119,7 @@ describe('GetUser Handler', () => {
         it('should support custom fields when framework config provided', async () => {
             const authProviderId = '00000000-0000-4000-8000-000000000003';
             type UserCustom = { role: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -408,7 +408,7 @@ describe('GetUser Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ role: string }, {}, {}> = {
+            const frameworkConfig: FrameworkConfig<{ role: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({

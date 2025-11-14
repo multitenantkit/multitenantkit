@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TransferOrganizationOwnership } from '../../src/organizations/use-cases/transfer-organization-ownership/TransferOrganizationOwnership';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
 
 describe('TransferOrganizationOwnership use case', () => {
     let setup: ReturnType<typeof createTestSetup>;

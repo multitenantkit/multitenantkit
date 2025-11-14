@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ArchiveOrganization } from '../../src/organizations/use-cases/archive-organization/ArchiveOrganization';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
 
 describe('ArchiveOrganization use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -78,6 +78,7 @@ describe('ArchiveOrganization use case', () => {
             const adminMembership = {
                 id: setup.uuid.generate(),
                 userId: admin.id,
+                username: admin.username,
                 organizationId: organization.id,
                 roleCode: 'admin' as const,
                 joinedAt: new Date(),
@@ -181,6 +182,7 @@ describe('ArchiveOrganization use case', () => {
             const membership1 = {
                 id: setup.uuid.generate(),
                 userId: member1.id,
+                username: member1.username,
                 organizationId: organization.id,
                 roleCode: 'member' as const,
                 joinedAt: new Date(),
@@ -192,6 +194,7 @@ describe('ArchiveOrganization use case', () => {
             const membership2 = {
                 id: setup.uuid.generate(),
                 userId: member2.id,
+                username: member2.username,
                 organizationId: organization.id,
                 roleCode: 'admin' as const,
                 joinedAt: new Date(),
@@ -257,6 +260,7 @@ describe('ArchiveOrganization use case', () => {
             const memberMembership = {
                 id: setup.uuid.generate(),
                 userId: member.id,
+                username: member.username,
                 organizationId: organization.id,
                 roleCode: 'member' as const,
                 joinedAt: new Date(),

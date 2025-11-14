@@ -1,6 +1,6 @@
 import z from 'zod';
-import { OrganizationSchema } from '../../entities';
 import { UserSchema } from '../../../users/entities';
+import { OrganizationSchema } from '../../entities';
 
 export const DeleteOrganizationInputSchema = z.object({
     organizationId: OrganizationSchema.shape.id,
@@ -13,4 +13,3 @@ export const DeleteOrganizationInputSchema = z.object({
  * Requires the principal's externalId to verify authorization (only owner can delete)
  */
 export type DeleteOrganizationInput = z.infer<typeof DeleteOrganizationInputSchema>;
-

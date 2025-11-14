@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ListUserOrganizations } from '../../src/users/use-cases/list-user-organizations/ListUserOrganizations';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 // Minimal Organization builder matching OrganizationProps from contracts
 function createOrganization(
@@ -103,6 +103,7 @@ describe('ListUserOrganizations use case', () => {
 
         it('should support custom organization fields via framework config', async () => {
             type OrganizationCustom = { category: string };
+            // biome-ignore lint/complexity/noBannedTypes: ignore
             const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
@@ -137,6 +138,7 @@ describe('ListUserOrganizations use case', () => {
                 updatedAt: new Date('2025-01-02T00:00:00.000Z')
             });
 
+            // biome-ignore lint/complexity/noBannedTypes: ignore
             const useCase = new ListUserOrganizations<{}, OrganizationCustom>(
                 adapters as any,
                 frameworkConfig
@@ -216,6 +218,7 @@ describe('ListUserOrganizations use case', () => {
                 updatedAt: new Date('2025-01-02T00:00:00.000Z')
             });
 
+            // biome-ignore lint/complexity/noBannedTypes: ignore
             const useCase = new ListUserOrganizations<{}, OrganizationCustom>(
                 adapters as any,
                 frameworkConfig

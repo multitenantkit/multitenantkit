@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Uuid, DateTime } from '../../shared/primitives';
+import { DateTime, Uuid } from '../../shared/primitives';
 
 /**
  * User domain properties schema for serialization/validation
@@ -7,7 +7,7 @@ import { Uuid, DateTime } from '../../shared/primitives';
 export const UserSchema = z.object({
     id: Uuid,
     externalId: z.string(), // Auth provider user ID, this can be null if the user is invited but not registered
-    username: z.string(), // Thi is how the user is identified by end users, 
+    username: z.string(), // Thi is how the user is identified by end users,
     // it could be an email, a nickname, a phone number, etc.
     createdAt: DateTime,
     updatedAt: DateTime,

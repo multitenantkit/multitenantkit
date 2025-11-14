@@ -1,45 +1,55 @@
 {
-  "name": "multitenantkit",
-  "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "packages/api/*",
-    "packages/adapters/*/*",
-    "packages/adapters/*/*/*",
-    "packages/contracts/*",
-    "packages/bundles/*"
-  ],
-  "description": "Domain-first TypeScript framework for multi-tenant user/organization/membership management. Ships Zod-typed contracts, ready-made use cases & HTTP handlers, and pluggable adapters (Postgres, Supabase, Express) under a hexagonal architecture.",
-  "scripts": {
-    "build": "npm run build -w @multitenantkit/domain-contracts -w @multitenantkit/api-contracts -w @multitenantkit/adapter-system-crypto-uuid -w @multitenantkit/adapter-system-system-clock -w @multitenantkit/domain -w @multitenantkit/api-handlers -w @multitenantkit/adapter-persistence-json -w @multitenantkit/adapter-persistence-postgres -w @multitenantkit/adapter-metrics-http -w @multitenantkit/adapter-transport-express -w @multitenantkit/composition -w @multitenantkit/adapter-auth-supabase -w @multitenantkit/sdk",
-    "pack": "npm run build && ./scripts/pack-all.sh dist-packages",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "test:workspaces": "npm run test --workspaces",
-    "type-check": "npm run type-check --workspaces"
-  },
-  "keywords": [
-    "saas",
-    "multi-tenant",
-    "multitenancy",
-    "organizations",
-    "users",
-    "memberships"
-  ],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/supertest": "^6.0.3",
-    "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
-    "supertest": "^7.1.4",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^3.2.4"
-  }
+    "name": "multitenantkit",
+    "version": "0.1.0",
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "packages/api/*",
+        "packages/adapters/*/*",
+        "packages/adapters/*/*/*",
+        "packages/contracts/*",
+        "packages/bundles/*"
+    ],
+    "description": "Domain-first TypeScript framework for multi-tenant user/organization/membership management. Ships Zod-typed contracts, ready-made use cases & HTTP handlers, and pluggable adapters (Postgres, Supabase, Express).",
+    "scripts": {
+        "build": "npm run build -w @multitenantkit/domain-contracts -w @multitenantkit/api-contracts -w @multitenantkit/adapter-system-crypto-uuid -w @multitenantkit/adapter-system-system-clock -w @multitenantkit/domain -w @multitenantkit/api-handlers -w @multitenantkit/adapter-persistence-json -w @multitenantkit/adapter-persistence-postgres -w @multitenantkit/adapter-metrics-http -w @multitenantkit/adapter-transport-express -w @multitenantkit/composition -w @multitenantkit/adapter-auth-supabase -w @multitenantkit/sdk",
+        "pack": "npm run build && ./scripts/pack-all.sh dist-packages",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
+        "test:workspaces": "npm run test --workspaces",
+        "type-check": "npm run type-check --workspaces",
+        "lint": "biome lint .",
+        "format": "biome format --write .",
+        "format:check": "biome format .",
+        "check": "biome check .",
+        "check:write": "biome check --write .",
+        "check:write-unsafe": "biome check --write --unsafe .",
+        "ci:check": "biome ci .",
+        "fix:safe": "biome check --write .",
+        "fix:all": "biome check --write --unsafe ."
+    },
+    "keywords": [
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "organizations",
+        "users",
+        "memberships"
+    ],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "devDependencies": {
+        "@biomejs/biome": "^2.3.5",
+        "@types/node": "^20.0.0",
+        "@types/supertest": "^6.0.3",
+        "@vitest/coverage-v8": "^3.2.4",
+        "@vitest/ui": "^3.2.4",
+        "supertest": "^7.1.4",
+        "tsx": "^4.0.0",
+        "typescript": "^5.0.0",
+        "vitest": "^3.2.4"
+    }
 }

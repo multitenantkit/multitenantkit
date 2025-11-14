@@ -1,4 +1,4 @@
-import { Organization } from '@multitenantkit/domain-contracts';
+import type { Organization } from '@multitenantkit/domain-contracts';
 
 /**
  * Maps between Organization domain entity and Postgres database format
@@ -6,6 +6,7 @@ import { Organization } from '@multitenantkit/domain-contracts';
  * Note: This mapper ONLY handles type conversions (Date ↔ string).
  * Field name mapping is handled by OrganizationRepositoryConfigHelper using columnMapping.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class OrganizationMapper {
     /**
      * Convert database row to Organization entity with custom fields
@@ -36,17 +37,17 @@ export class OrganizationMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in database row for organization ${id}`);
                 return null;
             }
 
-            if (archivedAt && isNaN(archivedAt.getTime())) {
+            if (archivedAt && Number.isNaN(archivedAt.getTime())) {
                 console.warn(`Invalid archivedAt date in database row for organization ${id}`);
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 console.warn(`Invalid deletedAt date in database row for organization ${id}`);
                 return null;
             }
@@ -84,7 +85,7 @@ export class OrganizationMapper {
         customMapper?: (dbRow: Record<string, any>) => TCustomFields
     ): (Organization & TCustomFields)[] {
         return dbRows
-            .map((row) => this.toDomainWithCustom(row, columnMap, customMapper))
+            .map((row) => OrganizationMapper.toDomainWithCustom(row, columnMap, customMapper))
             .filter(
                 (organization): organization is Organization & TCustomFields =>
                     organization !== null

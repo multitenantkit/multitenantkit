@@ -18,7 +18,7 @@ export interface HookExecutionContext {
     /**
      * Shared data between hooks (any hook can read/write)
      * Use this to pass information between different hooks in the pipeline
-     * 
+     *
      * Example:
      * ```typescript
      * onStart: ({ hookContext }) => {

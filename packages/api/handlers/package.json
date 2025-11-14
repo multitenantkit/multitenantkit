@@ -1,8 +1,35 @@
 {
     "name": "@multitenantkit/api-handlers",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
+    "description": "HTTP request handlers for MultiTenantKit API",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "rest-api",
+        "api-handlers",
+        "http",
+        "organizations",
+        "teams",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/api/handlers"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -19,8 +46,8 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "file:../../contracts/api-contracts",
-        "@multitenantkit/domain-contracts": "file:../../contracts/domain-contracts",
+        "@multitenantkit/api-contracts": "^0.1.0",
+        "@multitenantkit/domain-contracts": "^0.1.0",
         "zod": "^3.22.4"
     },
     "devDependencies": {

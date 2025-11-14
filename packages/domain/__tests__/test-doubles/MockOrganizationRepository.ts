@@ -1,7 +1,4 @@
-import {
-    type Organization as Organization,
-    OrganizationRepository
-} from '@multitenantkit/domain-contracts';
+import type { Organization, OrganizationRepository } from '@multitenantkit/domain-contracts';
 
 /**
  * Mock implementation of OrganizationRepository for testing

@@ -1,17 +1,20 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
 import {
-    AcceptOrganizationInvitationRequest,
-    AcceptOrganizationInvitationResponse,
+    type AcceptOrganizationInvitationRequest,
     AcceptOrganizationInvitationRequestSchema
 } from '@multitenantkit/api-contracts/organization-memberships';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { UseCases, FrameworkConfig, OrganizationMembership } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
+import type {
+    FrameworkConfig,
+    OrganizationMembership,
+    UseCases
+} from '@multitenantkit/domain-contracts';
+import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
-import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts';
 
 /**
  * Route definition for accept organization invitation endpoint
@@ -27,8 +30,11 @@ export const acceptOrganizationInvitationRoute: RouteDefinition = {
  * Allows a registered user to accept a pending invitation
  */
 export function makeAcceptOrganizationInvitationHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -118,15 +124,11 @@ export function makeAcceptOrganizationInvitationHandler<
                 const membership = result.getValue();
 
                 // Validate response
-                const responseValidation = await validateWithSchema(
-                    responseSchema,
-                    membership,
-                    {
-                        requestId,
-                        field: 'response',
-                        message: 'Invalid response data'
-                    }
-                );
+                const responseValidation = await validateWithSchema(responseSchema, membership, {
+                    requestId,
+                    field: 'response',
+                    message: 'Invalid response data'
+                });
 
                 if (!responseValidation.success) {
                     return responseValidation.httpErrorResponse;
@@ -172,8 +174,11 @@ export function makeAcceptOrganizationInvitationHandler<
  * Complete handler package for accept organization invitation
  */
 export function acceptOrganizationInvitationHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

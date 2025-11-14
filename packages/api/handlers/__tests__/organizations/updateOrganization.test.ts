@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     makeUpdateOrganizationHandler,
-    updateOrganizationRoute,
-    updateOrganizationHandlerPackage
+    updateOrganizationHandlerPackage,
+    updateOrganizationRoute
 } from '../../src/organizations/update-organization/updateOrganization';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError
-} from '@multitenantkit/domain-contracts/shared/errors';
-import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -140,7 +140,7 @@ describe('UpdateOrganization Handler', () => {
             const organizationId = '00000000-0000-4000-8000-333333333333';
 
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -185,7 +185,7 @@ describe('UpdateOrganization Handler', () => {
             const organizationId = '00000000-0000-4000-8000-444444444444';
 
             type OrganizationCustom = { description: string; category: string };
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -440,7 +440,7 @@ describe('UpdateOrganization Handler', () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-111111111110';
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -649,15 +649,16 @@ describe('UpdateOrganization Handler', () => {
         });
 
         it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{}, { description: string }, {}> = {
-                organizations: {
-                    customFields: {
-                        customSchema: require('zod').z.object({
-                            description: require('zod').z.string()
-                        })
+            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
+                {
+                    organizations: {
+                        customFields: {
+                            customSchema: require('zod').z.object({
+                                description: require('zod').z.string()
+                            })
+                        }
                     }
-                }
-            } as any;
+                } as any;
 
             const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, frameworkConfig);
 
@@ -679,15 +680,16 @@ describe('UpdateOrganization Handler', () => {
         });
 
         it('should validate at least one field when custom fields are configured', () => {
-            const frameworkConfig: FrameworkConfig<{}, { description: string }, {}> = {
-                organizations: {
-                    customFields: {
-                        customSchema: require('zod').z.object({
-                            description: require('zod').z.string()
-                        })
+            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
+                {
+                    organizations: {
+                        customFields: {
+                            customSchema: require('zod').z.object({
+                                description: require('zod').z.string()
+                            })
+                        }
                     }
-                }
-            } as any;
+                } as any;
 
             const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, frameworkConfig);
 

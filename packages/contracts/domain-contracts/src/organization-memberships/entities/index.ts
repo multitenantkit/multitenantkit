@@ -1,12 +1,12 @@
-import { z } from "zod";
-import { Uuid, DateTime } from "../../shared/primitives";
-import { UserSchema, type User } from "../../users";
-import { Organization } from "../../organizations";
+import { z } from 'zod';
+import type { Organization } from '../../organizations';
+import { DateTime, Uuid } from '../../shared/primitives';
+import { type User, UserSchema } from '../../users';
 
 /**
  * Organization role enumeration
  */
-export const OrganizationRole = z.enum(["owner", "admin", "member"]);
+export const OrganizationRole = z.enum(['owner', 'admin', 'member']);
 // TODO: use an independent entity for roles, with its own repository
 
 /**
@@ -25,7 +25,7 @@ export const OrganizationMembershipSchema = z.object({
     leftAt: DateTime.nullish().transform((v) => v ?? undefined),
     deletedAt: DateTime.nullish().transform((v) => v ?? undefined),
     createdAt: DateTime,
-    updatedAt: DateTime,
+    updatedAt: DateTime
 });
 // TODO: ideally a user may have multiple memberships in the same organization, but only one is active
 // this way we can keep track of the user's interactions with the organization
@@ -40,15 +40,18 @@ export const OrganizationMembershipSchema = z.object({
  * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership
  */
 export type OrganizationMemberWithUserInfo<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
-    TOrganizationMembershipCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TOrganizationMembershipCustomFields = {}
 > = OrganizationMembership &
     TOrganizationMembershipCustomFields & {
         /**
          * User information including base fields and custom fields
          */
-        user: User & TUserCustomFields | null;
+        user: (User & TUserCustomFields) | null;
 
         /**
          * Organization information including base fields and custom fields
@@ -59,7 +62,5 @@ export type OrganizationMemberWithUserInfo<
 /**
  * Inferred TypeScript types
  */
-export type OrganizationMembership = z.infer<
-    typeof OrganizationMembershipSchema
->;
+export type OrganizationMembership = z.infer<typeof OrganizationMembershipSchema>;
 export type OrganizationRoleType = z.infer<typeof OrganizationRole>;

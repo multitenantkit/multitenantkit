@@ -1,19 +1,19 @@
-import postgres from 'postgres';
+import {
+    type FindMembersOptions,
+    type FrameworkConfig,
+    type OrganizationMembership,
+    type OrganizationMembershipRepository,
+    OrganizationMembershipRepositoryConfigHelper,
+    type OrganizationMemberWithUserInfo,
+    OrganizationRepositoryConfigHelper,
+    type PaginatedResult,
+    UserRepositoryConfigHelper
+} from '@multitenantkit/domain-contracts';
+import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type postgres from 'postgres';
+import { OrganizationMapper } from '../mappers/OrganizationMapper';
 import { OrganizationMembershipMapper } from '../mappers/OrganizationMembershipMapper';
 import { UserMapper } from '../mappers/UserMapper';
-import { OrganizationMapper } from '../mappers/OrganizationMapper';
-import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import {
-    OrganizationMembership,
-    OrganizationMembershipRepository,
-    OrganizationMemberWithUserInfo,
-    OrganizationMembershipRepositoryConfigHelper,
-    UserRepositoryConfigHelper,
-    OrganizationRepositoryConfigHelper,
-    FrameworkConfig,
-    FindMembersOptions,
-    PaginatedResult
-} from '@multitenantkit/domain-contracts';
 
 /**
  * PostgreSQL implementation of OrganizationMembershipRepository
@@ -28,8 +28,11 @@ import {
  * returns OrganizationMembership which may include custom fields from the database.
  */
 export class PostgresOrganizationMembershipRepository<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > implements
         OrganizationMembershipRepository<
@@ -38,11 +41,6 @@ export class PostgresOrganizationMembershipRepository<
             TOrganizationMembershipCustomFields
         >
 {
-    private readonly frameworkConfig?: FrameworkConfig<
-        TUserCustomFields,
-        TOrganizationCustomFields,
-        TOrganizationMembershipCustomFields
-    >;
     private readonly membershipConfigHelper: OrganizationMembershipRepositoryConfigHelper<TOrganizationMembershipCustomFields>;
     private readonly userConfigHelper: UserRepositoryConfigHelper<TUserCustomFields>;
     private readonly organizationConfigHelper: OrganizationRepositoryConfigHelper<TOrganizationCustomFields>;
@@ -61,9 +59,6 @@ export class PostgresOrganizationMembershipRepository<
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Store complete framework config
-        this.frameworkConfig = frameworkConfig;
-
         // Extract custom fields configs from framework config
         const membershipConfig = frameworkConfig?.organizationMemberships?.customFields;
         const userConfig = frameworkConfig?.users?.customFields;
@@ -140,7 +135,7 @@ export class PostgresOrganizationMembershipRepository<
      * @param membership The membership entity to save
      * @param context Optional operation context for audit logging
      */
-    async insert(membership: OrganizationMembership, context?: OperationContext): Promise<void> {
+    async insert(membership: OrganizationMembership, _context?: OperationContext): Promise<void> {
         try {
             const tableName = this.getQualifiedTableName(this.tableName);
 
@@ -183,7 +178,7 @@ export class PostgresOrganizationMembershipRepository<
      * @param membership The membership entity to update
      * @param context Optional operation context for audit logging
      */
-    async update(membership: OrganizationMembership, context?: OperationContext): Promise<void> {
+    async update(membership: OrganizationMembership, _context?: OperationContext): Promise<void> {
         try {
             // Build columns with mapped column names
             const columns: Record<string, any> = {
@@ -259,7 +254,7 @@ export class PostgresOrganizationMembershipRepository<
             const tableName = this.getQualifiedTableName(this.tableName);
             const idColumn = this.membershipConfigHelper.getColumnName('id');
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 WHERE ${this.sql(idColumn)} = ${id}
                 LIMIT 1
             `;
@@ -294,7 +289,7 @@ export class PostgresOrganizationMembershipRepository<
                 this.membershipConfigHelper.getColumnName('organizationId');
 
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 WHERE ${this.sql(userIdColumn)} = ${userId} AND ${this.sql(organizationIdColumn)} = ${organizationId}
                 LIMIT 1
             `;
@@ -334,7 +329,7 @@ export class PostgresOrganizationMembershipRepository<
                 this.membershipConfigHelper.getColumnName('organizationId');
 
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 WHERE ${this.sql(usernameColumn)} = ${username} AND ${this.sql(organizationIdColumn)} = ${organizationId}
                 LIMIT 1
             `;
@@ -368,7 +363,7 @@ export class PostgresOrganizationMembershipRepository<
         activeOnly?: boolean
     ): Promise<(OrganizationMembership & TOrganizationMembershipCustomFields)[]> {
         try {
-            let query;
+            let query: postgres.PendingQuery<postgres.Row[]>;
 
             const tableName = this.getQualifiedTableName(this.tableName);
             const organizationIdColumn =
@@ -380,16 +375,16 @@ export class PostgresOrganizationMembershipRepository<
 
             if (activeOnly) {
                 query = this.sql`
-                    SELECT * FROM ${this.sql(tableName)} 
+                    SELECT * FROM ${this.sql(tableName)}
                     WHERE ${this.sql(organizationIdColumn)} = ${organizationId}
-                    AND ${this.sql(joinedAtColumn)} IS NOT NULL 
-                    AND ${this.sql(leftAtColumn)} IS NULL 
+                    AND ${this.sql(joinedAtColumn)} IS NOT NULL
+                    AND ${this.sql(leftAtColumn)} IS NULL
                     AND ${this.sql(deletedAtColumn)} IS NULL
                     ORDER BY ${this.sql(createdAtColumn)} ASC
                 `;
             } else {
                 query = this.sql`
-                    SELECT * FROM ${this.sql(tableName)} 
+                    SELECT * FROM ${this.sql(tableName)}
                     WHERE ${this.sql(organizationIdColumn)} = ${organizationId}
                     ORDER BY ${this.sql(createdAtColumn)} ASC
                 `;
@@ -423,7 +418,7 @@ export class PostgresOrganizationMembershipRepository<
         >[]
     > {
         try {
-            let query;
+            let query: postgres.PendingQuery<postgres.Row[]>;
 
             const membershipTable = this.getQualifiedTableName(this.tableName);
             const usersTable = this.getQualifiedUsersTableName(this.usersTableName);
@@ -446,7 +441,7 @@ export class PostgresOrganizationMembershipRepository<
             // without needing to know them in advance
             if (activeOnly) {
                 query = this.sql`
-                    SELECT 
+                    SELECT
                         to_jsonb(tm.*) as membership_data,
                         to_jsonb(u.*) as user_data,
                         to_jsonb(t.*) as organization_data
@@ -454,14 +449,14 @@ export class PostgresOrganizationMembershipRepository<
                     JOIN ${this.sql(usersTable)} u ON tm.${this.sql(membershipUserIdCol)} = u.${this.sql(userIdCol)}
                     JOIN ${this.sql(organizationsTable)} t ON tm.${this.sql(membershipOrgIdCol)} = t.${this.sql(orgIdCol)}
                     WHERE tm.${this.sql(membershipOrgIdCol)} = ${organizationId}
-                    AND tm.${this.sql(membershipJoinedAtCol)} IS NOT NULL 
-                    AND tm.${this.sql(membershipLeftAtCol)} IS NULL 
+                    AND tm.${this.sql(membershipJoinedAtCol)} IS NOT NULL
+                    AND tm.${this.sql(membershipLeftAtCol)} IS NULL
                     AND tm.${this.sql(membershipDeletedAtCol)} IS NULL
                     ORDER BY tm.${this.sql(membershipCreatedAtCol)} ASC
                 `;
             } else {
                 query = this.sql`
-                    SELECT 
+                    SELECT
                         to_jsonb(tm.*) as membership_data,
                         to_jsonb(u.*) as user_data,
                         to_jsonb(t.*) as organization_data
@@ -560,7 +555,6 @@ export class PostgresOrganizationMembershipRepository<
 
             // Get column names from config helpers
             const membershipUserIdCol = this.membershipConfigHelper.getColumnName('userId');
-            const membershipUsernameCol = this.membershipConfigHelper.getColumnName('username');
             const membershipOrgIdCol = this.membershipConfigHelper.getColumnName('organizationId');
             const membershipInvitedAtCol = this.membershipConfigHelper.getColumnName('invitedAt');
             const membershipJoinedAtCol = this.membershipConfigHelper.getColumnName('joinedAt');
@@ -568,7 +562,6 @@ export class PostgresOrganizationMembershipRepository<
             const membershipDeletedAtCol = this.membershipConfigHelper.getColumnName('deletedAt');
             const membershipCreatedAtCol = this.membershipConfigHelper.getColumnName('createdAt');
             const userIdCol = this.userConfigHelper.getColumnName('id');
-            const usernameCol = this.userConfigHelper.getColumnName('username');
             const orgIdCol = this.organizationConfigHelper.getColumnName('id');
 
             // Build WHERE clause conditions
@@ -588,8 +581,8 @@ export class PostgresOrganizationMembershipRepository<
                 // Active members: joinedAt NOT NULL, leftAt NULL, deletedAt NULL
                 if (includeActive) {
                     statusConditions.push(this.sql`(
-                        tm.${this.sql(membershipJoinedAtCol)} IS NOT NULL 
-                        AND tm.${this.sql(membershipLeftAtCol)} IS NULL 
+                        tm.${this.sql(membershipJoinedAtCol)} IS NOT NULL
+                        AND tm.${this.sql(membershipLeftAtCol)} IS NULL
                         AND tm.${this.sql(membershipDeletedAtCol)} IS NULL
                     )`);
                 }
@@ -597,9 +590,9 @@ export class PostgresOrganizationMembershipRepository<
                 // Pending invitations: invitedAt NOT NULL, joinedAt NULL, leftAt NULL, deletedAt NULL
                 if (includePending) {
                     statusConditions.push(this.sql`(
-                        tm.${this.sql(membershipInvitedAtCol)} IS NOT NULL 
-                        AND tm.${this.sql(membershipJoinedAtCol)} IS NULL 
-                        AND tm.${this.sql(membershipLeftAtCol)} IS NULL 
+                        tm.${this.sql(membershipInvitedAtCol)} IS NOT NULL
+                        AND tm.${this.sql(membershipJoinedAtCol)} IS NULL
+                        AND tm.${this.sql(membershipLeftAtCol)} IS NULL
                         AND tm.${this.sql(membershipDeletedAtCol)} IS NULL
                     )`);
                 }
@@ -607,7 +600,7 @@ export class PostgresOrganizationMembershipRepository<
                 // Removed members: leftAt NOT NULL OR deletedAt NOT NULL
                 if (includeRemoved) {
                     statusConditions.push(this.sql`(
-                        tm.${this.sql(membershipLeftAtCol)} IS NOT NULL 
+                        tm.${this.sql(membershipLeftAtCol)} IS NOT NULL
                         OR tm.${this.sql(membershipDeletedAtCol)} IS NOT NULL
                     )`);
                 }
@@ -639,7 +632,7 @@ export class PostgresOrganizationMembershipRepository<
             // Get paginated data
             // Note: LEFT JOIN on users because pending invitations may not have userId yet
             const dataQuery = this.sql`
-                SELECT 
+                SELECT
                     to_jsonb(tm.*) as membership_data,
                     to_jsonb(u.*) as user_data,
                     to_jsonb(t.*) as organization_data
@@ -732,7 +725,7 @@ export class PostgresOrganizationMembershipRepository<
             const userIdColumn = this.membershipConfigHelper.getColumnName('userId');
             const createdAtColumn = this.membershipConfigHelper.getColumnName('createdAt');
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 WHERE ${this.sql(userIdColumn)} = ${userId}
                 ORDER BY ${this.sql(createdAtColumn)} DESC
             `;
@@ -754,12 +747,12 @@ export class PostgresOrganizationMembershipRepository<
      * @param id The membership ID to delete
      * @param context Optional operation context for audit logging
      */
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         try {
             const tableName = this.getQualifiedTableName(this.tableName);
             const idColumn = this.membershipConfigHelper.getColumnName('id');
             await this.sql`
-                DELETE FROM ${this.sql(tableName)} 
+                DELETE FROM ${this.sql(tableName)}
                 WHERE ${this.sql(idColumn)} = ${id}
             `;
         } catch (error: any) {
@@ -775,7 +768,7 @@ export class PostgresOrganizationMembershipRepository<
             const tableName = this.getQualifiedTableName(this.tableName);
             const createdAtColumn = this.membershipConfigHelper.getColumnName('createdAt');
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 ORDER BY ${this.sql(createdAtColumn)} DESC
             `;
 
@@ -798,7 +791,7 @@ export class PostgresOrganizationMembershipRepository<
             const userIdColumn = this.membershipConfigHelper.getColumnName('userId');
             const createdAtColumn = this.membershipConfigHelper.getColumnName('createdAt');
             const rows = await this.sql`
-                SELECT * FROM ${this.sql(tableName)} 
+                SELECT * FROM ${this.sql(tableName)}
                 WHERE ${this.sql(userIdColumn)} = ${userId} AND status = 'active'
                 ORDER BY ${this.sql(createdAtColumn)} DESC
             `;
@@ -821,7 +814,7 @@ export class PostgresOrganizationMembershipRepository<
         status?: 'active' | 'invited' | 'left'
     ): Promise<number> {
         try {
-            let query;
+            let query: postgres.PendingQuery<postgres.Row[]>;
 
             const tableName = this.getQualifiedTableName(this.tableName);
             const organizationIdColumn =
@@ -835,23 +828,23 @@ export class PostgresOrganizationMembershipRepository<
                 query = this.sql`
                     SELECT COUNT(*) as count FROM ${this.sql(tableName)}
                     WHERE ${this.sql(organizationIdColumn)} = ${organizationId}
-                    AND ${this.sql(joinedAtColumn)} IS NOT NULL 
-                    AND ${this.sql(leftAtColumn)} IS NULL 
+                    AND ${this.sql(joinedAtColumn)} IS NOT NULL
+                    AND ${this.sql(leftAtColumn)} IS NULL
                     AND ${this.sql(deletedAtColumn)} IS NULL
                 `;
             } else if (status === 'invited') {
                 query = this.sql`
                     SELECT COUNT(*) as count FROM ${this.sql(tableName)}
                     WHERE ${this.sql(organizationIdColumn)} = ${organizationId}
-                    AND ${this.sql(invitedAtColumn)} IS NOT NULL 
-                    AND ${this.sql(joinedAtColumn)} IS NULL 
+                    AND ${this.sql(invitedAtColumn)} IS NOT NULL
+                    AND ${this.sql(joinedAtColumn)} IS NULL
                     AND ${this.sql(deletedAtColumn)} IS NULL
                 `;
             } else if (status === 'left') {
                 query = this.sql`
                     SELECT COUNT(*) as count FROM ${this.sql(tableName)}
                     WHERE ${this.sql(organizationIdColumn)} = ${organizationId}
-                    AND ${this.sql(leftAtColumn)} IS NOT NULL 
+                    AND ${this.sql(leftAtColumn)} IS NOT NULL
                     AND ${this.sql(deletedAtColumn)} IS NULL
                 `;
             } else {
@@ -863,40 +856,11 @@ export class PostgresOrganizationMembershipRepository<
             }
 
             const rows = await query;
-            return parseInt(rows[0]?.count || '0');
+            return parseInt(rows[0]?.count || '0', 10);
         } catch (error: any) {
             throw new Error(
                 `Failed to count memberships by organization and status: ${error.message}`
             );
-        }
-    }
-
-    /**
-     * Link pending memberships (with username but no userId) to a registered user
-     * Updates all memberships where username matches and userId is null in a single SQL statement
-     */
-    async linkUsernameMembershipsToUserId(
-        username: string,
-        userId: string,
-        context?: OperationContext
-    ): Promise<void> {
-        try {
-            const tableName = this.getQualifiedTableName(this.tableName);
-            const userIdColumn = this.membershipConfigHelper.getColumnName('userId');
-            const usernameColumn = this.membershipConfigHelper.getColumnName('username');
-            const updatedAtColumn = this.membershipConfigHelper.getColumnName('updatedAt');
-
-            // Update all memberships with matching username and null userId in a single statement
-            await this.sql`
-                UPDATE ${this.sql(tableName)}
-                SET 
-                    ${this.sql(userIdColumn)} = ${userId},
-                    ${this.sql(updatedAtColumn)} = NOW()
-                WHERE ${this.sql(usernameColumn)} = ${username}
-                AND ${this.sql(userIdColumn)} IS NULL
-            `;
-        } catch (error: any) {
-            throw new Error(`Failed to link username memberships to userId: ${error.message}`);
         }
     }
 }

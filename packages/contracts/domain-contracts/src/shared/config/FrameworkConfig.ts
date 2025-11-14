@@ -1,6 +1,6 @@
-import type { UserCustomFieldsConfig } from '../../users';
-import type { OrganizationCustomFieldsConfig } from '../../organizations';
 import type { OrganizationMembershipCustomFieldsConfig } from '../../organization-memberships';
+import type { OrganizationCustomFieldsConfig } from '../../organizations';
+import type { UserCustomFieldsConfig } from '../../users';
 import type { UseCaseHooksConfig } from '../hooks/UseCaseHooksConfig';
 import type { HandlerResponseTransformers } from './ResponseTransformer';
 
@@ -42,8 +42,11 @@ import type { HandlerResponseTransformers } from './ResponseTransformer';
  * ```
  */
 export interface FrameworkConfig<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > {
     /**

@@ -1,51 +1,81 @@
 {
-  "name": "@multitenantkit/domain",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "name": "@multitenantkit/domain",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Core domain logic and use cases for MultiTenantKit - Pure business logic layer",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "saas-framework",
+        "multi-tenant",
+        "multitenancy",
+        "organization-management",
+        "team-management",
+        "user-management",
+        "organizations",
+        "teams",
+        "users",
+        "business-logic",
+        "typescript",
+        "clean-architecture"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/domain"
     },
-    "./users": {
-      "types": "./dist/users/index.d.ts",
-      "default": "./dist/users/index.js"
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
     },
-    "./organizations": {
-      "types": "./dist/organizations/index.d.ts",
-      "default": "./dist/organizations/index.js"
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
     },
-    "./organization-memberships": {
-      "types": "./dist/organization-memberships/index.d.ts",
-      "default": "./dist/organization-memberships/index.js"
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./users": {
+            "types": "./dist/users/index.d.ts",
+            "default": "./dist/users/index.js"
+        },
+        "./organizations": {
+            "types": "./dist/organizations/index.d.ts",
+            "default": "./dist/organizations/index.js"
+        },
+        "./organization-memberships": {
+            "types": "./dist/organization-memberships/index.d.ts",
+            "default": "./dist/organization-memberships/index.js"
+        },
+        "./shared": {
+            "types": "./dist/shared/index.d.ts",
+            "default": "./dist/shared/index.js"
+        }
     },
-    "./shared": {
-      "types": "./dist/shared/index.d.ts",
-      "default": "./dist/shared/index.js"
+    "scripts": {
+        "build": "tsc --build",
+        "dev": "tsc --build --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.1.0",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
     }
-  },
-  "scripts": {
-    "build": "tsc --build",
-    "dev": "tsc --build --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
-  },
-  "dependencies": {
-    "@multitenantkit/domain-contracts": "file:../contracts/domain-contracts",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
-  }
 }

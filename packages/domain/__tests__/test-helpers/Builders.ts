@@ -1,16 +1,18 @@
-import { z } from 'zod';
 import {
-    UserSchema,
-    type User,
-    type Principal,
     createPrincipal,
-    type FrameworkConfig
+    type FrameworkConfig,
+    type Principal,
+    type User,
+    UserSchema
 } from '@multitenantkit/domain-contracts';
+import type { z } from 'zod';
 
 /**
  * Builder pattern for creating User test instances (contracts-based)
  * Supports extending with custom fields using the framework config custom schema
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class UserBuilder<TUserCustomFields = {}> {
     private id: string = '00000001-0000-4000-8000-000000010000';
     private externalId: string = '00000001-0000-4000-8000-000000010001'; // Auth provider ID
@@ -117,6 +119,7 @@ export class PrincipalBuilder {
  * Convenience functions for common test scenarios
  */
 export const TestData = {
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     user: <TUserCustomFields = {}>() => new UserBuilder<TUserCustomFields>(),
     principal: () => new PrincipalBuilder(),
 

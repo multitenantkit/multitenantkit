@@ -70,7 +70,7 @@ export class HttpMetricsAdapter implements MetricsPort {
             const { params, ...rest } = payload;
             const includeFullContext = this.config.includeFullContext ?? false;
 
-            let safeContext;
+            let safeContext: Record<string, any>;
             if (!includeFullContext) {
                 // Extract safe context data (no PII)
                 safeContext = this.extractSafeContext(params);
@@ -134,7 +134,9 @@ export class HttpMetricsAdapter implements MetricsPort {
             // Step results info (metadata only)
             stepResults: stepResults
                 ? {
-                      stepsCompleted: Object.keys(stepResults).filter((key) => stepResults[key] !== undefined),
+                      stepsCompleted: Object.keys(stepResults).filter(
+                          (key) => stepResults[key] !== undefined
+                      ),
                       hasValidatedInput: !!stepResults.validatedInput,
                       hasAuthorized: !!stepResults.authorized,
                       hasOutput: !!stepResults.output

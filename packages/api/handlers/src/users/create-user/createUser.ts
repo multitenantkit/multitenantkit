@@ -1,15 +1,18 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { CreateUserRequest, CreateUserRequestSchema } from '@multitenantkit/api-contracts/users';
-import type { UseCases, FrameworkConfig, User } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts';
+import {
+    type CreateUserRequest,
+    CreateUserRequestSchema
+} from '@multitenantkit/api-contracts/users';
+import type { FrameworkConfig, UseCases, User } from '@multitenantkit/domain-contracts';
 import { UserSchema } from '@multitenantkit/domain-contracts';
-import { DomainError } from '@multitenantkit/domain-contracts/shared/errors';
+import type { DomainError } from '@multitenantkit/domain-contracts/shared/errors';
+import { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import type { ApiResponse } from '@multitenantkit/api-contracts';
-import { z } from 'zod';
 
 /**
  * Route definition for create user endpoint
@@ -33,8 +36,11 @@ export const createUserRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration (not used yet, for future extension)
  */
 export function makeCreateUserHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -166,8 +172,11 @@ export function makeCreateUserHandler<
  * @param frameworkConfig - Optional framework configuration (not used yet, for future extension)
  */
 export function createUserHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -1,23 +1,25 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { PaginatedResponse } from '@multitenantkit/api-contracts/shared';
+import {
+    type ListUserOrganizationsRequest,
+    ListUserOrganizationsRequestSchema
+} from '@multitenantkit/api-contracts/users';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { OrganizationSchema } from '@multitenantkit/domain-contracts';
-import { IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { type IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import { z } from 'zod';
-import {
-    ListUserOrganizationsRequest,
-    ListUserOrganizationsRequestSchema
-} from '@multitenantkit/api-contracts/users';
-import { PaginatedResponse } from '@multitenantkit/api-contracts/shared';
 
 /**
  * List user organizations response type - using Organization type directly
  * Generic over TOrganizationCustomFields to support dynamic organization custom fields
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 type OrganizationWithCustomFields<TOrganizationCustomFields = {}> = z.infer<
     typeof OrganizationSchema
 > &
@@ -45,8 +47,11 @@ export const listUserOrganizationsRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration (for future organization custom fields)
  */
 export function makeListUserOrganizationsHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -65,7 +70,7 @@ export function makeListUserOrganizationsHandler<
     const itemSchema = customOrganizationFieldsSchema
         ? OrganizationSchema.merge(customOrganizationFieldsSchema as any)
         : OrganizationSchema;
-    const responseSchema = z.object({
+    const _responseSchema = z.object({
         organizations: z.array(itemSchema as any)
     });
     return async ({
@@ -149,7 +154,8 @@ export function makeListUserOrganizationsHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.users?.ListUserOrganizations;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.users?.ListUserOrganizations;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -199,8 +205,11 @@ export function makeListUserOrganizationsHandler<
  * @param frameworkConfig - Optional framework configuration (for future organization custom fields)
  */
 export function listUserOrganizationsHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

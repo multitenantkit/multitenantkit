@@ -1,16 +1,18 @@
-import { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 /**
  * HTTP Handler types - Transport agnostic
  * These handlers are independent of Express, Lambda, etc.
  */
-export interface Handler<I, O> {
-    (ctx: { input: I; principal?: Principal; requestId: string }): Promise<{
-        status: number;
-        body: O;
-        headers?: Record<string, string>;
-    }>;
-}
+export type Handler<I, O> = (ctx: {
+    input: I;
+    principal?: Principal;
+    requestId: string;
+}) => Promise<{
+    status: number;
+    body: O;
+    headers?: Record<string, string>;
+}>;
 
 /**
  * Route definition for a handler

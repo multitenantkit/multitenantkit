@@ -1,3 +1,5 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import type { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
 import type {
     CreateOrganizationInput,
     CreateOrganizationOutput,
@@ -5,15 +7,16 @@ import type {
     Organization
 } from '@multitenantkit/domain-contracts/organizations';
 import {
-    CreateOrganizationOutputSchema,
-    CreateOrganizationInputSchema
+    CreateOrganizationInputSchema,
+    CreateOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import { z } from 'zod';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import {
+    type DomainError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors/index';
+import type { z } from 'zod';
 import { Result } from '../../../shared/result/Result';
-import { DomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors/index';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -24,8 +27,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationCustomFields - Custom fields added to Organization
  */
 export class CreateOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

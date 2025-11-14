@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { UseCases } from '@multitenantkit/domain-contracts';
+import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import {
+    BusinessRuleError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
+} from '@multitenantkit/domain-contracts/shared/errors';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     makeRemoveOrganizationMemberHandler,
-    removeOrganizationMemberRoute,
-    removeOrganizationMemberHandlerPackage
+    removeOrganizationMemberHandlerPackage,
+    removeOrganizationMemberRoute
 } from '../../src/organization-memberships/remove-organization-member/removeOrganizationMember';
-import type { UseCases } from '@multitenantkit/domain-contracts';
-import {
-    ValidationError,
-    UnauthorizedError,
-    NotFoundError,
-    BusinessRuleError
-} from '@multitenantkit/domain-contracts/shared/errors';
-import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 // Helper to create Result-like objects for mocking
 const mockResult = {
@@ -62,7 +62,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Happy Path', () => {
         it('should return 200 when use case succeeds', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000001';
             const organizationId = '00000000-0000-4000-8000-111111111111';
             const targetUserId = '00000000-0000-4000-8000-222222222222';
 
@@ -107,7 +106,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should include X-Request-ID in response headers', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000002';
             const organizationId = '00000000-0000-4000-8000-333333333333';
             const targetUserId = '00000000-0000-4000-8000-444444444444';
 
@@ -132,7 +130,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should handle owner removing admin', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000003';
             const organizationId = '00000000-0000-4000-8000-555555555555';
             const targetUserId = '00000000-0000-4000-8000-666666666666';
 
@@ -157,7 +154,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should handle admin removing member', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000004';
             const organizationId = '00000000-0000-4000-8000-777777777777';
             const targetUserId = '00000000-0000-4000-8000-888888888888';
 
@@ -220,7 +216,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Error Cases - Authorization', () => {
         it('should return 401 when user is not authorized to remove members', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000005';
             const organizationId = '00000000-0000-4000-8000-111111111110';
             const targetUserId = '00000000-0000-4000-8000-121212121212';
             const unauthorizedError = new UnauthorizedError(
@@ -259,7 +254,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Error Cases - Validation', () => {
         it('should return 404 when organization not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000006';
             const organizationId = '00000000-0000-4000-8000-131313131313';
             const targetUserId = '00000000-0000-4000-8000-141414141414';
             const notFoundError = new NotFoundError('Organization', organizationId);
@@ -297,7 +291,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should return 404 when target membership not found', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000007';
             const organizationId = '00000000-0000-4000-8000-151515151515';
             const targetUserId = '00000000-0000-4000-8000-161616161616';
             const notFoundError = new NotFoundError(
@@ -331,7 +324,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should return 400 for validation errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000008';
             const organizationId = '00000000-0000-4000-8000-171717171717';
             const targetUserId = '00000000-0000-4000-8000-181818181818';
             const validationError = new ValidationError('Invalid user ID', 'targetUserId');
@@ -370,7 +362,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Error Cases - Business Rules', () => {
         it('should return 422 when trying to remove organization owner', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000009';
             const organizationId = '00000000-0000-4000-8000-191919191919';
             const targetUserId = '00000000-0000-4000-8000-202020202020';
             const businessError = new BusinessRuleError('Cannot remove organization owner');
@@ -401,7 +392,6 @@ describe('RemoveOrganizationMember Handler', () => {
 
         it('should return 422 when member has already left', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000010';
             const organizationId = '00000000-0000-4000-8000-212121212121';
             const targetUserId = '00000000-0000-4000-8000-222222222221';
             const businessError = new BusinessRuleError('Member has already left the organization');
@@ -434,7 +424,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Error Cases - Unexpected Errors', () => {
         it('should return 500 for unexpected errors in use case', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-232323232323';
             const targetUserId = '00000000-0000-4000-8000-242424242424';
             mockRemoveOrganizationMemberExecute.mockRejectedValue(
@@ -475,7 +464,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Edge Cases', () => {
         it('should handle empty string request ID', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000013';
             const organizationId = '00000000-0000-4000-8000-272727272727';
             const targetUserId = '00000000-0000-4000-8000-282828282828';
 
@@ -528,7 +516,6 @@ describe('RemoveOrganizationMember Handler', () => {
     describe('Integration - Operation Context', () => {
         it('should build correct operation context for audit', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
-            const userId = '00000000-0000-4000-8000-000000000015';
             const organizationId = '00000000-0000-4000-8000-303030303030';
             const targetUserId = '00000000-0000-4000-8000-313131313131';
 

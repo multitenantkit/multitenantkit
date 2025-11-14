@@ -1,12 +1,12 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import {
-    ArchiveOrganizationRequest,
+    type ArchiveOrganizationRequest,
     ArchiveOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
-import type { UseCases, FrameworkConfig, Organization } from '@multitenantkit/domain-contracts';
-import { ValidationError, OrganizationSchema } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
+import type { FrameworkConfig, Organization, UseCases } from '@multitenantkit/domain-contracts';
+import { OrganizationSchema, ValidationError } from '@multitenantkit/domain-contracts';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
@@ -36,8 +36,11 @@ export const archiveOrganizationRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeArchiveOrganizationHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -130,7 +133,8 @@ export function makeArchiveOrganizationHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizations?.ArchiveOrganization;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizations?.ArchiveOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -179,8 +183,11 @@ export function makeArchiveOrganizationHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function archiveOrganizationHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -1,4 +1,4 @@
-import type { IUseCase, IDomainError } from '../../../shared';
+import type { IDomainError, IUseCase } from '../../../shared';
 import type {
     TransferOrganizationOwnershipInput,
     TransferOrganizationOwnershipOutput

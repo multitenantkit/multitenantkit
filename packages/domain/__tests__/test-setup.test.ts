@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { createTestSetup, TestAssertions, TestScenarios } from './test-helpers/TestUtils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestData } from './test-helpers/Builders';
-import { FixedClock, DeterministicUuid } from './test-helpers/TestDoubles';
+import { DeterministicUuid, FixedClock } from './test-helpers/TestDoubles';
+import { createTestSetup, TestAssertions, TestScenarios } from './test-helpers/TestUtils';
 
 describe('Test Infrastructure', () => {
     let setup: ReturnType<typeof createTestSetup>;

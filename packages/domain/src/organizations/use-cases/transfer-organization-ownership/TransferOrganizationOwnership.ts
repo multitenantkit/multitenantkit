@@ -1,22 +1,22 @@
 import type {
-    TransferOrganizationOwnershipInput,
-    ITransferOrganizationOwnership,
-    Organization,
-    TransferOrganizationOwnershipOutput,
-    OperationContext,
     FrameworkConfig,
-    OrganizationMembership
+    ITransferOrganizationOwnership,
+    OperationContext,
+    Organization,
+    OrganizationMembership,
+    TransferOrganizationOwnershipInput,
+    TransferOrganizationOwnershipOutput
 } from '@multitenantkit/domain-contracts';
 import {
-    TransferOrganizationOwnershipInputSchema,
+    type Adapters,
+    type NotFoundError,
+    OrganizationMembershipSchema,
     OrganizationSchema,
-    ValidationError,
-    NotFoundError,
-    Adapters,
+    TransferOrganizationOwnershipInputSchema,
     TransferOrganizationOwnershipOutputSchema,
-    OrganizationMembershipSchema
+    ValidationError
 } from '@multitenantkit/domain-contracts';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
 
@@ -42,8 +42,11 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
  */
 export class TransferOrganizationOwnership<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

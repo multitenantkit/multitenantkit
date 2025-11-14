@@ -1,8 +1,37 @@
 {
     "name": "@multitenantkit/adapter-persistence-json",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
+    "description": "JSON file-based persistence adapter for MultiTenantKit (development/testing)",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "adapter",
+        "persistence",
+        "database",
+        "json",
+        "storage",
+        "organizations",
+        "teams",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/persistence/json"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -25,7 +54,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
+        "@multitenantkit/domain-contracts": "^0.1.0",
         "zod": "^3.22.4"
     },
     "devDependencies": {

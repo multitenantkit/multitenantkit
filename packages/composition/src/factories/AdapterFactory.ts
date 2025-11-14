@@ -1,20 +1,18 @@
+import { HttpMetricsAdapter, type HttpMetricsConfig } from '@multitenantkit/adapter-metrics-http';
 import {
-    JsonUnitOfWork,
-    JsonUserRepository,
+    JsonOrganizationMembershipRepository,
     JsonOrganizationRepository,
-    JsonOrganizationMembershipRepository
+    JsonUnitOfWork,
+    JsonUserRepository
 } from '@multitenantkit/adapter-persistence-json';
-
 import {
     createPostgresRepositories,
     createPostgresUnitOfWork,
     type PostgresDBEnvVars
 } from '@multitenantkit/adapter-persistence-postgres';
-
-import { SystemClock } from '@multitenantkit/adapter-system-system-clock';
 import { CryptoUuid } from '@multitenantkit/adapter-system-crypto-uuid';
-import { HttpMetricsAdapter, HttpMetricsConfig } from '@multitenantkit/adapter-metrics-http';
-import {
+import { SystemClock } from '@multitenantkit/adapter-system-system-clock';
+import type {
     FrameworkConfig,
     MetricsPort,
     PersistenceAdapters,
@@ -45,8 +43,11 @@ export function createMetricsAdapter(config?: HttpMetricsConfig): MetricsPort | 
  * Note: JSON adapter doesn't support custom fields, so we cast to any
  */
 export function createJsonAdapters<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     dataDir: string
@@ -84,8 +85,11 @@ export function createJsonAdapters<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export function createPostgresAdapters<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     env: PostgresDBEnvVars = {},

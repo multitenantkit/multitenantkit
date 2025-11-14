@@ -1,17 +1,15 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
 import {
-    UpdateOrganizationMemberRoleRequest,
-    UpdateOrganizationMemberRoleResponse,
+    type UpdateOrganizationMemberRoleRequest,
     UpdateOrganizationMemberRoleRequestSchema,
-    UpdateOrganizationMemberRoleResponseSchema
+    type UpdateOrganizationMemberRoleResponse
 } from '@multitenantkit/api-contracts/organization-memberships';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { UseCases, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
-import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
 
 /**
@@ -95,7 +93,9 @@ export function makeUpdateOrganizationMemberRoleHandler(
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizationMemberships?.UpdateOrganizationMember;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizationMemberships
+                        ?.UpdateOrganizationMember;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },

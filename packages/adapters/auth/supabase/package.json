@@ -1,9 +1,36 @@
 {
     "name": "@multitenantkit/adapter-auth-supabase",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
     "description": "Supabase authentication adapter",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "adapter",
+        "auth",
+        "authentication",
+        "supabase",
+        "jwt",
+        "organizations",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/auth/supabase"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -17,8 +44,8 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "file:../../../contracts/api-contracts",
-        "@multitenantkit/domain-contracts": "file:../../../contracts/domain-contracts",
+        "@multitenantkit/api-contracts": "^0.1.0",
+        "@multitenantkit/domain-contracts": "^0.1.0",
         "@supabase/supabase-js": "^2.39.0"
     },
     "devDependencies": {

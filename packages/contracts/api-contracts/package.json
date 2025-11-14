@@ -1,60 +1,88 @@
 {
-  "name": "@multitenantkit/api-contracts",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "description": "API contracts and schemas for MultiTenantKit HTTP API",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsc --build",
-    "build:watch": "tsc --build --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@multitenantkit/domain-contracts": "file:../domain-contracts",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+    "name": "@multitenantkit/api-contracts",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "API contracts and schemas for MultiTenantKit HTTP API",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "api-contracts",
+        "rest-api",
+        "http",
+        "organizations",
+        "teams",
+        "users",
+        "schemas",
+        "typescript",
+        "zod"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/contracts/api-contracts"
     },
-    "./shared": {
-      "types": "./dist/shared/index.d.ts",
-      "import": "./dist/shared/index.js"
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
     },
-    "./shared/ports": {
-      "types": "./dist/shared/ports/index.d.ts",
-      "import": "./dist/shared/ports/index.js"
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
     },
-    "./users": {
-      "types": "./dist/users/index.d.ts",
-      "import": "./dist/users/index.js"
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsc --build",
+        "build:watch": "tsc --build --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit"
     },
-    "./organizations": {
-      "types": "./dist/organizations/index.d.ts",
-      "import": "./dist/organizations/index.js"
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.1.0",
+        "zod": "^3.22.4"
     },
-    "./organization-memberships": {
-      "types": "./dist/organization-memberships/index.d.ts",
-      "import": "./dist/organization-memberships/index.js"
+    "devDependencies": {
+        "typescript": "^5.0.0"
     },
-    "./projects": {
-      "types": "./dist/projects/index.d.ts",
-      "import": "./dist/projects/index.js"
-    },
-    "./project-memberships": {
-      "types": "./dist/project-memberships/index.d.ts",
-      "import": "./dist/project-memberships/index.js"
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./shared": {
+            "types": "./dist/shared/index.d.ts",
+            "import": "./dist/shared/index.js"
+        },
+        "./shared/ports": {
+            "types": "./dist/shared/ports/index.d.ts",
+            "import": "./dist/shared/ports/index.js"
+        },
+        "./users": {
+            "types": "./dist/users/index.d.ts",
+            "import": "./dist/users/index.js"
+        },
+        "./organizations": {
+            "types": "./dist/organizations/index.d.ts",
+            "import": "./dist/organizations/index.js"
+        },
+        "./organization-memberships": {
+            "types": "./dist/organization-memberships/index.d.ts",
+            "import": "./dist/organization-memberships/index.js"
+        },
+        "./projects": {
+            "types": "./dist/projects/index.d.ts",
+            "import": "./dist/projects/index.js"
+        },
+        "./project-memberships": {
+            "types": "./dist/project-memberships/index.d.ts",
+            "import": "./dist/project-memberships/index.js"
+        }
     }
-  }
 }

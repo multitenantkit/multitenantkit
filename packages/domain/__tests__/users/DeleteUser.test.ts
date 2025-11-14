@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteUser } from '../../src/users/use-cases/delete-user/DeleteUser';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters } from '@multitenantkit/domain-contracts';
 
 describe('DeleteUser use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -51,11 +51,7 @@ describe('DeleteUser use case', () => {
 
         it('should update updatedAt timestamp when deleting', async () => {
             const oldDate = new Date('2025-01-01T10:00:00.000Z');
-            const user = TestData.user()
-
-                .withCreatedAt(oldDate)
-                .withUpdatedAt(oldDate)
-                .build();
+            const user = TestData.user().withCreatedAt(oldDate).withUpdatedAt(oldDate).build();
             await setup.userRepo.insert(user);
 
             // Set clock to a different time
@@ -366,7 +362,8 @@ describe('DeleteUser use case', () => {
             const result = await useCase.execute(
                 { principalExternalId: 'not-a-valid-uuid' } as any,
                 {
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    actorUserId: '00000000-0000-4000-8000-000000000000',
+                    requestId: 'test-request-id'
                 }
             );
 

@@ -13,12 +13,6 @@
             "path": "../../../domain"
         }
     ],
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "dist",
-        "**/*.test.ts",
-        "**/*.spec.ts"
-    ]
+    "include": ["src/**/*"],
+    "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"]
 }

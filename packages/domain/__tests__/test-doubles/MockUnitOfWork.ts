@@ -1,7 +1,7 @@
-import { UnitOfWork, RepositoryBundle } from '@multitenantkit/domain-contracts';
-import { MockUserRepository } from './MockUserRepository';
-import { MockOrganizationRepository } from './MockOrganizationRepository';
+import type { RepositoryBundle, UnitOfWork } from '@multitenantkit/domain-contracts';
 import { MockOrganizationMembershipRepository } from './MockOrganizationMembershipRepository';
+import { MockOrganizationRepository } from './MockOrganizationRepository';
+import { MockUserRepository } from './MockUserRepository';
 
 /**
  * Mock implementation of UnitOfWork for testing
@@ -16,8 +16,11 @@ import { MockOrganizationMembershipRepository } from './MockOrganizationMembersh
  * but maintains the same signature for consistency
  */
 export class MockUnitOfWork<
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for optional custom fields in mocks
     TOrganizationMembershipCustomFields = {}
 > implements
         UnitOfWork<
@@ -68,8 +71,8 @@ export class MockUnitOfWork<
             TOrganizationMembershipCustomFields
         > = {
             users: this.userRepository as any,
-            organizations: this.organizationRepository,
-            organizationMemberships: this.organizationMembershipRepository
+            organizations: this.organizationRepository as any,
+            organizationMemberships: this.organizationMembershipRepository as any
         };
 
         // Create snapshots for rollback capability
@@ -82,17 +85,19 @@ export class MockUnitOfWork<
         } catch (error) {
             // Rollback on error
             this.userRepository.users.clear();
-            userSnapshot.forEach((user, id) => this.userRepository.users.set(id, user));
+            userSnapshot.forEach((user, id) => {
+                this.userRepository.users.set(id, user);
+            });
 
             this.organizationRepository.organizations.clear();
-            organizationSnapshot.forEach((organization, id) =>
-                this.organizationRepository.organizations.set(id, organization)
-            );
+            organizationSnapshot.forEach((organization, id) => {
+                this.organizationRepository.organizations.set(id, organization);
+            });
 
             this.organizationMembershipRepository.memberships.clear();
-            membershipSnapshot.forEach((membership, id) =>
-                this.organizationMembershipRepository.memberships.set(id, membership)
-            );
+            membershipSnapshot.forEach((membership, id) => {
+                this.organizationMembershipRepository.memberships.set(id, membership);
+            });
 
             throw error;
         }

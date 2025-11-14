@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateOrganization } from '../../src/organizations/use-cases/create-organization/CreateOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 function createOwner(adapters: Adapters, ownerIdProp?: string) {
     const ownerId = '00000000-0000-4000-8000-00000000B001';
@@ -17,8 +17,7 @@ function createOwner(adapters: Adapters, ownerIdProp?: string) {
         externalId: principalExternalId,
         username: principalExternalId,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: undefined
+        updatedAt: new Date()
     });
     return { principalExternalId, ownerId: ownerIdProp ?? ownerId };
 }
@@ -69,7 +68,8 @@ describe('CreateOrganization use case', () => {
 
         it('should return custom fields when framework config provided', async () => {
             type OrganizationCustom = { category?: string };
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for unused membership custom fields
+            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -79,11 +79,11 @@ describe('CreateOrganization use case', () => {
                 }
             } as any;
 
-            const { ownerId, principalExternalId } = createOwner(
+            const { ownerId: _ownerId, principalExternalId } = createOwner(
                 adapters,
                 '00000000-0000-4000-8000-00000000B002'
             );
-            const useCase = new CreateOrganization<{}, OrganizationCustom>(
+            const useCase = new CreateOrganization<undefined, OrganizationCustom>(
                 adapters as any,
                 frameworkConfig
             );
@@ -100,7 +100,7 @@ describe('CreateOrganization use case', () => {
     describe('Error Cases - Persistence', () => {
         it('should wrap transaction errors as VALIDATION_ERROR', async () => {
             (setup.uow as any).setTransactionError(new Error('persist fail'));
-            const { ownerId, principalExternalId } = createOwner(
+            const { ownerId: _ownerId, principalExternalId } = createOwner(
                 adapters,
                 '00000000-0000-4000-8000-00000000B003'
             );

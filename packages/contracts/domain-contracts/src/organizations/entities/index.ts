@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Uuid, DateTime } from '../../shared/primitives';
+import { DateTime, Uuid } from '../../shared/primitives';
 
 export const OrganizationSchema = z.object({
     id: Uuid,

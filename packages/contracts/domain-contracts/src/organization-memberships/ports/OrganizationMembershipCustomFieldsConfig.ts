@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
 /**
  * Configuration for OrganizationMembershipRepository implementations
@@ -7,6 +7,8 @@ import { z } from 'zod';
  * This configuration is transversal across all repository implementations
  * (PostgreSQL, JSON, MongoDB, etc.)
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export interface OrganizationMembershipCustomFieldsConfig<TCustomFields = {}> {
     /**
      * Column/field mapping for BASE framework fields

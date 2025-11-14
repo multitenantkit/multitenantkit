@@ -1,18 +1,18 @@
-import { Handler, RouteDefinition, HandlerPackage } from '../../types';
-import { ErrorMapper, HttpErrorResponse } from '../../errors/ErrorMapper';
-import { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import {
-    UpdateOrganizationRequest,
+    type UpdateOrganizationRequest,
     UpdateOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
-import type { UseCases, FrameworkConfig, Organization } from '@multitenantkit/domain-contracts';
+import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
+import type { FrameworkConfig, Organization, UseCases } from '@multitenantkit/domain-contracts';
+import { OrganizationSchema } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
+import { z } from 'zod';
+import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
+import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
 import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
-import { z } from 'zod';
-import { OrganizationSchema } from '@multitenantkit/domain-contracts';
 
 /**
  */
@@ -35,8 +35,11 @@ export const updateOrganizationRoute: RouteDefinition = {
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function makeUpdateOrganizationHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
@@ -148,7 +151,8 @@ export function makeUpdateOrganizationHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.organizations?.UpdateOrganization;
+                const transformer =
+                    frameworkConfig?.responseTransformers?.organizations?.UpdateOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -198,8 +202,11 @@ export function makeUpdateOrganizationHandler<
  * @param frameworkConfig - Optional framework configuration for custom schemas
  */
 export function updateOrganizationHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,

@@ -1,10 +1,10 @@
 import {
-    DomainError,
-    ValidationError,
-    NotFoundError,
-    ConflictError,
     BusinessRuleError,
-    UnauthorizedError
+    ConflictError,
+    type DomainError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors';
 
 /**
@@ -24,6 +24,8 @@ export interface HttpErrorResponse {
 /**
  * Maps domain errors to HTTP status codes and responses
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class ErrorMapper {
     /**
      * Map domain error to HTTP status code
@@ -67,7 +69,7 @@ export class ErrorMapper {
         status: number;
         body: HttpErrorResponse;
     } {
-        const status = this.getHttpStatus(error);
+        const status = ErrorMapper.getHttpStatus(error);
 
         const body: HttpErrorResponse = {
             error: {

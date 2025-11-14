@@ -1,5 +1,5 @@
-import type { HookContext } from './HookContext';
 import type { IResult } from '../results/Result';
+import type { HookContext } from './HookContext';
 
 /**
  * Hooks available for a use case
@@ -65,7 +65,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -115,7 +114,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -171,7 +169,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -225,7 +222,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -277,7 +273,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -333,7 +328,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -388,7 +382,6 @@ export interface UseCaseHooks<
         ctx: HookContext<
             TInput,
             TOutput,
-            TError,
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields

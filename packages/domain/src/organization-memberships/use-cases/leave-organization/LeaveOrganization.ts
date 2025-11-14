@@ -1,21 +1,21 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
+    ILeaveOrganization,
     LeaveOrganizationInput,
-    LeaveOrganizationOutput,
-    ILeaveOrganization
+    LeaveOrganizationOutput
 } from '@multitenantkit/domain-contracts/organization-memberships';
 import {
     LeaveOrganizationInputSchema,
-    LeaveOrganizationOutputSchema
+    LeaveOrganizationOutputSchema,
+    type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import { Result } from '../../../shared/result/Result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
-    ValidationError,
-    NotFoundError
+    type DomainError,
+    NotFoundError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
-import { OrganizationMembership } from '@multitenantkit/domain-contracts/organization-memberships';
+import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -23,8 +23,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * Handles business logic for a user leaving a organization
  */
 export class LeaveOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<

@@ -1,6 +1,6 @@
-import type { IUseCase, IDomainError } from '../../../shared';
-import type { RestoreOrganizationInput } from './RestoreOrganization.dto';
+import type { IDomainError, IUseCase } from '../../../shared';
 import type { Organization } from '../../entities';
+import type { RestoreOrganizationInput } from './RestoreOrganization.dto';
 
 export * from './RestoreOrganization.dto';
 

@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { UserSchema } from '@multitenantkit/domain-contracts';
+import { z } from 'zod';
 
 // Create User
 export const CreateUserRequestSchema = z.object({

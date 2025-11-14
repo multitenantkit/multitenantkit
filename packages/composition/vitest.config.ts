@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
+
+import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
-import { resolve } from 'path';
 
 export default defineConfig({
     test: {
@@ -14,10 +15,7 @@ export default defineConfig({
         alias: {
             'multitenantkit/domain': resolve(__dirname, '../domain/src'),
             'multitenantkit/composition': resolve(__dirname, 'src'),
-            'multitenantkit/adapter-persistence-json': resolve(
-                __dirname,
-                '../adapters/db/json/src'
-            )
+            'multitenantkit/adapter-persistence-json': resolve(__dirname, '../adapters/db/json/src')
         }
     }
 });

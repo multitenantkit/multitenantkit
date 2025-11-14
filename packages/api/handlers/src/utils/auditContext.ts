@@ -1,5 +1,5 @@
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
+import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 
 /**
  * Helper function to build OperationContext from HTTP request context

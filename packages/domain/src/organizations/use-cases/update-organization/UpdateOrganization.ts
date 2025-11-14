@@ -1,24 +1,24 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
-    UpdateOrganizationInput,
-    UpdateOrganizationOutput,
     IUpdateOrganization,
-    Organization
+    Organization,
+    UpdateOrganizationInput,
+    UpdateOrganizationOutput
 } from '@multitenantkit/domain-contracts/organizations';
 import {
+    OrganizationSchema,
     UpdateOrganizationInputSchema,
-    UpdateOrganizationOutputSchema,
-    OrganizationSchema
+    UpdateOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import { z } from 'zod';
-import { Result } from '../../../shared/result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    ValidationError,
-    NotFoundError,
-    ConflictError,
-    UnauthorizedError
+    type ConflictError,
+    type NotFoundError,
+    UnauthorizedError,
+    ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { OperationContext, FrameworkConfig } from '@multitenantkit/domain-contracts/shared';
-import { Adapters } from '@multitenantkit/domain-contracts';
+import type { z } from 'zod';
+import { Result } from '../../../shared/result';
 import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
 
 /**
@@ -32,8 +32,11 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
  */
 export class UpdateOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -170,7 +173,7 @@ export class UpdateOrganization<
 
         // Filter out undefined values from input to preserve existing values
         // Exclude organizationId and userId as they are not organization properties
-        const { organizationId, userId, ...updateFields } = input as any;
+        const { _organizationId, _userId, ...updateFields } = input as any;
         const definedInputFields = Object.fromEntries(
             Object.entries(updateFields).filter(([_, value]) => value !== undefined)
         ) as Partial<TOrganizationCustomFields>;

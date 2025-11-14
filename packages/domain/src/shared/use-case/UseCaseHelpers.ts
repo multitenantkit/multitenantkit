@@ -8,6 +8,8 @@ import { Result } from '../result/Result';
  * Philosophy: Keep it minimal. Only extract truly repetitive patterns.
  * If a helper reduces readability, don't use it.
  */
+
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class UseCaseHelpers {
     /**
      * Find entity by ID or return NotFoundError

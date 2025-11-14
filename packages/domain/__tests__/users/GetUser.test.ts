@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { GetUser } from '../../src/users/use-cases/get-user/GetUser';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 describe('GetUser use case', () => {
     let setup: ReturnType<typeof createTestSetup>;

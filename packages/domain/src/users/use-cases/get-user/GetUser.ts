@@ -1,18 +1,18 @@
-import { z } from 'zod';
 import type {
-    OperationContext,
+    FrameworkConfig,
     GetUserInput,
     IGetUser,
-    User,
-    FrameworkConfig
+    OperationContext,
+    User
 } from '@multitenantkit/domain-contracts';
 import {
-    Adapters,
-    UserSchema,
+    type Adapters,
+    type DomainError,
     GetUserInputSchema,
-    DomainError
+    UserSchema
 } from '@multitenantkit/domain-contracts';
-import { Result } from '../../../shared/result/Result';
+import type { z } from 'zod';
+import type { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -25,8 +25,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
  */
 export class GetUser<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -73,24 +76,11 @@ export class GetUser<
 
     protected async executeBusinessLogic(
         input: GetUserInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<User & TUserCustomFields, DomainError>> {
         // input.userId is actually an externalId from auth provider
         // Use helper to map externalId -> User entity
         const userResult = await this.getUserFromExternalId(input.principalExternalId);
-
-        if (userResult.isSuccess) {
-            const user = userResult.getValue();
-
-            // Fire-and-forget: Link any pending memberships to this user
-            // This happens asynchronously without blocking the response
-            this.adapters.persistence.organizationMembershipRepository
-                .linkUsernameMembershipsToUserId(user.username, user.id, context)
-                .catch((error) => {
-                    // Log error but don't fail the request
-                    console.warn('Failed to link pending memberships:', error);
-                });
-        }
 
         return userResult;
     }

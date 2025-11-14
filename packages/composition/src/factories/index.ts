@@ -1,7 +1,7 @@
 export {
     createJsonAdapters,
+    createMetricsAdapter,
     createPostgresAdapters,
-    createSystemAdapters,
-    createMetricsAdapter
+    createSystemAdapters
 } from './AdapterFactory';
 export { createUseCases } from './UseCaseFactory';

@@ -1,5 +1,5 @@
-import { Organization } from '@multitenantkit/domain-contracts';
-import { OrganizationJsonData } from '../storage/schemas';
+import type { Organization } from '@multitenantkit/domain-contracts';
+import type { OrganizationJsonData } from '../storage/schemas';
 
 /**
  * Maps between Organization domain entity and JSON storage format
@@ -7,6 +7,7 @@ import { OrganizationJsonData } from '../storage/schemas';
  * Note: This mapper handles type conversions (Date ↔ string).
  * For advanced field mapping, use toDomainWithCustom with columnMapping.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class OrganizationMapper {
     /**
      * Convert Organization entity to JSON data for storage
@@ -35,19 +36,19 @@ export class OrganizationMapper {
             const archivedAt = jsonData.archivedAt ? new Date(jsonData.archivedAt) : undefined;
             const deletedAt = jsonData.deletedAt ? new Date(jsonData.deletedAt) : undefined;
 
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for organization ${jsonData.id}`);
                 return null;
             }
 
-            if (archivedAt && isNaN(archivedAt.getTime())) {
+            if (archivedAt && Number.isNaN(archivedAt.getTime())) {
                 console.warn(
                     `Invalid archivedAt date in JSON data for organization ${jsonData.id}`
                 );
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 console.warn(`Invalid deletedAt date in JSON data for organization ${jsonData.id}`);
                 return null;
             }
@@ -72,7 +73,7 @@ export class OrganizationMapper {
      */
     static toDomainArray(jsonDataArray: OrganizationJsonData[]): Organization[] {
         return jsonDataArray
-            .map(this.toDomain)
+            .map(OrganizationMapper.toDomain)
             .filter((organization): organization is Organization => organization !== null);
     }
 
@@ -80,7 +81,7 @@ export class OrganizationMapper {
      * Convert array of Organization entities to array of JSON data
      */
     static toJsonArray(organizations: Organization[]): OrganizationJsonData[] {
-        return organizations.map(this.toJson);
+        return organizations.map(OrganizationMapper.toJson);
     }
 
     /**
@@ -112,17 +113,17 @@ export class OrganizationMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for organization ${id}`);
                 return null;
             }
 
-            if (archivedAt && isNaN(archivedAt.getTime())) {
+            if (archivedAt && Number.isNaN(archivedAt.getTime())) {
                 console.warn(`Invalid archivedAt date in JSON data for organization ${id}`);
                 return null;
             }
 
-            if (deletedAt && isNaN(deletedAt.getTime())) {
+            if (deletedAt && Number.isNaN(deletedAt.getTime())) {
                 console.warn(`Invalid deletedAt date in JSON data for organization ${id}`);
                 return null;
             }
@@ -160,7 +161,7 @@ export class OrganizationMapper {
         customMapper?: (jsonData: Record<string, any>) => TCustomFields
     ): (Organization & TCustomFields)[] {
         return jsonDataArray
-            .map((data) => this.toDomainWithCustom(data, columnMap, customMapper))
+            .map((data) => OrganizationMapper.toDomainWithCustom(data, columnMap, customMapper))
             .filter(
                 (organization): organization is Organization & TCustomFields =>
                     organization !== null

@@ -1,25 +1,48 @@
 {
-  "name": "@multitenantkit/adapter-system-crypto-uuid",
-  "version": "1.0.0",
-  "description": "Crypto UUID adapter using Node.js crypto module",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/CryptoUuid.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/CryptoUuid.d.ts",
-      "import": "./dist/index.js"
+    "name": "@multitenantkit/adapter-system-crypto-uuid",
+    "version": "0.1.0",
+    "description": "Crypto UUID adapter using Node.js crypto module",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "adapter",
+        "uuid",
+        "crypto",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/system/crypto-uuid"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/CryptoUuid.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/CryptoUuid.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
     }
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@multitenantkit/domain-contracts": "*"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
-  }
 }

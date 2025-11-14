@@ -1,4 +1,4 @@
-import type { IResult, OperationContext, IDomainError } from '../../../shared';
+import type { IDomainError, IResult, OperationContext } from '../../../shared';
 import type { GetOrganizationInput, GetOrganizationOutput } from './';
 
 /**

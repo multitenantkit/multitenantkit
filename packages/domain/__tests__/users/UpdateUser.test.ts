@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateUser } from '../../src/users/use-cases/update-user/UpdateUser';
 import { TestData } from '../test-helpers/Builders';
 import { createTestSetup } from '../test-helpers/TestUtils';
-import { type Adapters, type FrameworkConfig } from '@multitenantkit/domain-contracts';
 
 describe('UpdateUser use case', () => {
     let setup: ReturnType<typeof createTestSetup>;
@@ -129,7 +129,10 @@ describe('UpdateUser use case', () => {
             // Only updating role to invalid value triggers validation fail on merged data
             const result = await useCase.execute(
                 { userId: existing.externalId, role: 'member' } as any,
-                { requestId: 'test-request-id', actorUserId: existing.externalId }
+                {
+                    requestId: 'test-request-id',
+                    actorUserId: existing.externalId
+                }
             );
 
             expect(result.isFailure).toBe(true);

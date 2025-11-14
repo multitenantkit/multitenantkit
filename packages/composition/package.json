@@ -1,8 +1,31 @@
 {
     "name": "@multitenantkit/composition",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.1.0",
     "type": "module",
+    "description": "Dependency injection and composition layer for MultiTenantKit",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "composition",
+        "dependency-injection",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/composition"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
@@ -25,12 +48,12 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/domain": "*",
-        "@multitenantkit/adapter-persistence-json": "*",
-        "@multitenantkit/adapter-persistence-postgres": "*",
-        "@multitenantkit/adapter-system-crypto-uuid": "*",
-        "@multitenantkit/adapter-system-system-clock": "*",
-        "@multitenantkit/adapter-metrics-http": "*"
+        "@multitenantkit/domain": "^0.1.0",
+        "@multitenantkit/adapter-persistence-json": "^0.1.0",
+        "@multitenantkit/adapter-persistence-postgres": "^0.1.0",
+        "@multitenantkit/adapter-system-crypto-uuid": "^0.1.0",
+        "@multitenantkit/adapter-system-system-clock": "^0.1.0",
+        "@multitenantkit/adapter-metrics-http": "^0.1.0"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",

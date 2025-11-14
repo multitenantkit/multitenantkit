@@ -1,21 +1,21 @@
+import type { Adapters } from '@multitenantkit/domain-contracts';
 import type {
     GetOrganizationInput,
     GetOrganizationOutput,
     IGetOrganization
 } from '@multitenantkit/domain-contracts/organizations';
 import {
-    GetOrganizationOutputSchema,
-    GetOrganizationInputSchema
+    GetOrganizationInputSchema,
+    GetOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import { z } from 'zod';
-import { Result } from '../../../shared/result/Result';
+import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
 import {
-    DomainError,
+    type DomainError,
     NotFoundError,
     UnauthorizedError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import { Adapters } from '@multitenantkit/domain-contracts';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { z } from 'zod';
+import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
 /**
@@ -26,8 +26,11 @@ import { BaseUseCase } from '../../../shared/use-case';
  * @template TOrganizationCustomFields - Custom fields added to Organization
  */
 export class GetOrganization<
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TUserCustomFields = {},
+        // biome-ignore lint/complexity/noBannedTypes: ignore
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
@@ -76,7 +79,7 @@ export class GetOrganization<
 
     protected async executeBusinessLogic(
         input: GetOrganizationInput,
-        context: OperationContext
+        _context: OperationContext
     ): Promise<Result<GetOrganizationOutput & TOrganizationCustomFields, DomainError>> {
         // 1. Find organization by ID
         const organization = await this.adapters.persistence.organizationRepository.findById(

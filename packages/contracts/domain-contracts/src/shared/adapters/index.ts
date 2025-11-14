@@ -3,8 +3,8 @@ import type { OrganizationRepository } from '../../organizations';
 import type { UserRepository } from '../../users';
 import type { UnitOfWork } from '../ports';
 import type { ClockPort } from '../ports/ClockPort';
-import type { UuidPort } from '../ports/UuidPort';
 import type { MetricsPort } from '../ports/MetricsPort';
+import type { UuidPort } from '../ports/UuidPort';
 
 /**
  * Bundle of all infrastructure adapters
@@ -15,8 +15,11 @@ import type { MetricsPort } from '../ports/MetricsPort';
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository (future)
  */
 export interface Adapters<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > {
     persistence: {
@@ -46,8 +49,11 @@ export interface Adapters<
 }
 
 export interface PersistenceAdapters<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > {
     uow: UnitOfWork<

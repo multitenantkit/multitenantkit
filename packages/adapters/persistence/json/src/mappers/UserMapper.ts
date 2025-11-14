@@ -1,5 +1,5 @@
-import { User } from '@multitenantkit/domain-contracts';
-import { UserJsonData } from '../storage/schemas';
+import type { User } from '@multitenantkit/domain-contracts';
+import type { UserJsonData } from '../storage/schemas';
 
 /**
  * Maps between User domain entity and JSON storage format
@@ -7,6 +7,7 @@ import { UserJsonData } from '../storage/schemas';
  * Note: This mapper handles type conversions (Date ↔ string).
  * For advanced field mapping, use toDomainWithCustom with columnMapping.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: ignore
 export class UserMapper {
     /**
      * Convert User entity to JSON data for storage
@@ -32,7 +33,7 @@ export class UserMapper {
             const updatedAt = new Date(jsonData.updatedAt);
             const deletedAt = jsonData.deletedAt ? new Date(jsonData.deletedAt) : undefined;
 
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for user ${jsonData.id}`);
                 return null;
             }
@@ -55,14 +56,14 @@ export class UserMapper {
      * Convert array of JSON data to array of User entities
      */
     static toDomainArray(jsonDataArray: UserJsonData[]): User[] {
-        return jsonDataArray.map(this.toDomain).filter((user): user is User => user !== null);
+        return jsonDataArray.map(UserMapper.toDomain).filter((user): user is User => user !== null);
     }
 
     /**
      * Convert array of User entities to array of JSON data
      */
     static toJsonArray(users: User[]): UserJsonData[] {
-        return users.map(this.toJson);
+        return users.map(UserMapper.toJson);
     }
 
     /**
@@ -93,7 +94,7 @@ export class UserMapper {
             const deletedAt = deletedAtStr ? new Date(deletedAtStr) : undefined;
 
             // Validate dates
-            if (isNaN(createdAt.getTime()) || isNaN(updatedAt.getTime())) {
+            if (Number.isNaN(createdAt.getTime()) || Number.isNaN(updatedAt.getTime())) {
                 console.warn(`Invalid dates in JSON data for user ${id}`);
                 return null;
             }
@@ -131,7 +132,7 @@ export class UserMapper {
         customMapper?: (jsonData: Record<string, any>) => TCustomFields
     ): (User & TCustomFields)[] {
         return jsonDataArray
-            .map((data) => this.toDomainWithCustom(data, columnMap, customMapper))
+            .map((data) => UserMapper.toDomainWithCustom(data, columnMap, customMapper))
             .filter((user): user is User & TCustomFields => user !== null);
     }
 }

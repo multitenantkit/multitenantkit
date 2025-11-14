@@ -1,9 +1,9 @@
-import { Router, Request, Response } from 'express';
+import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
 
-import { HandlerPackage } from '@multitenantkit/api-handlers';
-import { validateRequest } from './middleware';
+import type { HandlerPackage } from '@multitenantkit/api-handlers';
+import { type Request, type Response, Router } from 'express';
 import { createAuthMiddleware } from './auth';
-import { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import { validateRequest } from './middleware';
 
 /**
  * Build an Express Router from handler packages
@@ -54,25 +54,21 @@ export function buildExpressRouter(
 
         // Convert handler to Express route handler
         const expressHandler = async (req: Request, res: Response) => {
-            try {
-                const result = await handler({
-                    input: req.validatedInput || req.validatedBody,
-                    principal: req.principal,
-                    requestId: req.requestId
+            const result = await handler({
+                input: req.validatedInput || req.validatedBody,
+                principal: req.principal,
+                requestId: req.requestId
+            });
+
+            // Set headers if provided
+            if (result.headers) {
+                Object.entries(result.headers).forEach(([key, value]) => {
+                    res.setHeader(key, value);
                 });
-
-                // Set headers if provided
-                if (result.headers) {
-                    Object.entries(result.headers).forEach(([key, value]) => {
-                        res.setHeader(key, value);
-                    });
-                }
-
-                // Send response
-                res.status(result.status).json(result.body);
-            } catch (error) {
-                throw error;
             }
+
+            // Send response
+            res.status(result.status).json(result.body);
         };
 
         // Register route with Router

@@ -1,10 +1,10 @@
+import type { FrameworkConfig, RepositoryBundle } from '@multitenantkit/domain-contracts';
 import { DatabaseClient } from '../client/PostgresClient';
-import { createDatabaseConfig, PostgresDBEnvVars } from '../client/PostgresConfig';
-import { PostgresUserRepository } from '../repositories/PostgresUserRepository';
-import { PostgresOrganizationRepository } from '../repositories/PostgresOrganizationRepository';
+import { createDatabaseConfig, type PostgresDBEnvVars } from '../client/PostgresConfig';
 import { PostgresOrganizationMembershipRepository } from '../repositories/PostgresOrganizationMembershipRepository';
+import { PostgresOrganizationRepository } from '../repositories/PostgresOrganizationRepository';
+import { PostgresUserRepository } from '../repositories/PostgresUserRepository';
 import { PostgresUnitOfWork } from '../uow/PostgresUnitOfWork';
-import { FrameworkConfig, RepositoryBundle } from '@multitenantkit/domain-contracts';
 
 /**
  * Factory for creating PostgreSQL repositories
@@ -16,8 +16,11 @@ import { FrameworkConfig, RepositoryBundle } from '@multitenantkit/domain-contra
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export interface PostgresRepositoryBundle<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > extends RepositoryBundle<
         TUserCustomFields,
@@ -42,8 +45,11 @@ export interface PostgresRepositoryBundle<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export interface DatabaseFactoryOptions<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > {
     env?: PostgresDBEnvVars;
@@ -65,8 +71,11 @@ export interface DatabaseFactoryOptions<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export function createPostgresRepositories<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     options: DatabaseFactoryOptions<
@@ -112,8 +121,11 @@ export function createPostgresRepositories<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export function createPostgresUnitOfWork<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     options: DatabaseFactoryOptions<

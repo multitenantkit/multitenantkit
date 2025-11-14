@@ -1,10 +1,10 @@
-import { UserRepository } from '@multitenantkit/domain-contracts/users';
-import { JsonStorage } from '../storage/JsonStorage';
-import { UserMapper } from '../mappers/UserMapper';
-import { UserJsonData } from '../storage/schemas';
-import { join } from 'path';
+import { join } from 'node:path';
+import type { User } from '@multitenantkit/domain-contracts';
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
-import { User } from '@multitenantkit/domain-contracts';
+import type { UserRepository } from '@multitenantkit/domain-contracts/users';
+import { UserMapper } from '../mappers/UserMapper';
+import { JsonStorage } from '../storage/JsonStorage';
+import type { UserJsonData } from '../storage/schemas';
 
 /**
  * JSON-based implementation of UserRepository
@@ -36,7 +36,7 @@ export class JsonUserRepository implements UserRepository {
         return jsonData ? UserMapper.toDomain(jsonData) : null;
     }
 
-    async insert(user: User, context?: OperationContext): Promise<void> {
+    async insert(user: User, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         const jsonData = UserMapper.toJson(user);
 
@@ -60,7 +60,7 @@ export class JsonUserRepository implements UserRepository {
         await this.insert(user, context);
     }
 
-    async delete(id: string, context?: OperationContext): Promise<void> {
+    async delete(id: string, _context?: OperationContext): Promise<void> {
         // Note: JSON adapter ignores audit context as it doesn't support audit logging
         await this.storage.update((users) => users.filter((user) => user.id !== id));
     }

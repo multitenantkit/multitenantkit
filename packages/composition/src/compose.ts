@@ -1,11 +1,11 @@
-import { PostgresDBEnvVars } from '@multitenantkit/adapter-persistence-postgres';
+import type { PostgresDBEnvVars } from '@multitenantkit/adapter-persistence-postgres';
+import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 import {
     createMetricsAdapter,
     createPostgresAdapters,
     createSystemAdapters
 } from './factories/AdapterFactory';
 import { createUseCases } from './factories/UseCaseFactory';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
 
 /**
  * Result of the composition process
@@ -17,9 +17,12 @@ import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export interface CompositionResult<
-    TUserCustomFields = {},
-    TOrganizationCustomFields = {},
-    TOrganizationMembershipCustomFields = {}
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    _TOrganizationMembershipCustomFields = {}
 > {
     useCases: UseCases;
     // Future: Expose framework config type for type inference
@@ -42,8 +45,11 @@ export interface CompositionResult<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
 export function compose<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     envOverrides?: Record<string, string | undefined>,
@@ -93,13 +99,16 @@ export function compose<
 /**
  * Test-friendly composition function with sensible defaults
  * Automatically sets NODE_ENV=test and LOG_LEVEL=error for tests
- * 
+ *
  * @param envOverrides - Partial environment overrides for testing
  * @param frameworkConfig - Optional framework configuration
  */
 export function composeForTesting<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 >(
     envOverrides?: Partial<Record<string, string | number | undefined>>,

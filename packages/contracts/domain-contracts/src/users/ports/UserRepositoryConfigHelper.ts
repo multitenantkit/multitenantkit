@@ -1,4 +1,4 @@
-import { User } from '../entities';
+import type { User } from '../entities';
 import type { UserCustomFieldsConfig } from './UserCustomFieldsConfig';
 import { USER_BASE_FIELDS, type UserBaseField } from './UserCustomFieldsConfig';
 
@@ -12,6 +12,8 @@ import { USER_BASE_FIELDS, type UserBaseField } from './UserCustomFieldsConfig';
  * - Type-safe access to custom fields and mappers
  * - Composition over inheritance approach
  */
+
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export class UserRepositoryConfigHelper<TCustomFields = {}> {
     /**
      * Resolved column mapping (generated from namingStrategy + user overrides)
@@ -208,7 +210,6 @@ export class UserRepositoryConfigHelper<TCustomFields = {}> {
             case 'PascalCase':
                 // camelCase → PascalCase: firstName → FirstName
                 return key.charAt(0).toUpperCase() + key.slice(1);
-            case 'camelCase':
             default:
                 // No transformation
                 return key;

@@ -1,7 +1,7 @@
-import { UnitOfWork, RepositoryBundle } from '@multitenantkit/domain-contracts';
-import { JsonUserRepository } from '../repositories/JsonUserRepository';
-import { JsonOrganizationRepository } from '../repositories/JsonOrganizationRepository';
+import type { RepositoryBundle, UnitOfWork } from '@multitenantkit/domain-contracts';
 import { JsonOrganizationMembershipRepository } from '../repositories/JsonOrganizationMembershipRepository';
+import { JsonOrganizationRepository } from '../repositories/JsonOrganizationRepository';
+import { JsonUserRepository } from '../repositories/JsonUserRepository';
 
 /**
  * JSON-based Unit of Work implementation
@@ -17,8 +17,11 @@ import { JsonOrganizationMembershipRepository } from '../repositories/JsonOrgani
  * but maintains the same signature for consistency with other adapters
  */
 export class JsonUnitOfWork<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
     TOrganizationMembershipCustomFields = {}
 > implements
         UnitOfWork<
@@ -87,10 +90,12 @@ export class JsonUnitOfWork<
             // In a real database, we would rollback here
             // For JSON files, we don't have rollback capability
             // This is a limitation of the JSON adapter
+            // biome-ignore lint/complexity/noUselessCatch: ignore
             throw error;
         } finally {
             // Release the lock
             this.lockMap.delete(lockKey);
+            // biome-ignore lint/style/noNonNullAssertion: ignore
             resolveLock!();
         }
     }

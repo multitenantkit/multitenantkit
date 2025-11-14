@@ -4,13 +4,13 @@
  * Now based on centralized DB contracts for consistency
  */
 
-import { z } from 'zod';
 import {
     OrganizationMembershipSchema,
     OrganizationSchema,
     UserSchema
 } from '@multitenantkit/domain-contracts';
 import { ISODateTime } from '@multitenantkit/domain-contracts/shared/primitives';
+import { z } from 'zod';
 
 // JSON storage uses the same structure as base DB schemas
 export const UserJsonSchema = UserSchema.omit({

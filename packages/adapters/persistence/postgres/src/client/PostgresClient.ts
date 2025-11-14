@@ -1,10 +1,10 @@
 import postgres from 'postgres';
-import { DatabaseConfig } from './PostgresConfig';
+import type { DatabaseConfig } from './PostgresConfig';
 
 /**
  * PostgreSQL database client wrapper
  * Manages direct connection to PostgreSQL database using postgres.js
- * 
+ *
  * IMPORTANT: This adapter is completely independent of authentication.
  * It only handles database operations using direct SQL queries.
  */
@@ -21,7 +21,7 @@ export class DatabaseClient {
             ssl: config.ssl,
             max: config.max,
             idle_timeout: 20,
-            max_lifetime: 60 * 30, // 30 minutes
+            max_lifetime: 60 * 30 // 30 minutes
             // transform: {
             //     // Convert PostgreSQL column names to camelCase
             //     column: {
@@ -65,7 +65,7 @@ export class DatabaseClient {
      * @returns Promise with transaction result
      */
     async transaction<T>(callback: (sql: postgres.Sql) => Promise<T>): Promise<T> {
-        return await this.sql.begin(callback) as Promise<T>;
+        return (await this.sql.begin(callback)) as Promise<T>;
     }
 
     /**
@@ -115,7 +115,6 @@ export class DatabaseClient {
                 ORDER BY table_name
             `;
             tables = tablesResult.map((row: any) => row.tableName);
-
         } catch (error: any) {
             errors.push(`Health check failed: ${error.message}`);
         }
@@ -124,7 +123,7 @@ export class DatabaseClient {
             isHealthy: errors.length === 0,
             version,
             tables,
-            errors,
+            errors
         };
     }
 }
