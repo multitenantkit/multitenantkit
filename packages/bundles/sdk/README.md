@@ -4,7 +4,7 @@ Complete SDK for building multi-tenant SaaS backends - includes all adapters and
 
 ## 📦 What's Included
 
-This SDK bundles all available packages from the MultiTenantKit framework:
+This SDK bundles all available packages from the MultiTenantKit:
 
 ### Core
 
