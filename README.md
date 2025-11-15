@@ -2,7 +2,7 @@
 
 **Stop building user and team management from scratch. Start shipping features.**
 
-MultiTenantKit is a production-ready TypeScript toolkit that handles users, organizations, and team memberships for your B2B SaaS—so you don't have to.
+MultiTenantKit is a production-ready TypeScript toolkit that provides the **business logic** for managing users, organizations, and team memberships in your B2B SaaS. You keep control of your database, auth provider, and infrastructure—we handle the complex logic.
 
 ```bash
 npm install @multitenantkit/sdk
@@ -23,7 +23,7 @@ Every B2B SaaS needs the same foundation:
 
 **You've built this before. So have we. Let's not do it again.**
 
-MultiTenantKit gives you a complete, tested, type-safe implementation in minutes—not weeks.
+MultiTenantKit gives you battle-tested business logic in minutes—not weeks. **Your database. Your auth. Your infrastructure.** We just provide the code that makes it all work together.
 
 ---
 
@@ -60,6 +60,8 @@ app.listen(3000);
 
 **That's it.** You now have a fully functional API with 18 endpoints for managing users, organizations, and memberships.
 
+> 💡 This example uses Express and PostgreSQL (included adapters). The same business logic works with any web framework or database—just swap the adapters.
+
 ### Available Endpoints
 
 ```
@@ -87,6 +89,26 @@ Memberships (5 endpoints)
   DELETE /organizations/:organizationId/members/:userId        # Remove Organization Member
   DELETE /organizations/:organizationId/members/me             # Leave Organization
 ```
+
+---
+
+## Your Data, Your Infrastructure
+
+**MultiTenantKit is not a service. It's a toolkit.**
+
+Unlike SaaS solutions that lock your data in their platform, MultiTenantKit runs in **your codebase**, on **your infrastructure**:
+
+- 🗄️ **Your Database** - PostgreSQL, MySQL, MongoDB, or any database you want. Build adapters for your persistence layer.
+- 🔐 **Your Auth Provider** - Supabase, Auth0, Cognito, or any provider you choose. Implement the simple interface.
+- 🚀 **Your Deployment** - AWS, GCP, Azure, Vercel, or wherever you want. It's just TypeScript code.
+- 🔧 **Your Modifications** - Fork it, customize it, extend it—it's your code now.
+
+We provide the **business logic and patterns**. You provide the infrastructure. This means:
+- ✅ No vendor lock-in
+- ✅ Complete data ownership
+- ✅ Deploy anywhere
+- ✅ Integrate with existing projects
+- ✅ Customize without limits
 
 ---
 
@@ -190,58 +212,9 @@ const config = {
 
 ---
 
-## What's Included
+## Add to Existing Projects
 
-### 🎯 Complete Business Logic
-- **18 production-ready use cases** for users, organizations, and memberships
-- Role-based access control (owner, admin, member)
-- Soft deletes and restore functionality
-- Automatic audit trails (createdAt, updatedAt)
-
-### 🔌 Plug & Play Adapters
-- **Persistence**: PostgreSQL (production) + JSON (dev/testing)
-- **Authentication**: Supabase Auth (more coming soon)
-- **Transport**: Express.js (Lambda support coming)
-- **Bring your own**: Clear interfaces to build custom adapters
-
-### 🛡️ Type Safety Everywhere
-- Zod schemas for runtime validation
-- Full TypeScript inference from database to API
-- Single source of truth for all types
-
-### 🏗️ Clean Architecture
-- Hexagonal architecture (ports & adapters)
-- Business logic independent of infrastructure
-- Dependency injection out of the box
-- Easily testable (all use cases unit tested)
-
-### 📦 Zero Lock-In
-- Use the full stack or cherry-pick use cases
-- Swap any adapter for your own implementation
-- Works with existing Express apps
-- Database-agnostic domain logic
-
----
-
-## Use Cases
-
-### Perfect for:
-- 🚀 **B2B SaaS startups** that need team management fast
-- 🏢 **Enterprise apps** with multi-tenant requirements
-- 🔧 **Solo developers** tired of rebuilding the same foundation
-- 🎯 **Teams migrating** from monolith to microservices
-
-### Works with:
-- Existing Express applications (just mount the router)
-- Greenfield projects (get started in minutes)
-- Custom databases (map your schema with `columnMapping`)
-- Any auth provider (implement the simple `AuthService` interface)
-
----
-
-## Real-World Example
-
-Here's how you'd integrate MultiTenantKit into an existing Express app:
+**Already have an application?** MultiTenantKit integrates seamlessly:
 
 ```typescript
 import express from 'express';
@@ -264,11 +237,63 @@ app.use('/api/teams', mtRouter);  // ← All team management under /api/teams
 app.listen(3000);
 ```
 
-Now you have:
-- `POST /api/teams/organizations` (create team)
-- `GET /api/teams/organizations/:id/members` (list members)
-- `POST /api/teams/organizations/:id/members` (add member)
-- ... and 15 more endpoints ready to use
+Now you have 18 new endpoints under `/api/teams` without touching your existing code. Use your current database, your current auth—just add the functionality.
+
+> 💡 Using a different framework? The handlers are framework-agnostic. Build a simple adapter for Hono, Fastify, Lambda, or your framework of choice.
+
+---
+
+## What's Included
+
+### 🎯 Complete Business Logic (The Hard Part)
+- **18 production-ready use cases** for users, organizations, and memberships
+- Role-based access control (owner, admin, member)
+- Soft deletes and restore functionality
+- Automatic audit trails (createdAt, updatedAt)
+- **Pure TypeScript code** that runs in your application
+
+### 🔌 Adapters for Your Infrastructure
+- **Persistence**: PostgreSQL (included) + JSON (dev/testing). Build adapters for MySQL, MongoDB, DynamoDB, etc.
+- **Authentication**: Supabase Auth (included). Build adapters for Auth0, Cognito, Firebase, custom JWT, etc.
+- **Transport**: Express.js (included). Build adapters for Hono, Fastify, AWS Lambda, etc.
+- **Extensible by design**: Clear interfaces make building custom adapters straightforward
+
+### 🛡️ Type Safety Everywhere
+- Zod schemas for runtime validation
+- Full TypeScript inference from database to API
+- Single source of truth for all types
+
+### 🏗️ Clean Architecture
+- Hexagonal architecture (ports & adapters)
+- **Business logic independent of infrastructure**
+- Dependency injection out of the box
+- Easily testable (all use cases unit tested)
+
+### 📦 True Ownership & Flexibility
+- Install as an npm package in **your** codebase
+- Use the full stack or cherry-pick use cases
+- Swap any adapter for your own implementation
+- Works with existing applications (Express, Lambda, or build your own adapter)
+- Database-agnostic domain logic
+- **No external services, no recurring fees**
+
+---
+
+## Use Cases
+
+### Perfect for:
+- 🚀 **B2B SaaS startups** that need team management fast
+- 🏢 **Enterprise apps** with multi-tenant requirements
+- 🔧 **Solo developers** tired of rebuilding the same foundation
+- 🎯 **Teams migrating** from monolith to microservices
+
+### Works with:
+- **Any web framework** - Express (included), Hono, Fastify, or AWS Lambda. Build adapters for your transport layer.
+- **Existing applications** - Just mount the router, use your current setup
+- **Greenfield projects** - Get started in minutes with sensible defaults
+- **Your existing database** - Map your schema with `columnMapping` and `namingStrategy`
+- **Any auth provider** - Supabase, Auth0, Cognito, or implement the `AuthService` interface
+- **Your deployment** - AWS, GCP, Azure, Vercel, or self-hosted
 
 ---
 
@@ -282,7 +307,7 @@ MultiTenantKit is designed to adapt to **your** database and requirements:
 | **Column Mapping** | Rename framework fields to match your existing DB (`externalId` → `auth_id`) |
 | **Naming Strategies** | Auto-convert field names (`camelCase` ↔ `snake_case`, `kebab-case`, `PascalCase`) |
 | **Custom Mappers** | Complex transformations for denormalized or legacy schemas |
-| **Use Case Hooks** | Inject logic at 5 lifecycle points (onStart, afterValidation, afterExecution, onError, onFinally) |
+| **Use Case Hooks** | Inject logic at 7 lifecycle points + abort mechanism (onStart, afterValidation, beforeExecution, afterExecution, onError, onAbort, onFinally) |
 | **Response Transformers** | Modify HTTP responses without touching domain logic |
 | **Database Schemas** | Configure schema names, table names per entity |
 
@@ -375,13 +400,14 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## Philosophy
 
-MultiTenantKit is built on three principles:
+MultiTenantKit is built on four core principles:
 
-1. **Ease first, power when needed** - Simple things should be simple, complex things should be possible
-2. **Type safety everywhere** - Runtime validation with compile-time guarantees
-3. **Zero lock-in** - Every piece is replaceable; use what you need
+1. **You own everything** - Your code, your data, your infrastructure. We're a library, not a service.
+2. **Ease first, power when needed** - Simple things should be simple, complex things should be possible.
+3. **Type safety everywhere** - Runtime validation with compile-time guarantees.
+4. **Zero lock-in** - Every piece is replaceable. Use what you need, replace what you don't.
 
-We believe developers should spend time on their unique value proposition, not rebuilding user management for the 10th time.
+We believe developers should spend time on their unique value proposition, not rebuilding user management for the 10th time. MultiTenantKit gives you the building blocks—you decide how to use them.
 
 ---
 
