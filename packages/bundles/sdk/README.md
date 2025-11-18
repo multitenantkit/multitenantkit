@@ -58,6 +58,85 @@ npm install @multitenantkit/sdk
 
 ## 📖 Usage
 
+### Quick Start (Recommended)
+
+The fastest way to get started with the most common stack (PostgreSQL + Supabase + Express):
+
+```typescript
+import { createExpressApp } from '@multitenantkit/sdk';
+
+// One line to create a fully configured API
+const app = createExpressApp();
+
+app.listen(3000);
+```
+
+With custom fields:
+
+```typescript
+import { createExpressApp } from '@multitenantkit/sdk';
+import { z } from 'zod';
+
+const app = createExpressApp({
+  namingStrategy: 'snake_case',
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string().email()
+      })
+    }
+  }
+});
+
+app.listen(3000);
+```
+
+Integrate into existing Express app:
+
+```typescript
+import express from 'express';
+import { createExpressRouter } from '@multitenantkit/sdk';
+
+const app = express();
+app.get('/api/billing', billingHandler);
+
+const router = createExpressRouter();
+app.use('/api/teams', router);
+
+app.listen(3000);
+```
+
+### Advanced Usage
+
+For more control, use the individual functions:
+
+```typescript
+import {
+  compose,
+  buildHandlers,
+  AdapterAuthSupabase,
+  AdapterTransportExpress
+} from '@multitenantkit/sdk';
+
+// 1. Compose use cases
+const { useCases } = compose(envOverrides, toolkitOptions);
+
+// 2. Build handlers
+const handlers = buildHandlers(useCases, toolkitOptions);
+
+// 3. Create auth service
+const authService = AdapterAuthSupabase.createSupabaseAuthService();
+
+// 4. Create Express app
+const app = AdapterTransportExpress.buildExpressApp(handlers, authService);
+
+app.listen(3000);
+```
+
+### Direct Access to Components
+
 This SDK gives you access to all adapters and options through convenient exports:
 
 ```typescript
@@ -74,16 +153,21 @@ import { CreateUserRequestSchema, OrganizationResponseSchema } from '@multitenan
 import { createUserHandler, getOrganizationHandler } from '@multitenantkit/sdk';
 
 // Import adapters using namespaces (to avoid conflicts)
-import { JsonAdapter, PostgresAdapter, ExpressAdapter, SupabaseAuth } from '@multitenantkit/sdk';
+import {
+  AdapterPersistenceJson,
+  AdapterPersistencePostgres,
+  AdapterTransportExpress,
+  AdapterAuthSupabase
+} from '@multitenantkit/sdk';
 
 // Use JSON adapter for development
-const userRepo = new JsonAdapter.JsonUserRepository(/* ... */);
+const userRepo = new AdapterPersistenceJson.JsonUserRepository(/* ... */);
 
 // Or PostgreSQL for production
-const userRepo = new PostgresAdapter.PostgresUserRepository(/* ... */);
+const repos = AdapterPersistencePostgres.createPostgresRepositories(/* ... */);
 
 // Express server setup
-const app = ExpressAdapter.buildExpressApp(/* ... */);
+const app = AdapterTransportExpress.buildExpressApp(/* ... */);
 ```
 
 ### Import Patterns

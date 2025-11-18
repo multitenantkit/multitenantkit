@@ -22,3 +22,5 @@ export * from '@multitenantkit/composition';
 export * from '@multitenantkit/domain';
 // Contracts - Direct exports (schemas and types)
 export * from '@multitenantkit/domain-contracts';
+// Convenience functions for quick setup
+export * from './convenience';

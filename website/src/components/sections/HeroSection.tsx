@@ -6,33 +6,15 @@ import { Container } from '../ui/Container';
 import { Section } from '../ui/Section';
 
 export function HeroSection() {
-    const installCode = `npm install @multitenantkit/sdk
-# → 18 endpoints running ✅`;
+    const installCode = `npm install @multitenantkit/sdk`;
 
-    const quickStartCode = `import {
-  createUseCases,
-  createPostgresAdapters,
-  createSystemAdapters,
-  buildHandlers,
-  AdapterAuthSupabase,
-  AdapterTransportExpress
-} from '@multitenantkit/sdk';
+    const quickStartCode = `import { createExpressApp } from '@multitenantkit/sdk';
 
-// 1. Wire up your infrastructure
-const useCases = createUseCases({
-  persistence: createPostgresAdapters(),
-  system: createSystemAdapters()
-});
+// One line to get your API ready
+const app = createExpressApp();
 
-// 2. Build HTTP handlers
-const handlers = buildHandlers(useCases);
-
-// 3. Create your Express app
-const authService = AdapterAuthSupabase.createSupabaseAuthService();
-const app = AdapterTransportExpress.buildExpressApp(handlers, authService);
-
-// 4. Ship it
-app.listen(3000);`;
+app.listen(3000);
+// → 18 endpoints running ✅`;
 
     return (
         <Section
