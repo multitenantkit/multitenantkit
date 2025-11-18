@@ -62,6 +62,22 @@ app.listen(3000);
 
 > 💡 This example uses Express and PostgreSQL (included adapters). The same business logic works with any web framework or database—just swap the adapters.
 
+### Database Setup
+
+MultiTenantKit needs storage for **three entities**: Users, Organizations, and Memberships. The beauty? **You choose the table names and column names.**
+
+```bash
+# Verify your database schema matches your configuration
+$ npx mtk validate
+✓ All tables configured correctly
+```
+
+- **Starting fresh?** Use our [SQL schemas](./packages/adapters/persistence/postgres/sql/) for PostgreSQL
+- **Using Supabase?** Use `auth.users` directly with columnMapping
+- **Have existing tables?** Map them with `columnMapping` and `namingStrategy`
+
+**No migration required.** MultiTenantKit adapts to your schema, not the other way around.
+
 ### Available Endpoints
 
 ```
