@@ -1,6 +1,6 @@
 import type {
-    FrameworkConfig,
     RepositoryBundle,
+    ToolkitOptions,
     UnitOfWork
 } from '@multitenantkit/domain-contracts';
 import type postgres from 'postgres';
@@ -33,7 +33,7 @@ export class PostgresUnitOfWork<
 {
     constructor(
         private readonly sql: postgres.Sql,
-        private readonly frameworkConfig?: FrameworkConfig<
+        private readonly toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -54,7 +54,7 @@ export class PostgresUnitOfWork<
         ) => Promise<T>
     ): Promise<T> {
         return (await this.sql.begin(async (transaction: postgres.Sql) => {
-            // Create repository bundle with transaction SQL client and complete framework config
+            // Create repository bundle with transaction SQL client and complete toolkit options
             const repos: RepositoryBundle<
                 TUserCustomFields,
                 TOrganizationCustomFields,
@@ -62,17 +62,17 @@ export class PostgresUnitOfWork<
             > = {
                 users: new PostgresUserRepository<TUserCustomFields>(
                     transaction,
-                    this.frameworkConfig
+                    this.toolkitOptions
                 ),
                 organizations: new PostgresOrganizationRepository<TOrganizationCustomFields>(
                     transaction,
-                    this.frameworkConfig
+                    this.toolkitOptions
                 ),
                 organizationMemberships: new PostgresOrganizationMembershipRepository<
                     TUserCustomFields,
                     TOrganizationCustomFields,
                     TOrganizationMembershipCustomFields
-                >(transaction, this.frameworkConfig)
+                >(transaction, this.toolkitOptions)
             };
 
             // Execute the work within the transaction

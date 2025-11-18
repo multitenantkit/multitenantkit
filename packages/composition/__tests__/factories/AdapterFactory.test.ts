@@ -91,8 +91,8 @@ describe('AdapterFactory', () => {
             expect((adapters.uow as any).dataDir).toBe('/test/uow');
         });
 
-        it('should ignore frameworkConfig for JSON adapter', () => {
-            const _frameworkConfig = {
+        it('should ignore toolkitOptions for JSON adapter', () => {
+            const _toolkitOptions = {
                 users: {
                     customFields: {
                         customSchema: {} as any
@@ -100,8 +100,8 @@ describe('AdapterFactory', () => {
                 }
             };
 
-            // Should not throw even with framework config
-            // TODO: JSON adapter should accept framework config
+            // Should not throw even with toolkit options
+            // TODO: JSON adapter should accept toolkit options
             expect(() => createJsonAdapters('/test/data')).not.toThrow();
         });
     });

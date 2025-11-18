@@ -19,7 +19,7 @@ import { validateRequest } from './middleware';
  * @example
  * ```typescript
  * // Mount in existing Express app
- * const handlerPackages = buildHandlers(useCases, frameworkConfig);
+ * const handlerPackages = buildHandlers(useCases, toolkitOptions);
  * const router = buildExpressRouter(handlerPackages, authService);
  * existingApp.use('/api/organizations', router);
  * ```

@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import {
     NotFoundError,
@@ -134,13 +134,13 @@ describe('UpdateOrganization Handler', () => {
             expect(response.headers?.['X-Request-ID']).toBe('req-header-test');
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000001';
             const userId = '00000000-0000-4000-8000-000000000002';
             const organizationId = '00000000-0000-4000-8000-333333333333';
 
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -161,7 +161,7 @@ describe('UpdateOrganization Handler', () => {
 
             mockUpdateOrganizationExecute.mockResolvedValue(mockResult.ok(mockOrganization));
 
-            const handler = makeUpdateOrganizationHandler(mockUseCases, frameworkConfig);
+            const handler = makeUpdateOrganizationHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -185,7 +185,7 @@ describe('UpdateOrganization Handler', () => {
             const organizationId = '00000000-0000-4000-8000-444444444444';
 
             type OrganizationCustom = { description: string; category: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -208,7 +208,7 @@ describe('UpdateOrganization Handler', () => {
 
             mockUpdateOrganizationExecute.mockResolvedValue(mockResult.ok(mockOrganization));
 
-            const handler = makeUpdateOrganizationHandler(mockUseCases, frameworkConfig);
+            const handler = makeUpdateOrganizationHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -440,7 +440,7 @@ describe('UpdateOrganization Handler', () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000011';
             const organizationId = '00000000-0000-4000-8000-111111111110';
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -450,7 +450,7 @@ describe('UpdateOrganization Handler', () => {
                 }
             } as any;
 
-            const handler = makeUpdateOrganizationHandler(mockUseCases, frameworkConfig);
+            const handler = makeUpdateOrganizationHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -648,19 +648,18 @@ describe('UpdateOrganization Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
-                {
-                    organizations: {
-                        customFields: {
-                            customSchema: require('zod').z.object({
-                                description: require('zod').z.string()
-                            })
-                        }
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<undefined, { description: string }, undefined> = {
+                organizations: {
+                    customFields: {
+                        customSchema: require('zod').z.object({
+                            description: require('zod').z.string()
+                        })
                     }
-                } as any;
+                }
+            } as any;
 
-            const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, toolkitOptions);
 
             expect(handlerPackage).toHaveProperty('handler');
             expect(handlerPackage).toHaveProperty('schema');
@@ -680,18 +679,17 @@ describe('UpdateOrganization Handler', () => {
         });
 
         it('should validate at least one field when custom fields are configured', () => {
-            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
-                {
-                    organizations: {
-                        customFields: {
-                            customSchema: require('zod').z.object({
-                                description: require('zod').z.string()
-                            })
-                        }
+            const toolkitOptions: ToolkitOptions<undefined, { description: string }, undefined> = {
+                organizations: {
+                    customFields: {
+                        customSchema: require('zod').z.object({
+                            description: require('zod').z.string()
+                        })
                     }
-                } as any;
+                }
+            } as any;
 
-            const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = updateOrganizationHandlerPackage(mockUseCases, toolkitOptions);
 
             // Test the refine validation
             const result = handlerPackage.schema.safeParse({

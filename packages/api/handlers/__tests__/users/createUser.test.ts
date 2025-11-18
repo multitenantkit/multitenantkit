@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import { ConflictError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -167,11 +167,11 @@ describe('CreateUser Handler', () => {
             );
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const userId = '00000000-0000-4000-8000-000000000004';
             const externalId = '00000000-0000-4000-8000-000000000104';
             type UserCustom = { role: string; email: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -195,7 +195,7 @@ describe('CreateUser Handler', () => {
 
             mockCreateUserExecute.mockResolvedValue(mockResult.ok(mockUser));
 
-            const handler = makeCreateUserHandler(mockUseCases, frameworkConfig);
+            const handler = makeCreateUserHandler(mockUseCases, toolkitOptions);
 
             const response = await handler({
                 input: {
@@ -421,7 +421,7 @@ describe('CreateUser Handler', () => {
 
         it('should handle custom schema parsing errors', async () => {
             type UserCustom = { role: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -431,7 +431,7 @@ describe('CreateUser Handler', () => {
                 }
             } as any;
 
-            const handler = makeCreateUserHandler(mockUseCases, frameworkConfig);
+            const handler = makeCreateUserHandler(mockUseCases, toolkitOptions);
 
             const response = await handler({
                 input: {
@@ -578,8 +578,8 @@ describe('CreateUser Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ role: string }, undefined, undefined> = {
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<{ role: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -589,7 +589,7 @@ describe('CreateUser Handler', () => {
                 }
             } as any;
 
-            const handlerPackage = createUserHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = createUserHandlerPackage(mockUseCases, toolkitOptions);
 
             expect(handlerPackage).toHaveProperty('handler');
             expect(handlerPackage).toHaveProperty('schema');

@@ -13,10 +13,10 @@ import {
 import { CryptoUuid } from '@multitenantkit/adapter-system-crypto-uuid';
 import { SystemClock } from '@multitenantkit/adapter-system-system-clock';
 import type {
-    FrameworkConfig,
     MetricsPort,
     PersistenceAdapters,
-    SystemAdapters
+    SystemAdapters,
+    ToolkitOptions
 } from '@multitenantkit/domain-contracts';
 
 /**
@@ -80,7 +80,7 @@ export function createJsonAdapters<
  * Create PostgreSQL-based adapters
  *
  * Generic support:
- * @template TUserCustomFields - Custom fields for Users (extracted from frameworkConfig)
+ * @template TUserCustomFields - Custom fields for Users (extracted from toolkitOptions)
  * @template TOrganizationCustomFields - Custom fields for Organizations (future)
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
@@ -93,7 +93,7 @@ export function createPostgresAdapters<
     TOrganizationMembershipCustomFields = {}
 >(
     env: PostgresDBEnvVars = {},
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -118,7 +118,7 @@ export function createPostgresAdapters<
         TOrganizationMembershipCustomFields
     >({
         env: postgresEnv,
-        frameworkConfig
+        toolkitOptions
     });
     const repositories = createPostgresRepositories<
         TUserCustomFields,
@@ -126,7 +126,7 @@ export function createPostgresAdapters<
         TOrganizationMembershipCustomFields
     >({
         env: postgresEnv,
-        frameworkConfig
+        toolkitOptions
     });
 
     return {

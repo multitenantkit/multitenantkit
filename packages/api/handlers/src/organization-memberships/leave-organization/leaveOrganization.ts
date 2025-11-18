@@ -4,7 +4,7 @@ import {
     type LeaveOrganizationResponse
 } from '@multitenantkit/api-contracts/organization-memberships';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -26,7 +26,7 @@ export const leaveOrganizationRoute: RouteDefinition = {
  */
 export function makeLeaveOrganizationHandler(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): Handler<LeaveOrganizationRequest, ApiResponse<LeaveOrganizationResponse> | HttpErrorResponse> {
     return async ({
         input,
@@ -89,7 +89,7 @@ export function makeLeaveOrganizationHandler(
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizationMemberships
+                    toolkitOptions?.responseTransformers?.organizationMemberships
                         ?.LeaveOrganization;
                 return applyResponseTransformer(
                     {
@@ -132,7 +132,7 @@ export function makeLeaveOrganizationHandler(
  */
 export function leaveOrganizationHandlerPackage(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): HandlerPackage<
     LeaveOrganizationRequest,
     ApiResponse<LeaveOrganizationResponse> | HttpErrorResponse
@@ -140,6 +140,6 @@ export function leaveOrganizationHandlerPackage(
     return {
         route: leaveOrganizationRoute,
         schema: LeaveOrganizationRequestSchema,
-        handler: makeLeaveOrganizationHandler(useCases, frameworkConfig)
+        handler: makeLeaveOrganizationHandler(useCases, toolkitOptions)
     };
 }

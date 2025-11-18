@@ -12,7 +12,7 @@
 -- Approach:
 --   - Keep your existing "members" table (no need to migrate)
 --   - Create organizations and organization_memberships tables
---   - Use columnMapping to map framework fields to your existing columns
+--   - Use columnMapping to map fields to your existing columns
 --
 
 -- =====================
@@ -89,10 +89,10 @@ CREATE INDEX idx_team_members_team_id ON team_members(team_id) WHERE date_delete
 -- =====================
 -- This is how you configure MultiTenantKit to work with your existing schema:
 /*
-import { FrameworkConfig } from '@multitenantkit/sdk';
+import { ToolkitOptions } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   users: {
     database: {
       schema: 'public',
@@ -100,13 +100,13 @@ const frameworkConfig: FrameworkConfig = {
     },
     customFields: {
       columnMapping: {
-        // Map framework field names to YOUR column names
-        id: 'member_id',              // Framework's id → your member_id
-        externalId: 'auth_user_id',   // Framework's externalId → your auth_user_id
-        username: 'email_address',    // Framework's username → your email_address
-        createdAt: 'date_created',    // Framework's createdAt → your date_created
-        updatedAt: 'date_modified',   // Framework's updatedAt → your date_modified
-        deletedAt: 'date_deleted'     // Framework's deletedAt → your is_deleted (you may need a migration)
+        // Map core field names to YOUR column names
+        id: 'member_id',              // Kit's id → your member_id
+        externalId: 'auth_user_id',   // Kit's externalId → your auth_user_id
+        username: 'email_address',    // Kit's username → your email_address
+        createdAt: 'date_created',    // Kit's createdAt → your date_created
+        updatedAt: 'date_modified',   // Kit's updatedAt → your date_modified
+        deletedAt: 'date_deleted'     // Kit's deletedAt → your is_deleted (you may need a migration)
       },
       customSchema: z.object({
         fullName: z.string(),
@@ -193,7 +193,7 @@ const frameworkConfig: FrameworkConfig = {
 --
 -- 2. TYPE MISMATCHES:
 --    If your ID columns use INTEGER/SERIAL instead of UUID, that's fine!
---    The framework works with any type - just make sure foreign keys match.
+--    The Kit works with any type - just make sure foreign keys match.
 --
 -- 3. CASCADING DELETES:
 --    Adjust ON DELETE behavior based on your business rules:

@@ -1,5 +1,5 @@
 import type { Adapters } from '@multitenantkit/domain-contracts';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     ConflictError,
     type DomainError,
@@ -26,8 +26,8 @@ import { BaseUseCase } from '../../../shared/use-case';
  *
  * Generic support for custom fields:
  * @template TUserCustomFields - Custom fields added to User
- * @template TOrganizationCustomFields - Custom fields added to Organization (for framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
+ * @template TOrganizationCustomFields - Custom fields added to Organization (for toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for toolkit options compatibility)
  */
 export class CreateUser<
         // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -55,13 +55,13 @@ export class CreateUser<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        const customSchema = frameworkConfig?.users?.customFields?.customSchema as
+        const customSchema = toolkitOptions?.users?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -78,7 +78,7 @@ export class CreateUser<
         super(
             'user-createUser',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             inputSchema,
             outputSchema,
             'Failed to create user'

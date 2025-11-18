@@ -31,7 +31,7 @@ export function DatabaseSetupSection() {
 // packages/adapters/persistence/postgres/sql/examples/supabase.sql
 
 // Configure your app:
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
   users: {
     database: { schema: 'auth', table: 'users' },
     customFields: {
@@ -56,7 +56,7 @@ ALTER TABLE users ADD COLUMN email VARCHAR(255);
 export DATABASE_URL="postgresql://user:pass@localhost:5432/your_database"`;
 
     const existingAppSetup = `# Use your existing tables with columnMapping
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
   users: {
     database: {
       schema: 'public',

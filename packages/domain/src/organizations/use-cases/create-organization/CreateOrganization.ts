@@ -10,7 +10,7 @@ import {
     CreateOrganizationInputSchema,
     CreateOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     ValidationError
@@ -52,14 +52,14 @@ export class CreateOrganization<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract organization custom schema from framework config
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        // Extract organization custom schema from toolkit options
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -78,7 +78,7 @@ export class CreateOrganization<
         super(
             'organization-createOrganization',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             inputSchema,
             outputSchema,
             'Failed to create organization'

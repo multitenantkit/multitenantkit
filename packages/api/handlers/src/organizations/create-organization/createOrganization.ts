@@ -3,7 +3,7 @@ import {
     CreateOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { type Organization, OrganizationSchema } from '@multitenantkit/domain-contracts';
 import { type DomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ export const createOrganizationRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeCreateOrganizationHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -44,7 +44,7 @@ export function makeCreateOrganizationHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -55,7 +55,7 @@ export function makeCreateOrganizationHandler<
 > {
     // Build response schema with custom fields if provided
     const customOrganizationFieldsSchema =
-        frameworkConfig?.organizations?.customFields?.customSchema;
+        toolkitOptions?.organizations?.customFields?.customSchema;
     const responseSchema = customOrganizationFieldsSchema
         ? OrganizationSchema.merge(customOrganizationFieldsSchema as any)
         : OrganizationSchema;
@@ -151,7 +151,7 @@ export function makeCreateOrganizationHandler<
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizations?.CreateOrganization;
+                    toolkitOptions?.responseTransformers?.organizations?.CreateOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -198,7 +198,7 @@ export function makeCreateOrganizationHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function createOrganizationHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -209,7 +209,7 @@ export function createOrganizationHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -220,7 +220,7 @@ export function createOrganizationHandlerPackage<
 > {
     // Build request schema with custom fields if provided
     const customOrganizationFieldsSchema =
-        frameworkConfig?.organizations?.customFields?.customSchema;
+        toolkitOptions?.organizations?.customFields?.customSchema;
     let requestSchema: any = CreateOrganizationRequestSchema;
 
     if (customOrganizationFieldsSchema) {
@@ -238,6 +238,6 @@ export function createOrganizationHandlerPackage<
     return {
         route: createOrganizationRoute,
         schema: requestSchema,
-        handler: makeCreateOrganizationHandler(useCases, frameworkConfig)
+        handler: makeCreateOrganizationHandler(useCases, toolkitOptions)
     };
 }

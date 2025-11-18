@@ -2,7 +2,7 @@ import {
     type RemoveOrganizationMemberRequest,
     RemoveOrganizationMemberRequestSchema
 } from '@multitenantkit/api-contracts/organization-memberships';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -23,7 +23,7 @@ export const removeOrganizationMemberRoute: RouteDefinition = {
  */
 export function makeRemoveOrganizationMemberHandler(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): Handler<RemoveOrganizationMemberRequest, undefined | HttpErrorResponse> {
     return async ({
         input,
@@ -86,7 +86,7 @@ export function makeRemoveOrganizationMemberHandler(
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizationMemberships
+                    toolkitOptions?.responseTransformers?.organizationMemberships
                         ?.RemoveOrganizationMember;
                 return applyResponseTransformer(
                     {
@@ -129,11 +129,11 @@ export function makeRemoveOrganizationMemberHandler(
  */
 export function removeOrganizationMemberHandlerPackage(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): HandlerPackage<RemoveOrganizationMemberRequest, undefined | HttpErrorResponse> {
     return {
         route: removeOrganizationMemberRoute,
         schema: RemoveOrganizationMemberRequestSchema,
-        handler: makeRemoveOrganizationMemberHandler(useCases, frameworkConfig)
+        handler: makeRemoveOrganizationMemberHandler(useCases, toolkitOptions)
     };
 }

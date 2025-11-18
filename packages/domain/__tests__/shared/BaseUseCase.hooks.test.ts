@@ -1,8 +1,8 @@
 import type {
     Adapters,
-    FrameworkConfig,
     HookContext,
     OperationContext,
+    ToolkitOptions,
     UseCaseHooks
 } from '@multitenantkit/domain-contracts';
 import { AbortedError, BusinessRuleError, ValidationError } from '@multitenantkit/domain-contracts';
@@ -20,11 +20,11 @@ class TestUseCase extends BaseUseCase<
     { result: string },
     ValidationError | BusinessRuleError
 > {
-    constructor(adapters: Adapters, frameworkConfig?: FrameworkConfig) {
+    constructor(adapters: Adapters, toolkitOptions?: ToolkitOptions) {
         super(
             'test-testUseCase',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             z.object({ value: z.string() }),
             z.object({ result: z.string() }),
             'Test use case failed'
@@ -91,7 +91,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -134,7 +134,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -165,7 +165,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -202,7 +202,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -223,7 +223,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -253,7 +253,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -305,7 +305,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -347,7 +347,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -387,7 +387,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -425,7 +425,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -454,7 +454,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -495,7 +495,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -522,7 +522,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -549,7 +549,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -570,7 +570,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -609,7 +609,7 @@ describe('BaseUseCase - Hooks System', () => {
             };
 
             // Test success case
-            const configSuccess: FrameworkConfig = {
+            const configSuccess: ToolkitOptions = {
                 useCaseHooks: { TestUseCase: hooksSuccess } as any
             };
             const useCaseSuccess = new TestUseCase(adapters, configSuccess);
@@ -619,7 +619,7 @@ describe('BaseUseCase - Hooks System', () => {
             expect(successResult.getValue()).toEqual({ result: 'TEST' });
 
             // Test failure case
-            const configFailure: FrameworkConfig = {
+            const configFailure: ToolkitOptions = {
                 useCaseHooks: { TestUseCase: hooksFailure } as any
             };
             const useCaseFailure = new TestUseCase(adapters, configFailure);
@@ -639,8 +639,8 @@ describe('BaseUseCase - Hooks System', () => {
             expect(result.getValue()).toEqual({ result: 'TEST' });
         });
 
-        it('should work normally when frameworkConfig exists but no hooks for this use case', async () => {
-            const config: FrameworkConfig = {
+        it('should work normally when toolkitOptions exists but no hooks for this use case', async () => {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     // Different use case configured
                     SomeOtherUseCase: {
@@ -683,7 +683,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -726,7 +726,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -758,7 +758,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -795,7 +795,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any
@@ -827,7 +827,7 @@ describe('BaseUseCase - Hooks System', () => {
                 }
             };
 
-            const config: FrameworkConfig = {
+            const config: ToolkitOptions = {
                 useCaseHooks: {
                     TestUseCase: hooks
                 } as any

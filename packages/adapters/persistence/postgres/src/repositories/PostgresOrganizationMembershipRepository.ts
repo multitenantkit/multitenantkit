@@ -1,12 +1,12 @@
 import {
     type FindMembersOptions,
-    type FrameworkConfig,
     type OrganizationMembership,
     type OrganizationMembershipRepository,
     OrganizationMembershipRepositoryConfigHelper,
     type OrganizationMemberWithUserInfo,
     OrganizationRepositoryConfigHelper,
     type PaginatedResult,
+    type ToolkitOptions,
     UserRepositoryConfigHelper
 } from '@multitenantkit/domain-contracts';
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
@@ -53,35 +53,35 @@ export class PostgresOrganizationMembershipRepository<
 
     constructor(
         private readonly sql: postgres.Sql,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract custom fields configs from framework config
-        const membershipConfig = frameworkConfig?.organizationMemberships?.customFields;
-        const userConfig = frameworkConfig?.users?.customFields;
-        const organizationConfig = frameworkConfig?.organizations?.customFields;
+        // Extract custom fields configs from toolkit options
+        const membershipConfig = toolkitOptions?.organizationMemberships?.customFields;
+        const userConfig = toolkitOptions?.users?.customFields;
+        const organizationConfig = toolkitOptions?.organizations?.customFields;
 
         // Extract database configuration with defaults
-        this.schemaName = frameworkConfig?.organizationMemberships?.database?.schema;
+        this.schemaName = toolkitOptions?.organizationMemberships?.database?.schema;
         this.tableName =
-            frameworkConfig?.organizationMemberships?.database?.table || 'organization_memberships';
+            toolkitOptions?.organizationMemberships?.database?.table || 'organization_memberships';
 
-        this.usersSchemaName = frameworkConfig?.users?.database?.schema;
-        this.usersTableName = frameworkConfig?.users?.database?.table || 'users';
+        this.usersSchemaName = toolkitOptions?.users?.database?.schema;
+        this.usersTableName = toolkitOptions?.users?.database?.table || 'users';
 
-        this.organizationsSchemaName = frameworkConfig?.organizations?.database?.schema;
+        this.organizationsSchemaName = toolkitOptions?.organizations?.database?.schema;
         this.organizationsTableName =
-            frameworkConfig?.organizations?.database?.table || 'organizations';
+            toolkitOptions?.organizations?.database?.table || 'organizations';
 
         // Extract naming strategies for all three entities
-        const globalNamingStrategy = frameworkConfig?.namingStrategy;
-        const userDatabaseNamingStrategy = frameworkConfig?.users?.database?.namingStrategy;
-        const orgDatabaseNamingStrategy = frameworkConfig?.organizations?.database?.namingStrategy;
+        const globalNamingStrategy = toolkitOptions?.namingStrategy;
+        const userDatabaseNamingStrategy = toolkitOptions?.users?.database?.namingStrategy;
+        const orgDatabaseNamingStrategy = toolkitOptions?.organizations?.database?.namingStrategy;
         const membershipDatabaseNamingStrategy =
-            frameworkConfig?.organizationMemberships?.database?.namingStrategy;
+            toolkitOptions?.organizationMemberships?.database?.namingStrategy;
 
         // Use helpers to handle configuration logic for all three entities
         this.membershipConfigHelper = new OrganizationMembershipRepositoryConfigHelper(

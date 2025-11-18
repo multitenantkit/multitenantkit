@@ -10,7 +10,7 @@ import {
     UpdateOrganizationInputSchema,
     UpdateOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type ConflictError,
     type NotFoundError,
@@ -28,8 +28,8 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  *
  * Generic support for custom fields:
  * @template TOrganizationCustomFields - Custom fields added to Organization
- * @template TUserCustomFields - User custom fields (for framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
+ * @template TUserCustomFields - User custom fields (for toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Membership custom fields (for toolkit options compatibility)
  */
 export class UpdateOrganization<
         // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -57,14 +57,14 @@ export class UpdateOrganization<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract custom schema from framework config
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        // Extract custom schema from toolkit options
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -97,7 +97,7 @@ export class UpdateOrganization<
         super(
             'organization-updateOrganization',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             inputSchema,
             outputSchema,
             'Failed to update organization'

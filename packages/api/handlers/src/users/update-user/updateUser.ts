@@ -3,7 +3,7 @@ import {
     type UpdateUserRequest,
     UpdateUserRequestSchema
 } from '@multitenantkit/api-contracts/users';
-import type { FrameworkConfig, UseCases, User } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases, User } from '@multitenantkit/domain-contracts';
 import { UserSchema } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ export const updateUserRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeUpdateUserHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -44,14 +44,14 @@ export function makeUpdateUserHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): Handler<UpdateUserRequest, ApiResponse<User & TUserCustomFields> | HttpErrorResponse> {
     // Build response schema with custom fields if provided
-    const customUserFieldsSchema = frameworkConfig?.users?.customFields?.customSchema;
+    const customUserFieldsSchema = toolkitOptions?.users?.customFields?.customSchema;
     const responseSchema = customUserFieldsSchema
         ? UserSchema.merge(customUserFieldsSchema as any)
         : UserSchema;
@@ -148,7 +148,7 @@ export function makeUpdateUserHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.users?.UpdateUser;
+                const transformer = toolkitOptions?.responseTransformers?.users?.UpdateUser;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -194,7 +194,7 @@ export function makeUpdateUserHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function updateUserHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -205,14 +205,14 @@ export function updateUserHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): HandlerPackage<UpdateUserRequest, ApiResponse<User & TUserCustomFields> | HttpErrorResponse> {
     // Build request schema with custom fields if provided
-    const customUserFieldsSchema = frameworkConfig?.users?.customFields?.customSchema;
+    const customUserFieldsSchema = toolkitOptions?.users?.customFields?.customSchema;
     let requestSchema: any = UpdateUserRequestSchema;
 
     if (customUserFieldsSchema) {
@@ -241,6 +241,6 @@ export function updateUserHandlerPackage<
     return {
         route: updateUserRoute,
         schema: requestSchema,
-        handler: makeUpdateUserHandler(useCases, frameworkConfig)
+        handler: makeUpdateUserHandler(useCases, toolkitOptions)
     };
 }

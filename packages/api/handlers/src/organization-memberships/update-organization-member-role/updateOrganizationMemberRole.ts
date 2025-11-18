@@ -4,7 +4,7 @@ import {
     type UpdateOrganizationMemberRoleResponse
 } from '@multitenantkit/api-contracts/organization-memberships';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -26,7 +26,7 @@ export const updateOrganizationMemberRoleRoute: RouteDefinition = {
  */
 export function makeUpdateOrganizationMemberRoleHandler(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): Handler<
     UpdateOrganizationMemberRoleRequest,
     ApiResponse<UpdateOrganizationMemberRoleResponse> | HttpErrorResponse
@@ -94,7 +94,7 @@ export function makeUpdateOrganizationMemberRoleHandler(
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizationMemberships
+                    toolkitOptions?.responseTransformers?.organizationMemberships
                         ?.UpdateOrganizationMember;
                 return applyResponseTransformer(
                     {
@@ -137,7 +137,7 @@ export function makeUpdateOrganizationMemberRoleHandler(
  */
 export function updateOrganizationMemberRoleHandlerPackage(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): HandlerPackage<
     UpdateOrganizationMemberRoleRequest,
     ApiResponse<UpdateOrganizationMemberRoleResponse> | HttpErrorResponse
@@ -145,6 +145,6 @@ export function updateOrganizationMemberRoleHandlerPackage(
     return {
         route: updateOrganizationMemberRoleRoute,
         schema: UpdateOrganizationMemberRoleRequestSchema,
-        handler: makeUpdateOrganizationMemberRoleHandler(useCases, frameworkConfig)
+        handler: makeUpdateOrganizationMemberRoleHandler(useCases, toolkitOptions)
     };
 }

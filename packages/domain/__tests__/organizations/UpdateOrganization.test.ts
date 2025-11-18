@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateOrganization } from '../../src/organizations/use-cases/update-organization/UpdateOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
@@ -81,10 +81,10 @@ describe('UpdateOrganization use case', () => {
 
     describe('Happy Path', () => {
         it('should update organization as owner', async () => {
-            // Provide a custom field via framework config to satisfy input refine
+            // Provide a custom field via toolkit options to satisfy input refine
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -96,7 +96,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 {
@@ -114,7 +114,7 @@ describe('UpdateOrganization use case', () => {
         it('should update organization as admin member', async () => {
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -126,7 +126,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 {
@@ -141,10 +141,10 @@ describe('UpdateOrganization use case', () => {
             expect(result.getValue().id).toBe(organizationId);
         });
 
-        it('should accept and return custom fields when framework config provided', async () => {
+        it('should accept and return custom fields when toolkit options provided', async () => {
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -156,7 +156,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 {
@@ -176,7 +176,7 @@ describe('UpdateOrganization use case', () => {
         it('should fail with NOT_FOUND when organization does not exist', async () => {
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -188,7 +188,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
 
             const result = await useCase.execute(
@@ -244,7 +244,7 @@ describe('UpdateOrganization use case', () => {
 
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -256,7 +256,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             // Provide a valid update field so we hit the merged validation on entity
             const result = await useCase.execute(
@@ -284,7 +284,7 @@ describe('UpdateOrganization use case', () => {
 
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -296,7 +296,7 @@ describe('UpdateOrganization use case', () => {
 
             const useCase = new UpdateOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 {

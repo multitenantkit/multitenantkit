@@ -55,8 +55,8 @@ describe('Test Infrastructure', () => {
             expect(user.deletedAt).toBeUndefined();
         });
 
-        it('should build user with custom fields via framework config', () => {
-            const frameworkConfig = {
+        it('should build user with custom fields via toolkit options', () => {
+            const toolkitOptions = {
                 users: {
                     customFields: {
                         // Provide a simple custom schema with one field
@@ -67,7 +67,7 @@ describe('Test Infrastructure', () => {
 
             const user = TestData.user<{ role: string }>()
                 .withCustomFields({ role: 'admin' })
-                .build(frameworkConfig);
+                .build(toolkitOptions);
 
             expect(user.role).toBe('admin');
         });

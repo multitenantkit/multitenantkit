@@ -3,7 +3,7 @@ import {
     DeleteOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, Organization, UseCases } from '@multitenantkit/domain-contracts';
+import type { Organization, ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { OrganizationSchema, ValidationError } from '@multitenantkit/domain-contracts';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -32,7 +32,7 @@ export const deleteOrganizationRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeDeleteOrganizationHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -43,7 +43,7 @@ export function makeDeleteOrganizationHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -54,7 +54,7 @@ export function makeDeleteOrganizationHandler<
 > {
     // Build response schema with custom fields if provided
     const customOrganizationFieldsSchema =
-        frameworkConfig?.organizations?.customFields?.customSchema;
+        toolkitOptions?.organizations?.customFields?.customSchema;
     const responseSchema = customOrganizationFieldsSchema
         ? OrganizationSchema.merge(customOrganizationFieldsSchema as any)
         : OrganizationSchema;
@@ -133,7 +133,7 @@ export function makeDeleteOrganizationHandler<
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizations?.DeleteOrganization;
+                    toolkitOptions?.responseTransformers?.organizations?.DeleteOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -179,7 +179,7 @@ export function makeDeleteOrganizationHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function deleteOrganizationHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -190,7 +190,7 @@ export function deleteOrganizationHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -202,6 +202,6 @@ export function deleteOrganizationHandlerPackage<
     return {
         route: deleteOrganizationRoute,
         schema: DeleteOrganizationRequestSchema,
-        handler: makeDeleteOrganizationHandler(useCases, frameworkConfig)
+        handler: makeDeleteOrganizationHandler(useCases, toolkitOptions)
     };
 }

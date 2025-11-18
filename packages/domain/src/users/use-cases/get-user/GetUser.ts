@@ -1,8 +1,8 @@
 import type {
-    FrameworkConfig,
     GetUserInput,
     IGetUser,
     OperationContext,
+    ToolkitOptions,
     User
 } from '@multitenantkit/domain-contracts';
 import {
@@ -21,8 +21,8 @@ import { BaseUseCase } from '../../../shared/use-case';
  *
  * Generic support for custom fields:
  * @template TUserCustomFields - Custom fields added to User
- * @template TOrganizationCustomFields - Custom fields added to Organization (for framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for framework config compatibility)
+ * @template TOrganizationCustomFields - Custom fields added to Organization (for toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Custom fields added to OrganizationMembership (for toolkit options compatibility)
  */
 export class GetUser<
         // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -48,14 +48,14 @@ export class GetUser<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract custom schema from framework config
-        const customSchema = frameworkConfig?.users?.customFields?.customSchema as
+        // Extract custom schema from toolkit options
+        const customSchema = toolkitOptions?.users?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -67,7 +67,7 @@ export class GetUser<
         super(
             'user-getUser',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             GetUserInputSchema,
             outputSchema,
             'Failed to retrieve user'

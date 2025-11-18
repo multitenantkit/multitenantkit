@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import type {
     Adapters,
     DomainError,
-    FrameworkConfig,
     HookContext,
     OperationContext,
+    ToolkitOptions,
     UseCaseHooks,
     User
 } from '@multitenantkit/domain-contracts';
@@ -31,8 +31,8 @@ import { Result } from '../result/Result';
  * @template TOutput - Output type returned by the use case
  * @template TError - Domain error types that can be returned
  * @template TCustomFields - Custom fields extension for entities
- * @template TOrganizationCustomFields - Custom fields for organizations (framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Custom fields for organization memberships (framework config compatibility)
+ * @template TOrganizationCustomFields - Custom fields for organizations (toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Custom fields for organization memberships (toolkit options compatibility)
  */
 export abstract class BaseUseCase<
     TInput,
@@ -85,8 +85,8 @@ export abstract class BaseUseCase<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        protected readonly frameworkConfig:
-            | FrameworkConfig<
+        protected readonly toolkitOptions:
+            | ToolkitOptions<
                   TCustomFields,
                   TOrganizationCustomFields,
                   TOrganizationMembershipCustomFields
@@ -165,7 +165,7 @@ export abstract class BaseUseCase<
     }
 
     /**
-     * Get configured hooks for this use case from FrameworkConfig
+     * Get configured hooks for this use case from ToolkitOptions
      *
      * @returns UseCaseHooks if configured, undefined otherwise
      */
@@ -179,12 +179,12 @@ export abstract class BaseUseCase<
               TOrganizationMembershipCustomFields
           >
         | undefined {
-        if (!this.frameworkConfig?.useCaseHooks) {
+        if (!this.toolkitOptions?.useCaseHooks) {
             return undefined;
         }
 
-        const useCaseName = this.constructor.name as keyof typeof this.frameworkConfig.useCaseHooks;
-        return this.frameworkConfig.useCaseHooks[useCaseName] as
+        const useCaseName = this.constructor.name as keyof typeof this.toolkitOptions.useCaseHooks;
+        return this.toolkitOptions.useCaseHooks[useCaseName] as
             | UseCaseHooks<
                   TInput,
                   TOutput,

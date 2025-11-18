@@ -320,7 +320,7 @@ MultiTenantKit is designed to adapt to **your** database and requirements:
 | Feature | Description |
 |---------|-------------|
 | **Custom Fields** | Extend users, organizations, memberships with Zod schemas |
-| **Column Mapping** | Rename framework fields to match your existing DB (`externalId` → `auth_id`) |
+| **Column Mapping** | Rename base fields to match your existing DB (`externalId` → `auth_id`) |
 | **Naming Strategies** | Auto-convert field names (`camelCase` ↔ `snake_case`, `kebab-case`, `PascalCase`) |
 | **Custom Mappers** | Complex transformations for denormalized or legacy schemas |
 | **Use Case Hooks** | Inject logic at 7 lifecycle points + abort mechanism (onStart, afterValidation, beforeExecution, afterExecution, onError, onAbort, onFinally) |

@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateOrganization } from '../../src/organizations/use-cases/create-organization/CreateOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
@@ -66,10 +66,10 @@ describe('CreateOrganization use case', () => {
             expect(setup.uow.getOrganizationMembershipRepository().memberships.size).toBe(1);
         });
 
-        it('should return custom fields when framework config provided', async () => {
+        it('should return custom fields when toolkit options provided', async () => {
             type OrganizationCustom = { category?: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} is correct for unused membership custom fields
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -85,7 +85,7 @@ describe('CreateOrganization use case', () => {
             );
             const useCase = new CreateOrganization<undefined, OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute({ principalExternalId, category: 'eng' } as any, {
                 actorUserId: principalExternalId,

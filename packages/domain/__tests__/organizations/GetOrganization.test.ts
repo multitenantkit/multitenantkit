@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetOrganization } from '../../src/organizations/use-cases/get-organization/GetOrganization';
 import { createTestSetup } from '../test-helpers/TestUtils';
@@ -110,11 +110,11 @@ describe('GetOrganization use case', () => {
             expect(result.getValue().id).toBe(organization.id);
         });
 
-        it('should return custom fields when framework config provided', async () => {
+        it('should return custom fields when toolkit options provided', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
             type OrganizationCustom = { category: string };
             // biome-ignore lint/complexity/noBannedTypes: Empty object {} for unused user/membership custom fields
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -142,7 +142,7 @@ describe('GetOrganization use case', () => {
 
             const useCase = new GetOrganization<OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId },

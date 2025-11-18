@@ -9,7 +9,7 @@ import {
     AddOrganizationMemberOutputSchema,
     type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     ConflictError,
     type DomainError,
@@ -51,7 +51,7 @@ export class AddOrganizationMember<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -60,7 +60,7 @@ export class AddOrganizationMember<
         super(
             'organizationMembership-addOrganizationMember',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             AddOrganizationMemberInputSchema,
             AddOrganizationMemberOutputSchema as unknown as import('zod').ZodType<AddOrganizationMemberOutput>,
             'Failed to add organization member'

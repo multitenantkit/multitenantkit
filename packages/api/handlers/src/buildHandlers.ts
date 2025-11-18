@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import {
     acceptOrganizationInvitationHandlerPackage,
     addOrganizationMemberHandlerPackage,
@@ -35,7 +35,7 @@ import {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - The composed use cases from the composition root
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  * @returns Array of handler packages ready for transport layer
  */
 export function buildHandlers<
@@ -47,7 +47,7 @@ export function buildHandlers<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -55,25 +55,25 @@ export function buildHandlers<
 ): HandlerPackage<any, any>[] {
     return [
         // User handlers - Order matters! More specific routes first
-        createUserHandlerPackage(useCases, frameworkConfig),
-        getUserHandlerPackage(useCases, frameworkConfig),
-        updateUserHandlerPackage(useCases, frameworkConfig),
-        listUserOrganizationsHandlerPackage(useCases, frameworkConfig),
-        deleteUserHandlerPackage(useCases, frameworkConfig), // DELETE should come last
+        createUserHandlerPackage(useCases, toolkitOptions),
+        getUserHandlerPackage(useCases, toolkitOptions),
+        updateUserHandlerPackage(useCases, toolkitOptions),
+        listUserOrganizationsHandlerPackage(useCases, toolkitOptions),
+        deleteUserHandlerPackage(useCases, toolkitOptions), // DELETE should come last
 
         // Organization handlers - Order matters! More specific routes first
-        createOrganizationHandlerPackage(useCases, frameworkConfig),
-        listOrganizationMembersHandlerPackage(useCases, frameworkConfig as any), // Must come before getOrganizationHandlerPackage
-        archiveOrganizationHandlerPackage(useCases, frameworkConfig), // POST /organizations/:organizationId/archive (specific action)
-        restoreOrganizationHandlerPackage(useCases, frameworkConfig), // POST /organizations/:organizationId/restore (specific action)
-        transferOrganizationOwnershipHandlerPackage(useCases, frameworkConfig), // POST /organizations/:organizationId/transfer-ownership (specific action)
-        getOrganizationHandlerPackage(useCases, frameworkConfig),
-        updateOrganizationHandlerPackage(useCases, frameworkConfig),
-        deleteOrganizationHandlerPackage(useCases, frameworkConfig), // DELETE should come last
+        createOrganizationHandlerPackage(useCases, toolkitOptions),
+        listOrganizationMembersHandlerPackage(useCases, toolkitOptions as any), // Must come before getOrganizationHandlerPackage
+        archiveOrganizationHandlerPackage(useCases, toolkitOptions), // POST /organizations/:organizationId/archive (specific action)
+        restoreOrganizationHandlerPackage(useCases, toolkitOptions), // POST /organizations/:organizationId/restore (specific action)
+        transferOrganizationOwnershipHandlerPackage(useCases, toolkitOptions), // POST /organizations/:organizationId/transfer-ownership (specific action)
+        getOrganizationHandlerPackage(useCases, toolkitOptions),
+        updateOrganizationHandlerPackage(useCases, toolkitOptions),
+        deleteOrganizationHandlerPackage(useCases, toolkitOptions), // DELETE should come last
 
         // Organization Membership handlers - Order matters! More specific routes first
         addOrganizationMemberHandlerPackage(useCases),
-        acceptOrganizationInvitationHandlerPackage(useCases, frameworkConfig),
+        acceptOrganizationInvitationHandlerPackage(useCases, toolkitOptions),
         updateOrganizationMemberRoleHandlerPackage(useCases),
         leaveOrganizationHandlerPackage(useCases),
         removeOrganizationMemberHandlerPackage(useCases) // DELETE should come last

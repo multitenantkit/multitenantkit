@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateUser } from '../../src/users/use-cases/create-user/CreateUser';
 import { TestData } from '../test-helpers/Builders';
@@ -50,9 +50,9 @@ describe('CreateUser use case', () => {
             expect(fromRepo?.externalId).toBe('New@Example.com');
         });
 
-        it('should create a user with custom fields when framework config provided', async () => {
+        it('should create a user with custom fields when toolkit options provided', async () => {
             type Custom = { role: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({ role: require('zod').z.string() })
@@ -60,7 +60,7 @@ describe('CreateUser use case', () => {
                 }
             } as any;
 
-            const useCase = new CreateUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new CreateUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 {
                     externalId: 'custom@example.com',
@@ -101,7 +101,7 @@ describe('CreateUser use case', () => {
 
         it('should fail with VALIDATION_ERROR when required custom field is missing', async () => {
             type Custom = { role: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         // role is required on output validation
@@ -110,7 +110,7 @@ describe('CreateUser use case', () => {
                 }
             } as any;
 
-            const useCase = new CreateUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new CreateUser<Custom>(adapters as any, toolkitOptions);
             // We intentionally omit role in input; input schema allows partial, but output validation requires it
             const result = await useCase.execute({ email: 'missingrole@example.com' } as any, {
                 requestId: 'test-request-id',

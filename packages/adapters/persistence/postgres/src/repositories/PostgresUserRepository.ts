@@ -1,5 +1,5 @@
 import {
-    type FrameworkConfig,
+    type ToolkitOptions,
     type User,
     type UserRepository,
     UserRepositoryConfigHelper
@@ -25,21 +25,21 @@ export class PostgresUserRepository<TCustomFields = {}> implements UserRepositor
 
     constructor(
         private readonly sql: postgres.Sql,
-        frameworkConfig?: FrameworkConfig<TCustomFields, any, any>
+        toolkitOptions?: ToolkitOptions<TCustomFields, any, any>
     ) {
-        // Extract user custom fields config from framework config
-        const userConfig = frameworkConfig?.users?.customFields;
+        // Extract user custom fields config from toolkit options
+        const userConfig = toolkitOptions?.users?.customFields;
 
         // Extract database configuration with defaults
-        this.schemaName = frameworkConfig?.users?.database?.schema;
-        this.tableName = frameworkConfig?.users?.database?.table || 'users';
+        this.schemaName = toolkitOptions?.users?.database?.schema;
+        this.tableName = toolkitOptions?.users?.database?.table || 'users';
         this.fullTableName = this.schemaName
             ? `${this.schemaName}.${this.tableName}`
             : this.tableName;
 
         // Extract naming strategies
-        const databaseNamingStrategy = frameworkConfig?.users?.database?.namingStrategy;
-        const globalNamingStrategy = frameworkConfig?.namingStrategy;
+        const databaseNamingStrategy = toolkitOptions?.users?.database?.namingStrategy;
+        const globalNamingStrategy = toolkitOptions?.namingStrategy;
 
         // Use helper to handle configuration logic
         this.configHelper = new UserRepositoryConfigHelper(

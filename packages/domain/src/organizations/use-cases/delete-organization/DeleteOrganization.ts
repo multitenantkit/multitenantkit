@@ -1,9 +1,9 @@
 import type {
     DeleteOrganizationInput,
-    FrameworkConfig,
     IDeleteOrganization,
     OperationContext,
-    Organization
+    Organization,
+    ToolkitOptions
 } from '@multitenantkit/domain-contracts';
 import {
     type Adapters,
@@ -37,8 +37,8 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  *
  * Generic support for custom fields:
  * @template TOrganizationCustomFields - Custom fields added to Organization
- * @template TUserCustomFields - User custom fields (for framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
+ * @template TUserCustomFields - User custom fields (for toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Membership custom fields (for toolkit options compatibility)
  */
 export class DeleteOrganization<
         // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -66,14 +66,14 @@ export class DeleteOrganization<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract custom schema from framework config
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        // Extract custom schema from toolkit options
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -89,7 +89,7 @@ export class DeleteOrganization<
         super(
             'organization-deleteOrganization',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             DeleteOrganizationInputSchema,
             outputSchema,
             'Failed to delete organization'

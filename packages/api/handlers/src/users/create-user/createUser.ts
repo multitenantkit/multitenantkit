@@ -3,7 +3,7 @@ import {
     type CreateUserRequest,
     CreateUserRequestSchema
 } from '@multitenantkit/api-contracts/users';
-import type { FrameworkConfig, UseCases, User } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases, User } from '@multitenantkit/domain-contracts';
 import { UserSchema } from '@multitenantkit/domain-contracts';
 import type { DomainError } from '@multitenantkit/domain-contracts/shared/errors';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ export const createUserRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration (not used yet, for future extension)
+ * @param toolkitOptions - Optional toolkit options (not used yet, for future extension)
  */
 export function makeCreateUserHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -44,14 +44,14 @@ export function makeCreateUserHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): Handler<CreateUserRequest, ApiResponse<User & TUserCustomFields> | HttpErrorResponse> {
     // Build response schema with custom fields if provided
-    const customUserFieldsSchema = frameworkConfig?.users?.customFields?.customSchema;
+    const customUserFieldsSchema = toolkitOptions?.users?.customFields?.customSchema;
     const responseSchema = customUserFieldsSchema
         ? UserSchema.merge(customUserFieldsSchema as any)
         : UserSchema;
@@ -122,7 +122,7 @@ export function makeCreateUserHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.users?.CreateUser;
+                const transformer = toolkitOptions?.responseTransformers?.users?.CreateUser;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -169,7 +169,7 @@ export function makeCreateUserHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration (not used yet, for future extension)
+ * @param toolkitOptions - Optional toolkit options (not used yet, for future extension)
  */
 export function createUserHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -180,14 +180,14 @@ export function createUserHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): HandlerPackage<CreateUserRequest, ApiResponse<User & TUserCustomFields> | HttpErrorResponse> {
     // Build request schema with custom fields if provided
-    const customUserFieldsSchema = frameworkConfig?.users?.customFields?.customSchema;
+    const customUserFieldsSchema = toolkitOptions?.users?.customFields?.customSchema;
     let requestSchema: any = CreateUserRequestSchema;
 
     if (customUserFieldsSchema) {
@@ -206,6 +206,6 @@ export function createUserHandlerPackage<
     return {
         route: createUserRoute,
         schema: requestSchema,
-        handler: makeCreateUserHandler(useCases, frameworkConfig)
+        handler: makeCreateUserHandler(useCases, toolkitOptions)
     };
 }

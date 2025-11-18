@@ -65,7 +65,7 @@ This SDK gives you access to all adapters and options through convenient exports
 import { User, CreateUser, Organization } from '@multitenantkit/sdk';
 
 // Import contracts and types directly
-import { FrameworkConfig, UserSchema, OrganizationSchema } from '@multitenantkit/sdk';
+import { ToolkitOptions, UserSchema, OrganizationSchema } from '@multitenantkit/sdk';
 
 // Import API schemas
 import { CreateUserRequestSchema, OrganizationResponseSchema } from '@multitenantkit/sdk';
@@ -94,7 +94,7 @@ const app = ExpressAdapter.buildExpressApp(/* ... */);
 import {
     User, // Domain entity
     CreateUser, // Use case
-    FrameworkConfig, // Contract type
+    ToolkitOptions, // Contract type
     UserSchema // Schema
 } from '@multitenantkit/sdk';
 ```

@@ -1,9 +1,9 @@
 import type {
-    FrameworkConfig,
     ITransferOrganizationOwnership,
     OperationContext,
     Organization,
     OrganizationMembership,
+    ToolkitOptions,
     TransferOrganizationOwnershipInput,
     TransferOrganizationOwnershipOutput
 } from '@multitenantkit/domain-contracts';
@@ -38,8 +38,8 @@ import { BaseUseCase, UseCaseHelpers } from '../../../shared/use-case';
  *
  * Generic support for custom fields:
  * @template TOrganizationCustomFields - Custom fields added to Organization
- * @template TUserCustomFields - User custom fields (for framework config compatibility)
- * @template TOrganizationMembershipCustomFields - Membership custom fields (for framework config compatibility)
+ * @template TUserCustomFields - User custom fields (for toolkit options compatibility)
+ * @template TOrganizationMembershipCustomFields - Membership custom fields (for toolkit options compatibility)
  */
 export class TransferOrganizationOwnership<
         // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -65,14 +65,14 @@ export class TransferOrganizationOwnership<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
         // Extract custom schema if provided
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -86,7 +86,7 @@ export class TransferOrganizationOwnership<
         super(
             'organization-transferOrganizationOwnership',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             TransferOrganizationOwnershipInputSchema,
             outputSchema,
             'Failed to transfer organization ownership'

@@ -3,7 +3,7 @@ import {
     type DeleteUserRequest,
     DeleteUserRequestSchema
 } from '@multitenantkit/api-contracts/users';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -31,7 +31,7 @@ export const deleteUserRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeDeleteUserHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -42,7 +42,7 @@ export function makeDeleteUserHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -110,7 +110,7 @@ export function makeDeleteUserHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.users?.DeleteUser;
+                const transformer = toolkitOptions?.responseTransformers?.users?.DeleteUser;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -156,7 +156,7 @@ export function makeDeleteUserHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function deleteUserHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -167,7 +167,7 @@ export function deleteUserHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -179,6 +179,6 @@ export function deleteUserHandlerPackage<
     return {
         route: deleteUserRoute,
         schema: DeleteUserRequestSchema,
-        handler: makeDeleteUserHandler(useCases, frameworkConfig)
+        handler: makeDeleteUserHandler(useCases, toolkitOptions)
     };
 }

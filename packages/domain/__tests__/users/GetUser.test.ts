@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetUser } from '../../src/users/use-cases/get-user/GetUser';
 import { TestData } from '../test-helpers/Builders';
@@ -42,9 +42,9 @@ describe('GetUser use case', () => {
             expect(result.getValue().username).toBe(user.username);
         });
 
-        it('should support custom fields via framework config', async () => {
+        it('should support custom fields via toolkit options', async () => {
             type Custom = { role: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({ role: require('zod').z.string() })
@@ -54,10 +54,10 @@ describe('GetUser use case', () => {
 
             const user = TestData.user<Custom>()
                 .withCustomFields({ role: 'admin' })
-                .build(frameworkConfig);
+                .build(toolkitOptions);
             await setup.userRepo.insert(user as any);
 
-            const useCase = new GetUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new GetUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
                 { requestId: 'test-request-id', actorUserId: user.externalId }

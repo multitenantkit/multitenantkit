@@ -9,7 +9,7 @@ import {
     AcceptOrganizationInvitationOutputSchema,
     type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -57,7 +57,7 @@ export class AcceptOrganizationInvitation<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -66,7 +66,7 @@ export class AcceptOrganizationInvitation<
         super(
             'organizationMembership-acceptOrganizationInvitation',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             AcceptOrganizationInvitationInputSchema,
             AcceptOrganizationInvitationOutputSchema as unknown as import('zod').ZodType<AcceptOrganizationInvitationOutput>,
             'Failed to accept organization invitation'

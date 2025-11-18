@@ -4,7 +4,7 @@ import {
     type AddOrganizationMemberResponse
 } from '@multitenantkit/api-contracts/organization-memberships';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -26,7 +26,7 @@ export const addOrganizationMemberRoute: RouteDefinition = {
  */
 export function makeAddOrganizationMemberHandler(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): Handler<
     AddOrganizationMemberRequest,
     ApiResponse<AddOrganizationMemberResponse> | HttpErrorResponse
@@ -94,7 +94,7 @@ export function makeAddOrganizationMemberHandler(
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizationMemberships
+                    toolkitOptions?.responseTransformers?.organizationMemberships
                         ?.AddOrganizationMember;
                 return applyResponseTransformer(
                     {
@@ -137,7 +137,7 @@ export function makeAddOrganizationMemberHandler(
  */
 export function addOrganizationMemberHandlerPackage(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig
+    toolkitOptions?: ToolkitOptions
 ): HandlerPackage<
     AddOrganizationMemberRequest,
     ApiResponse<AddOrganizationMemberResponse> | HttpErrorResponse
@@ -145,6 +145,6 @@ export function addOrganizationMemberHandlerPackage(
     return {
         route: addOrganizationMemberRoute,
         schema: AddOrganizationMemberRequestSchema,
-        handler: makeAddOrganizationMemberHandler(useCases, frameworkConfig)
+        handler: makeAddOrganizationMemberHandler(useCases, toolkitOptions)
     };
 }

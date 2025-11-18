@@ -23,7 +23,7 @@ $$ language 'plpgsql';
 -- Users Table
 -- =====================
 CREATE TABLE IF NOT EXISTS users (
-    -- Framework columns
+    -- CORE columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     external_id VARCHAR(255) NOT NULL UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -53,7 +53,7 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
 -- Organizations Table
 -- =====================
 CREATE TABLE IF NOT EXISTS organizations (
-    -- Framework columns
+    -- CORE columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     owner_user_id UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -82,7 +82,7 @@ CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations
 -- Organization Memberships Table
 -- =====================
 CREATE TABLE IF NOT EXISTS organization_memberships (
-    -- Framework columns
+    -- CORE columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID,
     username VARCHAR(255) NOT NULL,
@@ -116,10 +116,10 @@ CREATE TRIGGER update_organization_memberships_updated_at BEFORE UPDATE ON organ
 -- =====================
 -- Use this TypeScript configuration with the schema above:
 /*
-import { FrameworkConfig } from '@multitenantkit/sdk';
+import { ToolkitOptions } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   namingStrategy: 'snake_case',  // Auto-converts camelCase ↔ snake_case
 
   users: {

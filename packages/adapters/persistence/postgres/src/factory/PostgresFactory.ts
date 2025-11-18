@@ -1,4 +1,4 @@
-import type { FrameworkConfig, RepositoryBundle } from '@multitenantkit/domain-contracts';
+import type { RepositoryBundle, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { DatabaseClient } from '../client/PostgresClient';
 import { createDatabaseConfig, type PostgresDBEnvVars } from '../client/PostgresConfig';
 import { PostgresOrganizationMembershipRepository } from '../repositories/PostgresOrganizationMembershipRepository';
@@ -53,7 +53,7 @@ export interface DatabaseFactoryOptions<
     TOrganizationMembershipCustomFields = {}
 > {
     env?: PostgresDBEnvVars;
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -66,7 +66,7 @@ export interface DatabaseFactoryOptions<
  * @returns Repository bundle with all PostgreSQL repositories
  *
  * Generic support for custom fields:
- * @template TUserCustomFields - Custom fields for UserRepository (inferred from frameworkConfig)
+ * @template TUserCustomFields - Custom fields for UserRepository (inferred from toolkitOptions)
  * @template TOrganizationCustomFields - Custom fields for Organizations (future)
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
@@ -95,18 +95,18 @@ export function createPostgresRepositories<
     const databaseClient = new DatabaseClient(config);
     const sql = databaseClient.getSql();
 
-    // Create repositories with shared SQL client and complete framework config
+    // Create repositories with shared SQL client and complete toolkit options
     return {
-        users: new PostgresUserRepository<TUserCustomFields>(sql, options.frameworkConfig),
+        users: new PostgresUserRepository<TUserCustomFields>(sql, options.toolkitOptions),
         organizations: new PostgresOrganizationRepository<TOrganizationCustomFields>(
             sql,
-            options.frameworkConfig
+            options.toolkitOptions
         ),
         organizationMemberships: new PostgresOrganizationMembershipRepository<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(sql, options.frameworkConfig)
+        >(sql, options.toolkitOptions)
     };
 }
 
@@ -116,7 +116,7 @@ export function createPostgresRepositories<
  * @returns Configured PostgresUnitOfWork instance
  *
  * Generic support for custom fields:
- * @template TUserCustomFields - Custom fields for UserRepository (inferred from frameworkConfig)
+ * @template TUserCustomFields - Custom fields for UserRepository (inferred from toolkitOptions)
  * @template TOrganizationCustomFields - Custom fields for Organizations (future)
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
@@ -149,5 +149,5 @@ export function createPostgresUnitOfWork<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
-    >(sql, options.frameworkConfig);
+    >(sql, options.toolkitOptions);
 }

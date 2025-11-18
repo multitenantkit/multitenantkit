@@ -9,7 +9,7 @@ import {
     UpdateOrganizationMemberRoleInputSchema,
     UpdateOrganizationMemberRoleOutputSchema
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -47,7 +47,7 @@ export class UpdateOrganizationMemberRole<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -56,7 +56,7 @@ export class UpdateOrganizationMemberRole<
         super(
             'organizationMembership-updateOrganizationMemberRole',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             UpdateOrganizationMemberRoleInputSchema,
             UpdateOrganizationMemberRoleOutputSchema as unknown as import('zod').ZodType<UpdateOrganizationMemberRoleOutput>,
             'Failed to update organization member role'

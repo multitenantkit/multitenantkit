@@ -1,5 +1,5 @@
 import type { PostgresDBEnvVars } from '@multitenantkit/adapter-persistence-postgres';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import {
     createMetricsAdapter,
     createPostgresAdapters,
@@ -25,8 +25,8 @@ export interface CompositionResult<
     _TOrganizationMembershipCustomFields = {}
 > {
     useCases: UseCases;
-    // Future: Expose framework config type for type inference
-    // _config?: FrameworkConfig<TUserCustomFields, TOrganizationCustomFields, TOrganizationMembershipCustomFields>;
+    // Future: Expose toolkit options type for type inference
+    // _config?: ToolkitOptions<TUserCustomFields, TOrganizationCustomFields, TOrganizationMembershipCustomFields>;
 }
 
 /**
@@ -35,12 +35,12 @@ export interface CompositionResult<
  *
  * This function wires together all the application dependencies:
  * - Environment configuration
- * - Framework configuration (custom fields, features, etc.) per vertical slice
+ * - toolkit options (custom fields, features, etc.) per vertical slice
  * - Infrastructure adapters (repositories, UoW, ports)
  * - Use cases (business logic)
  *
  * Generic support:
- * @template TUserCustomFields - Custom fields for Users (inferred from frameworkConfig)
+ * @template TUserCustomFields - Custom fields for Users (inferred from toolkitOptions)
  * @template TOrganizationCustomFields - Custom fields for Organizations (future)
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  */
@@ -53,7 +53,7 @@ export function compose<
     TOrganizationMembershipCustomFields = {}
 >(
     envOverrides?: Record<string, string | undefined>,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -71,12 +71,12 @@ export function compose<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
-    >(environment as unknown as PostgresDBEnvVars, frameworkConfig);
+    >(environment as unknown as PostgresDBEnvVars, toolkitOptions);
 
     const systemAdapters = createSystemAdapters();
     const metricsAdapter = createMetricsAdapter();
 
-    // 3. Create use cases with injected dependencies and framework config
+    // 3. Create use cases with injected dependencies and toolkit options
     const useCases = createUseCases<
         TUserCustomFields,
         TOrganizationCustomFields,
@@ -87,7 +87,7 @@ export function compose<
             system: systemAdapters,
             observability: metricsAdapter
         },
-        frameworkConfig
+        toolkitOptions
     );
 
     // 4. Return composition result
@@ -101,7 +101,7 @@ export function compose<
  * Automatically sets NODE_ENV=test and LOG_LEVEL=error for tests
  *
  * @param envOverrides - Partial environment overrides for testing
- * @param frameworkConfig - Optional framework configuration
+ * @param toolkitOptions - Optional toolkit options
  */
 export function composeForTesting<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -112,7 +112,7 @@ export function composeForTesting<
     TOrganizationMembershipCustomFields = {}
 >(
     envOverrides?: Partial<Record<string, string | number | undefined>>,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -144,5 +144,5 @@ export function composeForTesting<
         )
     };
 
-    return compose(testEnv, frameworkConfig);
+    return compose(testEnv, toolkitOptions);
 }

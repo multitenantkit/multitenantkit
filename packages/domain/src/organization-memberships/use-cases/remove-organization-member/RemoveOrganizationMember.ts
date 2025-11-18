@@ -9,7 +9,7 @@ import {
     RemoveOrganizationMemberInputSchema,
     RemoveOrganizationMemberOutputSchema
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -47,7 +47,7 @@ export class RemoveOrganizationMember<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -56,7 +56,7 @@ export class RemoveOrganizationMember<
         super(
             'organizationMembership-removeOrganizationMember',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             RemoveOrganizationMemberInputSchema,
             RemoveOrganizationMemberOutputSchema,
             'Failed to remove organization member'

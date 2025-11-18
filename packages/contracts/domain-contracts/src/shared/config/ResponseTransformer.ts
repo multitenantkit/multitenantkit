@@ -90,7 +90,7 @@ export type ResponseTransformer<TInput = any, TOutput = any> = (
  * Mapping of handler names to their response transformers
  * Organized by entity type (users, organizations, organizationMemberships)
  *
- * This type is used in FrameworkConfig to provide type-safe transformer configuration.
+ * This type is used in ToolkitOptions to provide type-safe transformer configuration.
  */
 export interface HandlerResponseTransformers<
     // biome-ignore lint/complexity/noBannedTypes: ignore

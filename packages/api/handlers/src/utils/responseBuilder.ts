@@ -26,8 +26,8 @@ export class ResponseBuilder {
      * @example
      * ```typescript
      * // In handler with custom fields:
-     * const userSchema = frameworkConfig?.users?.customFields?.customSchema
-     *   ? UserSchema.merge(frameworkConfig.users.customFields.customSchema)
+     * const userSchema = toolkitOptions?.users?.customFields?.customSchema
+     *   ? UserSchema.merge(toolkitOptions.users.customFields.customSchema)
      *   : UserSchema;
      *
      * const userData = userSchema.parse(user);  // Includes custom fields

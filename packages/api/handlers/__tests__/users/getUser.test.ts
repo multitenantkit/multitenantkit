@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import type { Principal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -116,10 +116,10 @@ describe('GetUser Handler', () => {
             expect(response.headers?.['X-Request-ID']).toBe('custom-request-id');
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const authProviderId = '00000000-0000-4000-8000-000000000003';
             type UserCustom = { role: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -141,7 +141,7 @@ describe('GetUser Handler', () => {
 
             mockGetUserExecute.mockResolvedValue(mockResult.ok(mockUser));
 
-            const handler = makeGetUserHandler(mockUseCases, frameworkConfig);
+            const handler = makeGetUserHandler(mockUseCases, toolkitOptions);
             const principal: Principal = { authProviderId };
 
             const response = await handler({
@@ -407,8 +407,8 @@ describe('GetUser Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ role: string }, undefined, undefined> = {
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<{ role: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -418,7 +418,7 @@ describe('GetUser Handler', () => {
                 }
             } as any;
 
-            const handlerPackage = getUserHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = getUserHandlerPackage(mockUseCases, toolkitOptions);
 
             expect(handlerPackage).toHaveProperty('handler');
             expect(typeof handlerPackage.handler).toBe('function');

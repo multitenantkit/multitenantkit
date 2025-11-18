@@ -30,7 +30,7 @@ import type {
  *     headers: { 'X-Request-ID': requestId }
  * };
  *
- * const transformer = frameworkConfig?.responseTransformers?.users?.GetUser;
+ * const transformer = toolkitOptions?.responseTransformers?.users?.GetUser;
  * return applyResponseTransformer(
  *     {
  *         request: { input, principal, requestId },

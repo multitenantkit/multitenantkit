@@ -1,8 +1,8 @@
 import {
-    type FrameworkConfig,
     type Organization,
     type OrganizationRepository,
-    OrganizationRepositoryConfigHelper
+    OrganizationRepositoryConfigHelper,
+    type ToolkitOptions
 } from '@multitenantkit/domain-contracts';
 import type { OperationContext } from '@multitenantkit/domain-contracts/shared';
 import type postgres from 'postgres';
@@ -28,18 +28,18 @@ export class PostgresOrganizationRepository<TCustomFields = {}>
 
     constructor(
         private readonly sql: postgres.Sql,
-        frameworkConfig?: FrameworkConfig<any, TCustomFields, any>
+        toolkitOptions?: ToolkitOptions<any, TCustomFields, any>
     ) {
-        // Extract organization custom fields config from framework config
-        const organizationConfig = frameworkConfig?.organizations?.customFields;
+        // Extract organization custom fields config from toolkit options
+        const organizationConfig = toolkitOptions?.organizations?.customFields;
 
         // Extract database configuration with defaults
-        this.schemaName = frameworkConfig?.organizations?.database?.schema;
-        this.tableName = frameworkConfig?.organizations?.database?.table || 'organizations';
+        this.schemaName = toolkitOptions?.organizations?.database?.schema;
+        this.tableName = toolkitOptions?.organizations?.database?.table || 'organizations';
 
         // Extract naming strategies
-        const databaseNamingStrategy = frameworkConfig?.organizations?.database?.namingStrategy;
-        const globalNamingStrategy = frameworkConfig?.namingStrategy;
+        const databaseNamingStrategy = toolkitOptions?.organizations?.database?.namingStrategy;
+        const globalNamingStrategy = toolkitOptions?.namingStrategy;
 
         // Use helper to handle configuration logic
         this.configHelper = new OrganizationRepositoryConfigHelper(

@@ -29,9 +29,9 @@ import {
 } from '@multitenantkit/domain/users';
 import type {
     Adapters,
-    FrameworkConfig,
     MembershipUseCases,
     OrganizationUseCases,
+    ToolkitOptions,
     UseCases,
     UserUseCases
 } from '@multitenantkit/domain-contracts';
@@ -40,7 +40,7 @@ import type {
  * Factory function to create user use cases
  *
  * @param adapters - Application adapters (repositories, UoW, etc.)
- * @param frameworkConfig - Optional framework configuration with custom schemas
+ * @param toolkitOptions - Optional toolkit options with custom schemas
  * @template TUserCustomFields - Custom fields for UserRepository
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
@@ -58,7 +58,7 @@ function createUserUseCases<
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -70,21 +70,21 @@ function createUserUseCases<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         updateUser: new UpdateUser<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         listUserOrganizations: new ListUserOrganizations<TUserCustomFields>(
             adapters as any,
-            frameworkConfig as any
+            toolkitOptions as any
         ),
         deleteUser: new DeleteUser<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig)
+        >(adapters as any, toolkitOptions)
     };
 }
 
@@ -92,7 +92,7 @@ function createUserUseCases<
  * Factory function to create organization use cases
  *
  * @param adapters - Application adapters (repositories, UoW, etc.)
- * @param frameworkConfig - Optional framework configuration with custom schemas
+ * @param toolkitOptions - Optional toolkit options with custom schemas
  * @template TUserCustomFields - Custom fields for UserRepository
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
@@ -110,7 +110,7 @@ function createOrganizationUseCases<
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -121,41 +121,41 @@ function createOrganizationUseCases<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         getOrganization: new GetOrganization<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         updateOrganization: new UpdateOrganization<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         listOrganizationMembers: new ListOrganizationMembers(
             adapters as any,
-            frameworkConfig as any
+            toolkitOptions as any
         ),
         deleteOrganization: new DeleteOrganization<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         archiveOrganization: new ArchiveOrganization<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         restoreOrganization: new RestoreOrganization<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         transferOrganizationOwnership: new TransferOrganizationOwnership<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig)
+        >(adapters as any, toolkitOptions)
     };
 }
 
@@ -163,7 +163,7 @@ function createOrganizationUseCases<
  * Factory function to create membership use cases
  *
  * @param adapters - Application adapters (repositories, UoW, etc.)
- * @param frameworkConfig - Optional framework configuration with custom schemas
+ * @param toolkitOptions - Optional toolkit options with custom schemas
  * @template TUserCustomFields - Custom fields for UserRepository
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
@@ -181,32 +181,32 @@ function createMembershipUseCases<
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): MembershipUseCases {
-    // Future: Extract membership custom schema from framework config if needed
-    // const customSchema = frameworkConfig?.organizationMemberships?.customFields?.customSchema;
+    // Future: Extract membership custom schema from toolkit options if needed
+    // const customSchema = toolkitOptions?.organizationMemberships?.customFields?.customSchema;
     return {
         addOrganizationMember: new AddOrganizationMember<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         acceptOrganizationInvitation: new AcceptOrganizationInvitation<
             TOrganizationCustomFields,
             TUserCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig),
+        >(adapters as any, toolkitOptions),
         removeOrganizationMember: new RemoveOrganizationMember(adapters as any),
         updateOrganizationMemberRole: new UpdateOrganizationMemberRole(adapters as any),
         leaveOrganization: new LeaveOrganization<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
-        >(adapters as any, frameworkConfig)
+        >(adapters as any, toolkitOptions)
     };
 }
 
@@ -214,7 +214,7 @@ function createMembershipUseCases<
  * Factory function to create all use cases
  *
  * @param adapters - Application adapters (repositories, UoW, etc.)
- * @param frameworkConfig - Optional framework configuration with custom schemas
+ * @param toolkitOptions - Optional toolkit options with custom schemas
  * @template TUserCustomFields - Custom fields for UserRepository
  * @template TOrganizationCustomFields - Custom fields for OrganizationRepository
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMembershipRepository
@@ -232,16 +232,16 @@ export function createUseCases<
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): UseCases {
     return {
-        users: createUserUseCases(adapters, frameworkConfig),
-        organizations: createOrganizationUseCases(adapters, frameworkConfig),
-        memberships: createMembershipUseCases(adapters, frameworkConfig)
+        users: createUserUseCases(adapters, toolkitOptions),
+        organizations: createOrganizationUseCases(adapters, toolkitOptions),
+        memberships: createMembershipUseCases(adapters, toolkitOptions)
         // workflows: createWorkflowUseCases(adapters)
     };
 }

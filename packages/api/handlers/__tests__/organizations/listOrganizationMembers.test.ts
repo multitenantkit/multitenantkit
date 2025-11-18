@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import {
     NotFoundError,
@@ -794,12 +794,12 @@ describe('ListOrganizationMembers Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig = {} as any;
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions = {} as any;
 
             const handlerPackage = listOrganizationMembersHandlerPackage(
                 mockUseCases,
-                frameworkConfig
+                toolkitOptions
             );
 
             expect(handlerPackage).toHaveProperty('handler');

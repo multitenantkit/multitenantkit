@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { describe, expect, it } from 'vitest';
 import { createUseCases } from '../../src/factories/UseCaseFactory';
 
@@ -56,17 +56,17 @@ describe('UseCaseFactory', () => {
         });
     });
 
-    describe('Framework Config Support', () => {
-        it('should create use cases without framework config', () => {
+    describe('Toolkit Options Support', () => {
+        it('should create use cases without toolkit options', () => {
             const adapters = createMockAdapters();
 
             expect(() => createUseCases(adapters)).not.toThrow();
         });
 
-        it('should create use cases with framework config', () => {
+        it('should create use cases with toolkit options', () => {
             const adapters = createMockAdapters();
             const z = require('zod');
-            const frameworkConfig: FrameworkConfig<{ bio: string }> = {
+            const toolkitOptions: ToolkitOptions<{ bio: string }> = {
                 users: {
                     customFields: {
                         customSchema: z.object({ bio: z.string() })
@@ -74,13 +74,13 @@ describe('UseCaseFactory', () => {
                 }
             };
 
-            expect(() => createUseCases(adapters, frameworkConfig)).not.toThrow();
+            expect(() => createUseCases(adapters, toolkitOptions)).not.toThrow();
         });
 
-        it('should pass framework config to user use cases', () => {
+        it('should pass toolkit options to user use cases', () => {
             const adapters = createMockAdapters();
             const z = require('zod');
-            const frameworkConfig: FrameworkConfig<{ bio: string }> = {
+            const toolkitOptions: ToolkitOptions<{ bio: string }> = {
                 users: {
                     customFields: {
                         customSchema: z.object({ bio: z.string() })
@@ -88,7 +88,7 @@ describe('UseCaseFactory', () => {
                 }
             };
 
-            const useCases = createUseCases(adapters, frameworkConfig);
+            const useCases = createUseCases(adapters, toolkitOptions);
 
             // Use cases should be created without errors
             expect(useCases.users).toBeDefined();
@@ -98,11 +98,11 @@ describe('UseCaseFactory', () => {
             expect(useCases.users.listUserOrganizations).toBeDefined();
         });
 
-        it('should pass framework config to organization use cases', () => {
+        it('should pass toolkit options to organization use cases', () => {
             const adapters = createMockAdapters();
             const z = require('zod');
             // biome-ignore lint/complexity/noBannedTypes: ignore
-            const frameworkConfig: FrameworkConfig<{}, { description: string }> = {
+            const toolkitOptions: ToolkitOptions<{}, { description: string }> = {
                 organizations: {
                     customFields: {
                         customSchema: z.object({ description: z.string() })
@@ -110,7 +110,7 @@ describe('UseCaseFactory', () => {
                 }
             };
 
-            const useCases = createUseCases(adapters, frameworkConfig);
+            const useCases = createUseCases(adapters, toolkitOptions);
 
             // Use cases should be created without errors
             expect(useCases.organizations).toBeDefined();
@@ -120,13 +120,13 @@ describe('UseCaseFactory', () => {
             expect(useCases.organizations.listOrganizationMembers).toBeDefined();
         });
 
-        it('should pass framework config to membership use cases', () => {
+        it('should pass toolkit options to membership use cases', () => {
             const adapters = createMockAdapters();
-            const frameworkConfig: FrameworkConfig = {
+            const toolkitOptions: ToolkitOptions = {
                 // No specific config needed
             };
 
-            const useCases = createUseCases(adapters, frameworkConfig);
+            const useCases = createUseCases(adapters, toolkitOptions);
 
             // Use cases should be created without errors
             expect(useCases.memberships).toBeDefined();

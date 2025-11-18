@@ -3,7 +3,7 @@ import {
     ArchiveOrganizationRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
-import type { FrameworkConfig, Organization, UseCases } from '@multitenantkit/domain-contracts';
+import type { Organization, ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { OrganizationSchema, ValidationError } from '@multitenantkit/domain-contracts';
 import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
@@ -33,7 +33,7 @@ export const archiveOrganizationRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeArchiveOrganizationHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -44,7 +44,7 @@ export function makeArchiveOrganizationHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -55,7 +55,7 @@ export function makeArchiveOrganizationHandler<
 > {
     // Build response schema with custom fields if provided
     const customOrganizationFieldsSchema =
-        frameworkConfig?.organizations?.customFields?.customSchema;
+        toolkitOptions?.organizations?.customFields?.customSchema;
     const responseSchema = customOrganizationFieldsSchema
         ? OrganizationSchema.merge(customOrganizationFieldsSchema as any)
         : OrganizationSchema;
@@ -134,7 +134,7 @@ export function makeArchiveOrganizationHandler<
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizations?.ArchiveOrganization;
+                    toolkitOptions?.responseTransformers?.organizations?.ArchiveOrganization;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -180,7 +180,7 @@ export function makeArchiveOrganizationHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function archiveOrganizationHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -191,7 +191,7 @@ export function archiveOrganizationHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -203,6 +203,6 @@ export function archiveOrganizationHandlerPackage<
     return {
         route: archiveOrganizationRoute,
         schema: ArchiveOrganizationRequestSchema,
-        handler: makeArchiveOrganizationHandler(useCases, frameworkConfig)
+        handler: makeArchiveOrganizationHandler(useCases, toolkitOptions)
     };
 }

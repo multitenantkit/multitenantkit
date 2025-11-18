@@ -1,7 +1,7 @@
 import {
     createPrincipal,
-    type FrameworkConfig,
     type Principal,
+    type ToolkitOptions,
     type User,
     UserSchema
 } from '@multitenantkit/domain-contracts';
@@ -9,7 +9,7 @@ import type { z } from 'zod';
 
 /**
  * Builder pattern for creating User test instances (contracts-based)
- * Supports extending with custom fields using the framework config custom schema
+ * Supports extending with custom fields using the toolkit options custom schema
  */
 
 // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -61,12 +61,10 @@ export class UserBuilder<TUserCustomFields = {}> {
 
     /**
      * Build a plain User object validated against the contracts schema, optionally
-     * merged with a custom schema from the framework config.
+     * merged with a custom schema from the toolkit options.
      */
-    build(
-        frameworkConfig?: FrameworkConfig<TUserCustomFields, any, any>
-    ): User & TUserCustomFields {
-        const customSchema = frameworkConfig?.users?.customFields?.customSchema as
+    build(toolkitOptions?: ToolkitOptions<TUserCustomFields, any, any>): User & TUserCustomFields {
+        const customSchema = toolkitOptions?.users?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 

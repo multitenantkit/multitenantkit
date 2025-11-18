@@ -64,7 +64,7 @@ If you're using Supabase, you typically use the `auth.users` table for users:
 3. **Configure columnMapping:**
 
 ```typescript
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   users: {
     database: {
       schema: 'auth',
@@ -87,7 +87,7 @@ const frameworkConfig: FrameworkConfig = {
 3. **Configure custom fields:**
 
 ```typescript
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   users: {
     customFields: {
       customSchema: z.object({
@@ -107,7 +107,7 @@ If you already have tables, you have two options:
 **Option A: Use your existing tables with columnMapping**
 
 ```typescript
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   users: {
     database: {
       schema: 'public',
@@ -155,7 +155,7 @@ const customUserFields = z.object({
   avatarUrl: z.string().url().optional()
 });
 
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   namingStrategy: 'snake_case',  // Auto-converts firstName ↔ first_name
   users: {
     customFields: {
@@ -170,7 +170,7 @@ const frameworkConfig: FrameworkConfig = {
 If your database uses `snake_case` but your application uses `camelCase`:
 
 ```typescript
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   namingStrategy: 'snake_case'  // Global setting for all entities
 };
 ```

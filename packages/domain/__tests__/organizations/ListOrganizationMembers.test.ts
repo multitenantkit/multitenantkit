@@ -374,8 +374,8 @@ describe('ListOrganizationMembers use case', () => {
                 invitedBy: z.string().optional()
             });
 
-            // Create framework config with custom schemas
-            const frameworkConfig = {
+            // Create toolkit options with custom schemas
+            const toolkitOptions = {
                 users: { customFields: { customSchema: customUserFieldsSchema } },
                 organizations: { customFields: { customSchema: customOrganizationFieldsSchema } },
                 organizationMemberships: {
@@ -441,7 +441,7 @@ describe('ListOrganizationMembers use case', () => {
                 typeof customUserFieldsSchema,
                 typeof customOrganizationFieldsSchema,
                 typeof customMembershipFieldsSchema
-            >(adapters as any, frameworkConfig as any);
+            >(adapters as any, toolkitOptions as any);
 
             const result = await useCase.execute(
                 {
@@ -482,7 +482,7 @@ describe('ListOrganizationMembers use case', () => {
                 email: z.string().email()
             });
 
-            const frameworkConfig = {
+            const toolkitOptions = {
                 users: { customFields: { customSchema: customUserFieldsSchema } }
             };
 
@@ -531,7 +531,7 @@ describe('ListOrganizationMembers use case', () => {
 
             const useCase = new ListOrganizationMembers<typeof customUserFieldsSchema>(
                 adapters as any,
-                frameworkConfig as any
+                toolkitOptions as any
             );
 
             const result = await useCase.execute(

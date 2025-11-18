@@ -57,10 +57,10 @@ Response transformers are ideal for:
 
 ## Configuration
 
-Configure transformers in your `FrameworkConfig`:
+Configure transformers in your `ToolkitOptions`:
 
 ```typescript
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
     responseTransformers: {
         users: {
             GetUser: myUserTransformer,
@@ -321,7 +321,7 @@ function createFieldRemover<TInput, TOutput extends Record<string, any>>(
 }
 
 // Usage
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
     responseTransformers: {
         users: {
             GetUser: createFieldRemover(["internalId", "systemMetadata"]),
@@ -464,9 +464,9 @@ const combinedTransformer: ResponseTransformer = async (context) => {
 
 ### Transformer Not Running
 
-1. Check transformer is configured in `FrameworkConfig`
+1. Check transformer is configured in `ToolkitOptions`
 2. Verify handler name matches exactly (case-sensitive)
-3. Ensure `frameworkConfig` is passed to handler factory
+3. Ensure `toolkitOptions` is passed to handler factory
 4. Check logs for transformer errors (errors are caught and logged)
 
 ### Response Not Changing

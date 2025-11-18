@@ -5,7 +5,7 @@ import type { UseCaseHooksConfig } from '../hooks/UseCaseHooksConfig';
 import type { HandlerResponseTransformers } from './ResponseTransformer';
 
 /**
- * Framework configuration - Main entry point for customizing framework behavior
+ * toolkit options - Main entry point for customizing framework behavior
  * Organized by vertical slices (users, organizations, organizationMemberships, etc.)
  *
  * Architecture benefits:
@@ -28,7 +28,7 @@ import type { HandlerResponseTransformers } from './ResponseTransformer';
  * type MyMembershipFields = { role: string };
  *
  * // Single point of configuration with type safety
- * const config: FrameworkConfig<MyUserFields, MyOrganizationFields, MyMembershipFields> = {
+ * const config: ToolkitOptions<MyUserFields, MyOrganizationFields, MyMembershipFields> = {
  *     users: {
  *         customFields: userRepoConfig,  // TypeScript knows it's UserCustomFieldsConfig<MyUserFields>
  *     },
@@ -41,7 +41,7 @@ import type { HandlerResponseTransformers } from './ResponseTransformer';
  * };
  * ```
  */
-export interface FrameworkConfig<
+export interface ToolkitOptions<
     // biome-ignore lint/complexity/noBannedTypes: ignore
     TUserCustomFields = {},
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -69,7 +69,7 @@ export interface FrameworkConfig<
      *
      * @example
      * ```typescript
-     * const config: FrameworkConfig = {
+     * const config: ToolkitOptions = {
      *     namingStrategy: 'snake_case', // ← One line for all entities!
      *     users: { customFields: { customSchema: userSchema } },
      *     organizations: { customFields: { customSchema: orgSchema } }
@@ -194,7 +194,7 @@ export interface FrameworkConfig<
      *
      * @example
      * ```typescript
-     * const config: FrameworkConfig = {
+     * const config: ToolkitOptions = {
      *     responseTransformers: {
      *         users: {
      *             GetUser: async ({ response }) => {
@@ -255,7 +255,7 @@ export interface FrameworkConfig<
      *
      * @example
      * ```typescript
-     * const config: FrameworkConfig = {
+     * const config: ToolkitOptions = {
      *     useCaseHooks: {
      *         CreateUser: {
      *             onStart: ({ input, hookContext }) => {

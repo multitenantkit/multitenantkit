@@ -117,10 +117,10 @@ CREATE POLICY "Users can view organization memberships" ON public.organization_m
 -- =====================
 -- Use this TypeScript configuration with the schema above:
 /*
-import { FrameworkConfig } from '@multitenantkit/sdk';
+import { ToolkitOptions } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
-const frameworkConfig: FrameworkConfig = {
+const toolkitOptions: ToolkitOptions = {
   users: {
     database: {
       schema: 'auth',

@@ -10,7 +10,7 @@
         "packages/contracts/*",
         "packages/bundles/*"
     ],
-    "description": "Domain-first TypeScript framework for multi-tenant user/organization/membership management. Ships Zod-typed contracts, ready-made use cases & HTTP handlers, and pluggable adapters (Postgres, Supabase, Express).",
+    "description": "MultiTenantKit is a production-ready TypeScript toolkit that provides the business logic for managing Users, Organizations, and Organization Memberships in B2B SaaS applications.",
     "scripts": {
         "build": "npm run build -w @multitenantkit/domain-contracts -w @multitenantkit/api-contracts -w @multitenantkit/adapter-system-crypto-uuid -w @multitenantkit/adapter-system-system-clock -w @multitenantkit/domain -w @multitenantkit/api-handlers -w @multitenantkit/adapter-persistence-json -w @multitenantkit/adapter-persistence-postgres -w @multitenantkit/adapter-metrics-http -w @multitenantkit/adapter-transport-express -w @multitenantkit/composition -w @multitenantkit/adapter-auth-supabase -w @multitenantkit/sdk",
         "pack": "npm run build && ./scripts/pack-all.sh dist-packages",

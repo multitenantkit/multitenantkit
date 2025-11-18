@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UpdateUser } from '../../src/users/use-cases/update-user/UpdateUser';
 import { TestData } from '../test-helpers/Builders';
@@ -26,9 +26,9 @@ describe('UpdateUser use case', () => {
     });
 
     describe('Happy Path', () => {
-        it('should update custom fields when framework config provided', async () => {
+        it('should update custom fields when toolkit options provided', async () => {
             type Custom = { role?: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -40,10 +40,10 @@ describe('UpdateUser use case', () => {
 
             const existing = TestData.user<Custom>()
                 .withCustomFields({ role: 'member' })
-                .build(frameworkConfig);
+                .build(toolkitOptions);
             await setup.userRepo.insert(existing as any);
 
-            const useCase = new UpdateUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new UpdateUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 {
                     principalExternalId: existing.externalId,
@@ -81,7 +81,7 @@ describe('UpdateUser use case', () => {
         it('should fail with VALIDATION_ERROR when custom schema rejects merged data', async () => {
             // Custom schema requires role to be exactly 'admin'
             type Custom = { role?: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -94,11 +94,11 @@ describe('UpdateUser use case', () => {
             // Existing user valid with role 'admin'
             const existing = TestData.user<Custom>()
                 .withCustomFields({ role: 'admin' })
-                .build(frameworkConfig);
+                .build(toolkitOptions);
             await setup.userRepo.insert(existing as any);
 
             // Update attempts to set role to an invalid value per schema
-            const useCase = new UpdateUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new UpdateUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 { userId: existing.externalId, email: 'valid@example.com', role: 'member' } as any,
                 { requestId: 'test-request-id', actorUserId: existing.externalId }
@@ -110,7 +110,7 @@ describe('UpdateUser use case', () => {
 
         it('should fail with VALIDATION_ERROR when only custom field violates schema', async () => {
             type Custom = { role?: string };
-            const frameworkConfig: FrameworkConfig<Custom, any, any> = {
+            const toolkitOptions: ToolkitOptions<Custom, any, any> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -122,10 +122,10 @@ describe('UpdateUser use case', () => {
 
             const existing = TestData.user<Custom>()
                 .withCustomFields({ role: 'admin' })
-                .build(frameworkConfig);
+                .build(toolkitOptions);
             await setup.userRepo.insert(existing as any);
 
-            const useCase = new UpdateUser<Custom>(adapters as any, frameworkConfig);
+            const useCase = new UpdateUser<Custom>(adapters as any, toolkitOptions);
             // Only updating role to invalid value triggers validation fail on merged data
             const result = await useCase.execute(
                 { userId: existing.externalId, role: 'member' } as any,

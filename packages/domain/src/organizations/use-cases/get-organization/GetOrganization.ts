@@ -8,7 +8,7 @@ import {
     GetOrganizationInputSchema,
     GetOrganizationOutputSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -49,14 +49,14 @@ export class GetOrganization<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
         // Extract custom schema
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -70,7 +70,7 @@ export class GetOrganization<
         super(
             'organization-getOrganization',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             GetOrganizationInputSchema,
             outputSchema,
             'Failed to retrieve organization'

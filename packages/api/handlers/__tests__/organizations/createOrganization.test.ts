@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -130,13 +130,13 @@ describe('CreateOrganization Handler', () => {
             expect(response.headers?.Location).toBe(`/organizations/${organizationId}`);
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
             const userId = '00000000-0000-4000-8000-000000000003';
             const organizationId = '00000000-0000-4000-8000-333333333333';
 
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -157,7 +157,7 @@ describe('CreateOrganization Handler', () => {
 
             mockCreateOrganizationExecute.mockResolvedValue(mockResult.ok(mockOrganization));
 
-            const handler = makeCreateOrganizationHandler(mockUseCases, frameworkConfig);
+            const handler = makeCreateOrganizationHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -342,7 +342,7 @@ describe('CreateOrganization Handler', () => {
         it('should handle custom schema parsing errors', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000000';
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -352,7 +352,7 @@ describe('CreateOrganization Handler', () => {
                 }
             } as any;
 
-            const handler = makeCreateOrganizationHandler(mockUseCases, frameworkConfig);
+            const handler = makeCreateOrganizationHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -516,19 +516,18 @@ describe('CreateOrganization Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
-                {
-                    organizations: {
-                        customFields: {
-                            customSchema: require('zod').z.object({
-                                description: require('zod').z.string()
-                            })
-                        }
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<undefined, { description: string }, undefined> = {
+                organizations: {
+                    customFields: {
+                        customSchema: require('zod').z.object({
+                            description: require('zod').z.string()
+                        })
                     }
-                } as any;
+                }
+            } as any;
 
-            const handlerPackage = createOrganizationHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = createOrganizationHandlerPackage(mockUseCases, toolkitOptions);
 
             expect(handlerPackage).toHaveProperty('handler');
             expect(handlerPackage).toHaveProperty('schema');

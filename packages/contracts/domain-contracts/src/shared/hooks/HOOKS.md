@@ -209,7 +209,7 @@ afterValidation: async ({ abort, stepResults, adapters }) => {
 
 ### 1. onStart
 
-**Executes**: Before input validation  
+**Executes**: Before input validation
 **Available in context**: `input`, `adapters`, `shared`, `context`, `abort()`
 
 **Use cases**:
@@ -248,7 +248,7 @@ onStart: async ({ input, shared, adapters, abort, context }) => {
 
 ### 2. afterValidation
 
-**Executes**: After input validation succeeds  
+**Executes**: After input validation succeeds
 **Available in context**: `input`, `stepResults.validatedInput`, `adapters`, `shared`, `context`, `abort()`
 
 **Use cases**:
@@ -293,7 +293,7 @@ afterValidation: async ({ stepResults, adapters, abort, shared }) => {
 
 ### 3. beforeExecution
 
-**Executes**: After authorization succeeds, before business logic  
+**Executes**: After authorization succeeds, before business logic
 **Available in context**: `input`, `stepResults.validatedInput`, `stepResults.authorized`, `adapters`, `shared`, `context`, `abort()`
 
 **Use cases**:
@@ -340,7 +340,7 @@ beforeExecution: async ({ stepResults, context, adapters, shared, abort }) => {
 
 ### 4. afterExecution
 
-**Executes**: After business logic executes successfully  
+**Executes**: After business logic executes successfully
 **Available in context**: `input`, `stepResults.validatedInput`, `stepResults.output`, `adapters`, `shared`, `context`, `abort()`
 
 **Use cases**:
@@ -401,7 +401,7 @@ afterExecution: async ({ stepResults, adapters, shared, context }) => {
 
 ### 5. onError
 
-**Executes**: When an error occurs in any step  
+**Executes**: When an error occurs in any step
 **Available in context**: `input`, `stepResults` (partial), `adapters`, `shared`, `context`, **`error`**
 
 **Use cases**:
@@ -461,7 +461,7 @@ onError: async ({ error, shared, context, adapters, stepResults }) => {
 
 ### 6. onAbort
 
-**Executes**: When execution is gracefully aborted via `abort()`  
+**Executes**: When execution is gracefully aborted via `abort()`
 **Available in context**: `input`, `stepResults` (partial), `adapters`, `shared`, `context`, **`reason`**
 
 **Use cases**:
@@ -515,7 +515,7 @@ onAbort: async ({ reason, shared, context, adapters, stepResults }) => {
 
 ### 7. onFinally
 
-**Executes**: Always at the end (success, error, or abort)  
+**Executes**: Always at the end (success, error, or abort)
 **Available in context**: `input`, `stepResults`, `adapters`, `shared`, `context`, **`result`**
 
 **Use cases**:
@@ -574,12 +574,12 @@ onFinally: async ({ result, shared, context, adapters, stepResults }) => {
 
 ### Basic Configuration
 
-Configure hooks in your `FrameworkConfig`:
+Configure hooks in your `ToolkitOptions`:
 
 ```typescript
-import type { FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions } from '@multitenantkit/domain-contracts';
 
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
     useCaseHooks: {
         // Hook configuration for CreateUser use case
         CreateUser: {
@@ -614,7 +614,7 @@ const config: FrameworkConfig = {
 All hooks are fully type-safe. TypeScript knows the exact input/output types for each use case:
 
 ```typescript
-const config: FrameworkConfig = {
+const config: ToolkitOptions = {
     useCaseHooks: {
         CreateUser: {
             onStart: ({ input }) => {

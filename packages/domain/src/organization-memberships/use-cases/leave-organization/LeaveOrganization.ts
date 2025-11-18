@@ -9,7 +9,7 @@ import {
     LeaveOrganizationOutputSchema,
     type OrganizationMembership
 } from '@multitenantkit/domain-contracts/organization-memberships';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -46,7 +46,7 @@ export class LeaveOrganization<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
@@ -55,7 +55,7 @@ export class LeaveOrganization<
         super(
             'organizationMembership-leaveOrganization',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             LeaveOrganizationInputSchema,
             LeaveOrganizationOutputSchema as unknown as import('zod').ZodType<LeaveOrganizationOutput>,
             'Failed to leave organization'

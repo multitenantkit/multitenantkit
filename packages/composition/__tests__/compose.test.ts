@@ -242,8 +242,8 @@ describe('compose', () => {
         });
     });
 
-    describe('Framework Config Support', () => {
-        it('should compose successfully with framework config', () => {
+    describe('Toolkit Options Support', () => {
+        it('should compose successfully with toolkit options', () => {
             const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
@@ -252,7 +252,7 @@ describe('compose', () => {
             };
 
             const z = require('zod');
-            const frameworkConfig = {
+            const toolkitOptions = {
                 users: {
                     customFields: {
                         customSchema: z.z.object({ bio: z.z.string() })
@@ -260,10 +260,10 @@ describe('compose', () => {
                 }
             };
 
-            expect(() => compose(envOverrides, frameworkConfig as any)).not.toThrow();
+            expect(() => compose(envOverrides, toolkitOptions as any)).not.toThrow();
         });
 
-        it('should pass framework config through composition layers', () => {
+        it('should pass toolkit options through composition layers', () => {
             const envOverrides = {
                 DB_ADAPTER: 'json',
                 DATA_DIR: '/test/data',
@@ -272,7 +272,7 @@ describe('compose', () => {
             };
 
             const z = require('zod');
-            const frameworkConfig = {
+            const toolkitOptions = {
                 users: {
                     customFields: {
                         customSchema: z.z.object({ bio: z.z.string() })
@@ -280,9 +280,9 @@ describe('compose', () => {
                 }
             };
 
-            const result = compose(envOverrides, frameworkConfig as any);
+            const result = compose(envOverrides, toolkitOptions as any);
 
-            // Use cases should be created with framework config
+            // Use cases should be created with toolkit options
             expect(result.useCases).toBeDefined();
         });
 
@@ -428,7 +428,7 @@ describe('compose', () => {
             };
 
             const z = require('zod');
-            const frameworkConfig = {
+            const toolkitOptions = {
                 users: {
                     customFields: {
                         customSchema: z.z.object({ bio: z.z.string() })
@@ -436,7 +436,7 @@ describe('compose', () => {
                 }
             };
 
-            const { useCases } = compose(envOverrides, frameworkConfig as any);
+            const { useCases } = compose(envOverrides, toolkitOptions as any);
 
             // Complete composition should provide access to all use cases
             expect(useCases.users).toBeDefined();

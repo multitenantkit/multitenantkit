@@ -6,7 +6,7 @@ import {
     ListOrganizationMembersInputSchema,
     OrganizationSchema
 } from '@multitenantkit/domain-contracts/organizations';
-import type { FrameworkConfig, OperationContext } from '@multitenantkit/domain-contracts/shared';
+import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
     type DomainError,
     NotFoundError,
@@ -76,14 +76,14 @@ export class ListOrganizationMembers<
 {
     constructor(
         adapters: Adapters<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>,
-        frameworkConfig?: FrameworkConfig<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
+        toolkitOptions?: ToolkitOptions<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
     ) {
-        // 1) Read optional custom-field schemas from frameworkConfig
-        const userCF = frameworkConfig?.users?.customFields?.customSchema as UCF | undefined;
-        const organizationCF = frameworkConfig?.organizations?.customFields?.customSchema as
+        // 1) Read optional custom-field schemas from toolkitOptions
+        const userCF = toolkitOptions?.users?.customFields?.customSchema as UCF | undefined;
+        const organizationCF = toolkitOptions?.organizations?.customFields?.customSchema as
             | TCF
             | undefined;
-        const membershipCF = frameworkConfig?.organizationMemberships?.customFields?.customSchema as
+        const membershipCF = toolkitOptions?.organizationMemberships?.customFields?.customSchema as
             | MCF
             | undefined;
 
@@ -112,7 +112,7 @@ export class ListOrganizationMembers<
         super(
             'organization-listOrganizationMembers',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             ListOrganizationMembersInputSchema as any,
             OutputSchema as any,
             'Failed to list organization members'

@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,8 +28,8 @@ const mockResult = {
     })
 };
 
-type FrameworkConfigDefault = { email: string };
-const frameworkConfigDefault: FrameworkConfig<FrameworkConfigDefault, undefined, undefined> = {
+type ToolkitOptionsDefault = { email: string };
+const toolkitOptionsDefault: ToolkitOptions<ToolkitOptionsDefault, undefined, undefined> = {
     users: {
         customFields: {
             customSchema: require('zod').z.object({
@@ -79,7 +79,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -125,7 +125,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -155,7 +155,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -178,10 +178,10 @@ describe('UpdateUser Handler', () => {
             );
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const userId = '00000000-0000-4000-8000-000000000004';
             type UserCustom = { email: string; bio: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -205,7 +205,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfig);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -226,7 +226,7 @@ describe('UpdateUser Handler', () => {
 
     describe('Error Cases - Authentication', () => {
         it('should return 400 when principal is missing', async () => {
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
 
             const response = await handler({
                 input: {
@@ -263,7 +263,7 @@ describe('UpdateUser Handler', () => {
             const notFoundError = new NotFoundError('User', userId);
             mockUpdateUserExecute.mockResolvedValue(mockResult.fail(notFoundError));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -297,7 +297,7 @@ describe('UpdateUser Handler', () => {
             const validationError = new ValidationError('Invalid email format', 'email');
             mockUpdateUserExecute.mockResolvedValue(mockResult.fail(validationError));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -319,7 +319,7 @@ describe('UpdateUser Handler', () => {
             const userId = '00000000-0000-4000-8000-000000000006';
             mockUpdateUserExecute.mockRejectedValue(new Error('Database connection lost'));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -357,7 +357,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(invalidOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -380,7 +380,7 @@ describe('UpdateUser Handler', () => {
         it('should handle custom schema parsing errors', async () => {
             const userId = '00000000-0000-4000-8000-000000000008';
             type UserCustom = { bio: string };
-            const frameworkConfig: FrameworkConfig<UserCustom, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<UserCustom, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -390,7 +390,7 @@ describe('UpdateUser Handler', () => {
                 }
             } as any;
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfig);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -424,7 +424,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -455,7 +455,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             const response = await handler({
@@ -489,7 +489,7 @@ describe('UpdateUser Handler', () => {
 
             mockUpdateUserExecute.mockResolvedValue(mockResult.ok(mockOutput));
 
-            const handler = makeUpdateUserHandler(mockUseCases, frameworkConfigDefault);
+            const handler = makeUpdateUserHandler(mockUseCases, toolkitOptionsDefault);
             const principal = createPrincipal(userId);
 
             await handler({
@@ -528,8 +528,8 @@ describe('UpdateUser Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<{ bio: string }, undefined, undefined> = {
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<{ bio: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -539,7 +539,7 @@ describe('UpdateUser Handler', () => {
                 }
             } as any;
 
-            const handlerPackage = updateUserHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = updateUserHandlerPackage(mockUseCases, toolkitOptions);
 
             expect(handlerPackage).toHaveProperty('handler');
             expect(handlerPackage).toHaveProperty('schema');
@@ -558,7 +558,7 @@ describe('UpdateUser Handler', () => {
         });
 
         it('should enforce at least one field requirement with custom fields', () => {
-            const frameworkConfig: FrameworkConfig<{ bio: string }, undefined, undefined> = {
+            const toolkitOptions: ToolkitOptions<{ bio: string }, undefined, undefined> = {
                 users: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -568,7 +568,7 @@ describe('UpdateUser Handler', () => {
                 }
             } as any;
 
-            const handlerPackage = updateUserHandlerPackage(mockUseCases, frameworkConfig);
+            const handlerPackage = updateUserHandlerPackage(mockUseCases, toolkitOptions);
 
             // Try to parse empty body - should fail validation
             const result = handlerPackage.schema.safeParse({ body: {} });

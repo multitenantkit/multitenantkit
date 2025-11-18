@@ -1,4 +1,4 @@
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { createPrincipal } from '@multitenantkit/domain-contracts/shared/auth/Principal';
 import { NotFoundError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -184,12 +184,12 @@ describe('ListUserOrganizations Handler', () => {
             );
         });
 
-        it('should support custom fields when framework config provided', async () => {
+        it('should support custom fields when toolkit options provided', async () => {
             const principalExternalId = '00000000-0000-4000-8000-000000000005';
             const organizationId = '00000000-0000-4000-8000-444444444444';
 
             type OrganizationCustom = { description: string };
-            const frameworkConfig: FrameworkConfig<undefined, OrganizationCustom, undefined> = {
+            const toolkitOptions: ToolkitOptions<undefined, OrganizationCustom, undefined> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -212,7 +212,7 @@ describe('ListUserOrganizations Handler', () => {
 
             mockListUserOrganizationsExecute.mockResolvedValue(mockResult.ok(mockOrganizations));
 
-            const handler = makeListUserOrganizationsHandler(mockUseCases, frameworkConfig);
+            const handler = makeListUserOrganizationsHandler(mockUseCases, toolkitOptions);
             const principal = createPrincipal(principalExternalId);
 
             const response = await handler({
@@ -529,21 +529,20 @@ describe('ListUserOrganizations Handler', () => {
             expect(typeof handlerPackage.handler).toBe('function');
         });
 
-        it('should create handler package with framework config', () => {
-            const frameworkConfig: FrameworkConfig<undefined, { description: string }, undefined> =
-                {
-                    organizations: {
-                        customFields: {
-                            customSchema: require('zod').z.object({
-                                description: require('zod').z.string()
-                            })
-                        }
+        it('should create handler package with toolkit options', () => {
+            const toolkitOptions: ToolkitOptions<undefined, { description: string }, undefined> = {
+                organizations: {
+                    customFields: {
+                        customSchema: require('zod').z.object({
+                            description: require('zod').z.string()
+                        })
                     }
-                } as any;
+                }
+            } as any;
 
             const handlerPackage = listUserOrganizationsHandlerPackage(
                 mockUseCases,
-                frameworkConfig
+                toolkitOptions
             );
 
             expect(handlerPackage).toHaveProperty('handler');

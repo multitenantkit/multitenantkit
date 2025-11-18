@@ -4,9 +4,9 @@ import {
 } from '@multitenantkit/api-contracts/organizations';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import {
-    type FrameworkConfig,
     type Organization,
     OrganizationSchema,
+    type ToolkitOptions,
     type UseCases
 } from '@multitenantkit/domain-contracts';
 import { ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
@@ -43,7 +43,7 @@ export const transferOrganizationOwnershipRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeTransferOrganizationOwnershipHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -54,7 +54,7 @@ export function makeTransferOrganizationOwnershipHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -124,7 +124,7 @@ export function makeTransferOrganizationOwnershipHandler<
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizations
+                    toolkitOptions?.responseTransformers?.organizations
                         ?.TransferOrganizationOwnership;
                 return applyResponseTransformer(
                     {
@@ -171,7 +171,7 @@ export function makeTransferOrganizationOwnershipHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function transferOrganizationOwnershipHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -182,7 +182,7 @@ export function transferOrganizationOwnershipHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -194,6 +194,6 @@ export function transferOrganizationOwnershipHandlerPackage<
     return {
         route: transferOrganizationOwnershipRoute,
         schema: TransferOrganizationOwnershipRequestSchema,
-        handler: makeTransferOrganizationOwnershipHandler(useCases, frameworkConfig)
+        handler: makeTransferOrganizationOwnershipHandler(useCases, toolkitOptions)
     };
 }

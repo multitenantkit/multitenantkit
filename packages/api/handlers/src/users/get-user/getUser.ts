@@ -1,6 +1,6 @@
 import type { ApiResponse } from '@multitenantkit/api-contracts';
 import {
-    type FrameworkConfig,
+    type ToolkitOptions,
     type UseCases,
     type User,
     UserSchema
@@ -32,7 +32,7 @@ export const getUserRoute: RouteDefinition = {
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function makeGetUserHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -43,14 +43,14 @@ export function makeGetUserHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >
 ): Handler<Record<string, never>, ApiResponse<User & TUserCustomFields> | HttpErrorResponse> {
     // Build response schema with custom fields if provided
-    const customUserFieldsSchema = frameworkConfig?.users?.customFields?.customSchema;
+    const customUserFieldsSchema = toolkitOptions?.users?.customFields?.customSchema;
     const responseSchema = customUserFieldsSchema
         ? UserSchema.merge(customUserFieldsSchema as any)
         : UserSchema;
@@ -119,7 +119,7 @@ export function makeGetUserHandler<
                 };
 
                 // Apply response transformer if configured
-                const transformer = frameworkConfig?.responseTransformers?.users?.GetUser;
+                const transformer = toolkitOptions?.responseTransformers?.users?.GetUser;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -166,7 +166,7 @@ export function makeGetUserHandler<
  * @template TOrganizationMembershipCustomFields - Custom fields for OrganizationMemberships (future)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom schemas
+ * @param toolkitOptions - Optional toolkit options for custom schemas
  */
 export function getUserHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -177,7 +177,7 @@ export function getUserHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -189,6 +189,6 @@ export function getUserHandlerPackage<
     return {
         route: getUserRoute,
         schema: {}, // GET /users/me has no params, query, or body
-        handler: makeGetUserHandler(useCases, frameworkConfig)
+        handler: makeGetUserHandler(useCases, toolkitOptions)
     };
 }

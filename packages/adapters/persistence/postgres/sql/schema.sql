@@ -7,7 +7,7 @@
 --   2. Run this script to create all required tables
 --   3. Configure your DATABASE_URL environment variable
 --
--- Note: These are the base framework tables. You may need to add custom columns
+-- Note: These are the base tables. You may need to add custom columns
 -- depending on your application's custom fields configuration.
 
 -- =====================
@@ -24,7 +24,7 @@
 --     * Include all columns below
 --
 CREATE TABLE IF NOT EXISTS users (
-    -- Core framework columns
+    -- Core columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     external_id VARCHAR(255) NOT NULL UNIQUE, -- Auth provider user ID (e.g., Supabase, Auth0)
     username VARCHAR(255) NOT NULL UNIQUE,    -- User identifier (email, nickname, phone, etc.)
@@ -60,7 +60,7 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
 -- Represents teams/organizations in your application
 --
 CREATE TABLE IF NOT EXISTS organizations (
-    -- Core framework columns
+    -- Core columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     owner_user_id UUID NOT NULL,              -- References the owner user
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -89,7 +89,7 @@ CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations
 -- Includes role management and invitation tracking
 --
 CREATE TABLE IF NOT EXISTS organization_memberships (
-    -- Core framework columns
+    -- Core columns
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID,                             -- NULL if user invited but not registered yet
     username VARCHAR(255) NOT NULL,           -- Username cached for performance
@@ -131,7 +131,7 @@ CREATE TRIGGER update_organization_memberships_updated_at BEFORE UPDATE ON organ
 --
 -- CUSTOM FIELDS:
 -- --------------
--- The schema above includes only the base framework columns.
+-- The schema above includes only the base columns.
 -- If your application uses custom fields, you need to add those columns:
 --
 -- Example for users table with custom fields:
@@ -150,9 +150,9 @@ CREATE TRIGGER update_organization_memberships_updated_at BEFORE UPDATE ON organ
 -- COLUMN MAPPING:
 -- ---------------
 -- If your existing database has different column names, use the columnMapping
--- configuration in FrameworkConfig instead of renaming columns:
+-- configuration in ToolkitOptions instead of renaming columns:
 --
---   frameworkConfig: {
+--   toolkitOptions: {
 --     users: {
 --       customFields: {
 --         columnMapping: {
@@ -168,7 +168,7 @@ CREATE TRIGGER update_organization_memberships_updated_at BEFORE UPDATE ON organ
 -- If you're using Supabase Auth with the auth.users table, you typically don't need
 -- a separate users table. Instead, configure columnMapping to use auth.users directly:
 --
---   frameworkConfig: {
+--   toolkitOptions: {
 --     users: {
 --       database: {
 --         schema: 'auth',
@@ -190,9 +190,9 @@ CREATE TRIGGER update_organization_memberships_updated_at BEFORE UPDATE ON organ
 -- If your database uses snake_case naming but your application uses camelCase,
 -- use the namingStrategy configuration:
 --
---   frameworkConfig: {
+--   toolkitOptions: {
 --     namingStrategy: 'snake_case'  // Automatically converts camelCase ↔ snake_case
 --   }
 --
--- This applies to custom fields only. Base framework fields already use snake_case
+-- This applies to custom fields only. Base fields already use snake_case
 -- in the database (external_id, created_at, etc.).

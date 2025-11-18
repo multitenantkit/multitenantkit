@@ -21,7 +21,7 @@ import { errorHandler, notFoundHandler, requestIdMiddleware } from './middleware
  * @example
  * ```typescript
  * // Standalone Express app
- * const handlerPackages = buildHandlers(useCases, frameworkConfig);
+ * const handlerPackages = buildHandlers(useCases, toolkitOptions);
  * const app = buildExpressApp(handlerPackages, authService);
  * app.listen(3001);
  * ```

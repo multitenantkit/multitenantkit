@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import {
     type Organization,
     OrganizationSchema
@@ -52,14 +52,14 @@ export class ListUserOrganizations<
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >,
-        frameworkConfig?: FrameworkConfig<
+        toolkitOptions?: ToolkitOptions<
             TUserCustomFields,
             TOrganizationCustomFields,
             TOrganizationMembershipCustomFields
         >
     ) {
-        // Extract organization custom schema from framework config if provided
-        const customSchema = frameworkConfig?.organizations?.customFields?.customSchema as
+        // Extract organization custom schema from toolkit options if provided
+        const customSchema = toolkitOptions?.organizations?.customFields?.customSchema as
             | z.ZodObject<any>
             | undefined;
 
@@ -73,7 +73,7 @@ export class ListUserOrganizations<
         super(
             'user-listUserOrganizations',
             adapters,
-            frameworkConfig,
+            toolkitOptions,
             ListUserOrganizationsInputSchema,
             outputSchema,
             'Failed to list user organizations'

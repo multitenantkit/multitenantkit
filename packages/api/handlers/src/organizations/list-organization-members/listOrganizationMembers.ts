@@ -3,7 +3,7 @@ import {
     type ListOrganizationMembersRequest,
     ListOrganizationMembersRequestSchema
 } from '@multitenantkit/api-contracts/organizations';
-import type { FrameworkConfig, UseCases } from '@multitenantkit/domain-contracts';
+import type { ToolkitOptions, UseCases } from '@multitenantkit/domain-contracts';
 import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts/organization-memberships';
 import { OrganizationSchema } from '@multitenantkit/domain-contracts/organizations';
 import { type IDomainError, ValidationError } from '@multitenantkit/domain-contracts/shared/errors';
@@ -49,7 +49,7 @@ export const listOrganizationMembersRoute: RouteDefinition = {
  * @template MCF - Zod schema for OrganizationMembership custom fields (default: empty object schema)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom fields
+ * @param toolkitOptions - Optional toolkit options for custom fields
  */
 export function makeListOrganizationMembersHandler<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -60,15 +60,15 @@ export function makeListOrganizationMembersHandler<
     MCF extends z.AnyZodObject = z.ZodObject<{}>
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
+    toolkitOptions?: ToolkitOptions<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
 ): Handler<ListOrganizationMembersRequest, PaginatedResponse<any> | HttpErrorResponse> {
     // Build response schema inline with custom fields
-    // 1) Read optional custom-field schemas from frameworkConfig
-    const userCF = frameworkConfig?.users?.customFields?.customSchema as UCF | undefined;
-    const organizationCF = frameworkConfig?.organizations?.customFields?.customSchema as
+    // 1) Read optional custom-field schemas from toolkitOptions
+    const userCF = toolkitOptions?.users?.customFields?.customSchema as UCF | undefined;
+    const organizationCF = toolkitOptions?.organizations?.customFields?.customSchema as
         | TCF
         | undefined;
-    const membershipCF = frameworkConfig?.organizationMemberships?.customFields?.customSchema as
+    const membershipCF = toolkitOptions?.organizationMemberships?.customFields?.customSchema as
         | MCF
         | undefined;
 
@@ -179,7 +179,7 @@ export function makeListOrganizationMembersHandler<
 
                 // Apply response transformer if configured
                 const transformer =
-                    frameworkConfig?.responseTransformers?.organizations?.ListOrganizationMembers;
+                    toolkitOptions?.responseTransformers?.organizations?.ListOrganizationMembers;
                 return applyResponseTransformer(
                     {
                         request: { input, principal, requestId },
@@ -226,7 +226,7 @@ export function makeListOrganizationMembersHandler<
  * @template MCF - Zod schema for OrganizationMembership custom fields (default: empty object schema)
  *
  * @param useCases - Application use cases
- * @param frameworkConfig - Optional framework configuration for custom fields
+ * @param toolkitOptions - Optional toolkit options for custom fields
  */
 export function listOrganizationMembersHandlerPackage<
     // biome-ignore lint/complexity/noBannedTypes: ignore
@@ -237,11 +237,11 @@ export function listOrganizationMembersHandlerPackage<
     MCF extends z.AnyZodObject = z.ZodObject<{}>
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
+    toolkitOptions?: ToolkitOptions<z.infer<UCF>, z.infer<TCF>, z.infer<MCF>>
 ): HandlerPackage<ListOrganizationMembersRequest, PaginatedResponse<any> | HttpErrorResponse> {
     return {
         route: listOrganizationMembersRoute,
         schema: ListOrganizationMembersRequestSchema,
-        handler: makeListOrganizationMembersHandler<UCF, TCF, MCF>(useCases, frameworkConfig as any)
+        handler: makeListOrganizationMembersHandler<UCF, TCF, MCF>(useCases, toolkitOptions as any)
     };
 }

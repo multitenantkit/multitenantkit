@@ -1,4 +1,4 @@
-import type { Adapters, FrameworkConfig } from '@multitenantkit/domain-contracts';
+import type { Adapters, ToolkitOptions } from '@multitenantkit/domain-contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ListUserOrganizations } from '../../src/users/use-cases/list-user-organizations/ListUserOrganizations';
 import { TestData } from '../test-helpers/Builders';
@@ -101,10 +101,10 @@ describe('ListUserOrganizations use case', () => {
             expect(ids).toEqual([organizationA.id, organizationB.id, ownedOrganization.id].sort());
         });
 
-        it('should support custom organization fields via framework config', async () => {
+        it('should support custom organization fields via toolkit options', async () => {
             type OrganizationCustom = { category: string };
             // biome-ignore lint/complexity/noBannedTypes: ignore
-            const frameworkConfig: FrameworkConfig<{}, OrganizationCustom, {}> = {
+            const toolkitOptions: ToolkitOptions<{}, OrganizationCustom, {}> = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -141,7 +141,7 @@ describe('ListUserOrganizations use case', () => {
             // biome-ignore lint/complexity/noBannedTypes: ignore
             const useCase = new ListUserOrganizations<{}, OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
@@ -161,7 +161,7 @@ describe('ListUserOrganizations use case', () => {
             await setup.userRepo.insert(user);
 
             type OrganizationCustom = { category: string };
-            const frameworkConfig = {
+            const toolkitOptions = {
                 organizations: {
                     customFields: {
                         customSchema: require('zod').z.object({
@@ -221,7 +221,7 @@ describe('ListUserOrganizations use case', () => {
             // biome-ignore lint/complexity/noBannedTypes: ignore
             const useCase = new ListUserOrganizations<{}, OrganizationCustom>(
                 adapters as any,
-                frameworkConfig
+                toolkitOptions
             );
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },

@@ -4,8 +4,8 @@ import {
 } from '@multitenantkit/api-contracts/organization-memberships';
 import type { ApiResponse } from '@multitenantkit/api-contracts/shared';
 import type {
-    FrameworkConfig,
     OrganizationMembership,
+    ToolkitOptions,
     UseCases
 } from '@multitenantkit/domain-contracts';
 import { OrganizationMembershipSchema } from '@multitenantkit/domain-contracts';
@@ -38,7 +38,7 @@ export function makeAcceptOrganizationInvitationHandler<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -49,7 +49,7 @@ export function makeAcceptOrganizationInvitationHandler<
 > {
     // Build response schema with custom fields if provided
     const customMembershipFieldsSchema =
-        frameworkConfig?.organizationMemberships?.customFields?.customSchema;
+        toolkitOptions?.organizationMemberships?.customFields?.customSchema;
     const responseSchema = customMembershipFieldsSchema
         ? OrganizationMembershipSchema.merge(customMembershipFieldsSchema as any)
         : OrganizationMembershipSchema;
@@ -182,7 +182,7 @@ export function acceptOrganizationInvitationHandlerPackage<
     TOrganizationMembershipCustomFields = {}
 >(
     useCases: UseCases,
-    frameworkConfig?: FrameworkConfig<
+    toolkitOptions?: ToolkitOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -194,6 +194,6 @@ export function acceptOrganizationInvitationHandlerPackage<
     return {
         route: acceptOrganizationInvitationRoute,
         schema: AcceptOrganizationInvitationRequestSchema,
-        handler: makeAcceptOrganizationInvitationHandler(useCases, frameworkConfig)
+        handler: makeAcceptOrganizationInvitationHandler(useCases, toolkitOptions)
     };
 }
