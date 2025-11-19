@@ -14,7 +14,8 @@ export function HeroSection() {
 const app = createExpressApp();
 
 app.listen(3000);
-// → 18 endpoints running ✅`;
+// → 18 endpoints running ✅
+// Works with Express, Lambda, Hono, Fastify...`;
 
     return (
         <Section
@@ -151,7 +152,7 @@ app.listen(3000);
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1, duration: 0.5 }}
-                    className="hidden xl:flex absolute bottom-12 left-[45%] transform -translate-x-1/2 flex-col items-center gap-2"
+                    className="hidden lg:flex absolute bottom-12 left-1/2 transform -translate-x-1/2 flex-col items-center gap-2"
                 >
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         Scroll to explore

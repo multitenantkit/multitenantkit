@@ -28,7 +28,8 @@ export function QuickStartSection() {
 // One line to get your API ready
 const app = createExpressApp();
 
-app.listen(3000);`;
+app.listen(3000);
+// Works with Express, Lambda, Hono, Fastify...`;
 
     const features = [
         '18 production-ready endpoints',

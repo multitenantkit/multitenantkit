@@ -27,16 +27,16 @@ export function ComparisonSection() {
 // 🐛 Easy to introduce bugs`;
 
     const withCode = `// ✅ With MultiTenantKit
-import { createUseCases, buildHandlers } from '@multitenantkit/sdk';
+import { createExpressApp } from '@multitenantkit/sdk';
 
-const useCases = createUseCases(adapters);
-const handlers = buildHandlers(useCases);
-const app = buildExpressApp(handlers, authService);
+const app = createExpressApp();
 app.listen(3000);
+// Works with Express, Lambda, Hono, Fastify...
 
 // ⚡ 30 seconds
-// ✨ Battle-tested logic
-// 🛡️ Type-safe by default`;
+// ✨ 18 production endpoints
+// 🛡️ Type-safe by default
+// 🚀 Works with Express, Lambda, Hono, Fastify...`;
 
     return (
         <Section className="bg-light-bg dark:bg-dark-bg">
