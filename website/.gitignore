@@ -25,3 +25,10 @@ dist-ssr
 
 # TanStack Router
 .tanstack
+
+# SST deployment
+.sst/
+
+# Environment variables
+.env
+.env.local

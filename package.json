@@ -31,7 +31,10 @@
         "check:write-unsafe": "biome check --write --unsafe .",
         "ci:check": "biome ci .",
         "fix:safe": "biome check --write .",
-        "fix:all": "biome check --write --unsafe ."
+        "fix:all": "biome check --write --unsafe .",
+        "website:deploy": "npm run deploy --workspace=website",
+        "website:deploy:dev": "npm run deploy:dev --workspace=website",
+        "website:remove": "npm run remove --workspace=website"
     },
     "keywords": [
         "saas",

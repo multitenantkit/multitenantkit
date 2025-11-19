@@ -55,3 +55,6 @@ data/
 # Temporary files
 tmp/
 temp/
+
+# SST
+.sst/
