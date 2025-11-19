@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-metrics-http",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "HTTP adapter for metrics and observability",
     "keywords": [
         "multitenantkit",
@@ -44,7 +44,7 @@
         "clean": "rm -rf dist"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.0"
+        "@multitenantkit/domain-contracts": "^0.1.1"
     },
     "devDependencies": {
         "typescript": "^5.3.3"

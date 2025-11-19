@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-persistence-json",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "JSON file-based persistence adapter for MultiTenantKit (development/testing)",
     "keywords": [
@@ -54,7 +54,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.0",
+        "@multitenantkit/domain-contracts": "^0.1.1",
         "zod": "^3.22.4"
     },
     "devDependencies": {

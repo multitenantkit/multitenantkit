@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/domain-contracts",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "Domain schemas and types for MultiTenantKit - Single source of truth for domain models",
     "main": "dist/index.js",

@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/api-handlers",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "HTTP request handlers for MultiTenantKit API",
     "keywords": [
@@ -46,8 +46,8 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "^0.1.0",
-        "@multitenantkit/domain-contracts": "^0.1.0",
+        "@multitenantkit/api-contracts": "^0.1.1",
+        "@multitenantkit/domain-contracts": "^0.1.1",
         "zod": "^3.22.4"
     },
     "devDependencies": {

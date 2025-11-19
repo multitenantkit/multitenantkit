@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-transport-express",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "Express.js transport adapter for MultiTenantKit HTTP API",
     "keywords": [
@@ -48,9 +48,9 @@
         "test:e2e": "vitest run --config vitest.config.ts"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "^0.1.0",
-        "@multitenantkit/domain-contracts": "^0.1.0",
-        "@multitenantkit/api-handlers": "^0.1.0",
+        "@multitenantkit/api-contracts": "^0.1.1",
+        "@multitenantkit/domain-contracts": "^0.1.1",
+        "@multitenantkit/api-handlers": "^0.1.1",
         "@supabase/supabase-js": "^2.57.4",
         "cors": "^2.8.5",
         "dotenv": "^17.2.2",

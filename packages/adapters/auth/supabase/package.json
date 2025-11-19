@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-auth-supabase",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "description": "Supabase authentication adapter",
     "keywords": [
@@ -44,8 +44,8 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/api-contracts": "^0.1.0",
-        "@multitenantkit/domain-contracts": "^0.1.0",
+        "@multitenantkit/api-contracts": "^0.1.1",
+        "@multitenantkit/domain-contracts": "^0.1.1",
         "@supabase/supabase-js": "^2.39.0"
     },
     "devDependencies": {
