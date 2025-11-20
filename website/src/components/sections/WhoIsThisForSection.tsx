@@ -13,24 +13,27 @@ export function WhoIsThisForSection() {
 
     const personas = [
         {
-            icon: Rocket,
-            title: 'SaaS Startups',
+            icon: User,
+            title: 'Solo builders & indie SaaS founders',
             rating: 5,
-            description: 'Need team management yesterday. Ship features, not auth flows.',
+            description:
+                'Ship multi-tenant user management in days instead of weeks, without giving up control of your stack.',
             gradient: 'from-purple-500 to-pink-500'
         },
         {
             icon: Building,
-            title: 'Enterprise Apps',
+            title: 'Product & platform teams',
             rating: 5,
-            description: 'Multi-tenant requirements with full data control and compliance.',
+            description:
+                'Drop MultiTenantKit into an existing codebase to add organizations, memberships, and roles without a full rewrite.',
             gradient: 'from-blue-500 to-cyan-500'
         },
         {
-            icon: User,
-            title: 'Solo Developers',
+            icon: Rocket,
+            title: 'Agencies & consultancies',
             rating: 5,
-            description: 'Tired of rebuilding the same foundation. Focus on unique value.',
+            description:
+                'Reuse the same battle-tested multi-tenant core across multiple B2B client projects.',
             gradient: 'from-orange-500 to-red-500'
         }
     ];
@@ -74,7 +77,10 @@ export function WhoIsThisForSection() {
                                     </h3>
                                     <div className="flex items-center justify-center gap-1 mb-3">
                                         {Array.from({ length: persona.rating }).map((_, i) => (
-                                            <span key={i} className="text-yellow-500">
+                                            <span
+                                                key={`${persona.title}-star-${i}`}
+                                                className="text-yellow-500"
+                                            >
                                                 ⭐
                                             </span>
                                         ))}

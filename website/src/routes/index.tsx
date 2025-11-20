@@ -11,6 +11,7 @@ import { HeroSection } from '../components/sections/HeroSection';
 import { QuickStartSection } from '../components/sections/QuickStartSection';
 import { RealWorldExampleSection } from '../components/sections/RealWorldExampleSection';
 import { TechnicalHighlightsSection } from '../components/sections/TechnicalHighlightsSection';
+import { WhatYouGetSection } from '../components/sections/WhatYouGetSection';
 import { WhoIsThisForSection } from '../components/sections/WhoIsThisForSection';
 
 export const Route = createFileRoute('/')({
@@ -22,6 +23,7 @@ function Index() {
         <div className="w-full">
             <HeroSection />
             <QuickStartSection />
+            <WhatYouGetSection />
             <CustomFieldsSection />
             <DatabaseSetupSection />
             <FeaturesSection />

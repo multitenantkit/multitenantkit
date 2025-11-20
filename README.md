@@ -1,8 +1,10 @@
 # MultiTenantKit
 
-**Stop building user and team management from scratch. Start shipping features.**
+**Stop rebuilding multi-tenant user management. Start shipping features.**
 
-MultiTenantKit is a production-ready TypeScript toolkit that provides the **business logic** for managing users, organizations, and team memberships in your B2B SaaS. You keep control of your database, auth provider, and infrastructure—we handle the complex logic.
+MultiTenantKit is a **headless**, production-ready TypeScript toolkit that provides the **business logic** for managing users, organizations, and team memberships in your B2B SaaS. You keep control of your database, auth provider, and infrastructure—we handle the complex multi-tenant logic.
+
+> 🔐 **Not an auth provider** — Bring your own Auth0, Clerk, Supabase, Cognito, or custom auth. MultiTenantKit handles what comes after authentication: user profiles, organizations, teams, and role-based memberships.
 
 ```bash
 npm install @multitenantkit/sdk
@@ -15,15 +17,16 @@ npm install @multitenantkit/sdk
 
 ## Why MultiTenantKit?
 
-Every B2B SaaS needs the same foundation:
+Every B2B SaaS needs the same **multi-tenant foundation**:
 - ✅ User profiles and lifecycle management
 - ✅ Organizations/teams with ownership
 - ✅ Role-based memberships (owner, admin, member)
 - ✅ Invitation flows and access control
+- ✅ 18 production-ready endpoints
 
 **You've built this before. So have we. Let's not do it again.**
 
-MultiTenantKit gives you battle-tested business logic in minutes—not weeks. **Your database. Your auth. Your infrastructure.** We just provide the code that makes it all work together.
+MultiTenantKit gives you battle-tested **multi-tenant business logic** in minutes—not weeks. **Your database. Your auth. Your infrastructure. Your codebase.** We just provide the headless backend code (no UI components) that makes it all work together.
 
 ---
 
@@ -134,21 +137,24 @@ Memberships (5 endpoints)
 
 ## Your Data, Your Infrastructure
 
-**MultiTenantKit is not a service. It's a toolkit.**
+**MultiTenantKit is not a service. It's a toolkit. It's not a hosted platform. It's headless backend code.**
 
 Unlike SaaS solutions that lock your data in their platform, MultiTenantKit runs in **your codebase**, on **your infrastructure**:
 
 - 🗄️ **Your Database** - PostgreSQL, MySQL, MongoDB, or any database you want. Build adapters for your persistence layer.
-- 🔐 **Your Auth Provider** - Supabase, Auth0, Cognito, or any provider you choose. Implement the simple interface.
+- 🔐 **Your Auth Provider** - Auth0, Clerk, Supabase, Cognito, or custom auth. Implement the simple interface.
+- 🚚 **Your Transport** - Express, Hono, Fastify, AWS Lambda, or any HTTP framework. Bring your own.
 - 🚀 **Your Deployment** - AWS, GCP, Azure, Vercel, or wherever you want. It's just TypeScript code.
+- 🎨 **Your UI** - Headless by design. No UI components. Build your frontend however you want.
 - 🔧 **Your Modifications** - Fork it, customize it, extend it—it's your code now.
 
-We provide the **business logic and patterns**. You provide the infrastructure. This means:
+We provide the **multi-tenant business logic and patterns**. You provide the infrastructure. This means:
 - ✅ No vendor lock-in
 - ✅ Complete data ownership
 - ✅ Deploy anywhere
 - ✅ Integrate with existing projects
 - ✅ Customize without limits
+- ✅ Works WITH your existing auth provider (not replacing it)
 
 ---
 
@@ -462,7 +468,7 @@ MIT © [MultiTenantKit](https://github.com/multitenantkit/multitenantkit)
 - 📖 **Documentation**: [docs.multitenantkit.dev](https://docs.multitenantkit.dev) *(coming soon)*
 - 💬 **Discord**: [Join our community](https://discord.gg/multitenantkit) *(coming soon)*
 - 🐛 **Issues**: [GitHub Issues](https://github.com/multitenantkit/multitenantkit/issues)
-- 📧 **Email**: support@multitenantkit.dev *(coming soon)*
+- 📧 **Email**: support@multitenantkit.dev
 
 ---
 

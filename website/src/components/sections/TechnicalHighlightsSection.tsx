@@ -16,24 +16,34 @@ export function TechnicalHighlightsSection() {
 
     const highlights = [
         {
-            title: 'Hexagonal Architecture',
+            title: 'Hexagonal architecture (ports & adapters)',
             content:
-                'Clean separation between domain logic and infrastructure. Business rules are independent, testable, and portable. Adapters connect your tech stack.'
+                'Clean separation between domain and infrastructure. Business logic is independent, testable, and portable to any stack.'
         },
         {
-            title: 'Type Safety with Zod',
+            title: '18 use cases for users, organizations, and memberships',
             content:
-                'Runtime validation meets compile-time guarantees. Schema-first approach ensures consistency from database to API. Single source of truth for all types.'
+                'Covering all CRUD operations, role management, invitations, soft deletes, and more. Wired into a ready-to-use Express delivery layer.'
         },
         {
-            title: 'Extensibility System',
+            title: 'Zod-based schemas for runtime validation',
             content:
-                '7 lifecycle hooks (onStart, afterValidation, beforeExecution, afterExecution, onError, onAbort, onFinally) plus abort mechanism. Custom fields, response transformers, complete flexibility.'
+                'Runtime validation with TypeScript type inference. Single source of truth for validation logic and type safety.'
         },
         {
-            title: 'Comprehensive Testing',
+            title: 'Type-safe custom fields and naming strategies',
             content:
-                'Full test coverage for use cases and adapters. Integration tests included. Test your custom adapters with provided utilities.'
+                'Add your own columns and map them to MultiTenantKit entities. Your database schema stays yours.'
+        },
+        {
+            title: 'Hook and response transformer systems',
+            content:
+                'Plug in logging, metrics, webhooks, and custom API responses without touching the core logic. 7 lifecycle hooks plus abort mechanism for complete control.'
+        },
+        {
+            title: 'Headless by design',
+            content:
+                'No UI components, just backend building blocks that work with any frontend (React, Next.js, mobile, etc.).'
         }
     ];
 
@@ -67,6 +77,7 @@ export function TechnicalHighlightsSection() {
                             className="bg-white dark:bg-dark-bg border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden"
                         >
                             <button
+                                type="button"
                                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                             >

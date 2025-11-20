@@ -94,14 +94,17 @@ const config: ToolkitOptions = {
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
                             Works with{' '}
                             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                                YOUR Database
+                                your database, auth provider, and transport.
                             </span>
                         </h2>
                         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                            Keep your existing tables. Use your column names. Your schema, your
-                            rules.{' '}
+                            MultiTenantKit is fully infrastructure-agnostic. Out of the box you get
+                            adapters for PostgreSQL and JSON storage, Supabase Auth, and Express —
+                            but you can also build adapters for MySQL, MongoDB, DynamoDB, Auth0,
+                            Cognito, Firebase, AWS Lambda, Fastify, Hono, and more.{' '}
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
-                                We adapt to you, not the other way around.
+                                Your data never leaves your stack: MultiTenantKit runs inside your
+                                codebase.
                             </span>
                         </p>
                     </div>

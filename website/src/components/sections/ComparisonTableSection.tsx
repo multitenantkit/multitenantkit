@@ -11,12 +11,27 @@ export function ComparisonTableSection() {
     });
 
     const comparisons = [
+        { feature: 'Runs in your own codebase', auth0: false, custom: true, multitenantkit: true },
+        { feature: 'Bring your own database', auth0: false, custom: true, multitenantkit: true },
+        {
+            feature: 'Bring your own auth provider',
+            auth0: false,
+            custom: true,
+            multitenantkit: true
+        },
+        {
+            feature: 'Headless (no UI components)',
+            auth0: false,
+            custom: true,
+            multitenantkit: true
+        },
         { feature: 'Setup Time', auth0: '1 day', custom: '2-3 weeks', multitenantkit: '30 sec' },
-        { feature: 'Data Ownership', auth0: false, custom: true, multitenantkit: true },
-        { feature: 'Monthly Cost', auth0: '$$$', custom: '$0', multitenantkit: '$0' },
-        { feature: 'Vendor Lock-in', auth0: 'High', custom: 'None', multitenantkit: 'None' },
-        { feature: 'Type Safety', auth0: 'Partial', custom: 'Varies', multitenantkit: 'Full' },
-        { feature: 'Extensibility', auth0: 'Limited', custom: 'Full', multitenantkit: 'Full' }
+        {
+            feature: 'Pricing model',
+            auth0: 'Usage-based',
+            custom: 'Developer time',
+            multitenantkit: 'Open source, $0'
+        }
     ];
 
     return (

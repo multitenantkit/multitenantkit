@@ -38,7 +38,7 @@ app.listen(3000);
                         className="text-center lg:text-left"
                     >
                         {/* Badges */}
-                        <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
+                        <div className="flex items-center justify-center lg:justify-start gap-3 mb-6 flex-wrap">
                             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 dark:bg-primary/20 rounded-full">
                                 <Star size={14} className="text-primary fill-primary" />
                                 <span className="text-sm font-medium text-primary">
@@ -46,11 +46,18 @@ app.listen(3000);
                                 </span>
                             </div>
                             <div className="px-3 py-1.5 bg-accent/10 dark:bg-accent/20 rounded-full">
-                                <span className="text-sm font-medium text-accent">MIT License</span>
+                                <span className="text-sm font-medium text-accent">
+                                    TypeScript-first
+                                </span>
                             </div>
                             <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    TypeScript
+                                    Your database
+                                </span>
+                            </div>
+                            <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Your auth
                                 </span>
                             </div>
                         </div>
@@ -58,22 +65,25 @@ app.listen(3000);
                         {/* Headline */}
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                             <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-50 dark:via-gray-100 dark:to-gray-50 bg-clip-text text-transparent">
-                                Stop rebuilding user management.{' '}
-                            </span>
-                            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_auto]">
-                                Start shipping features.
+                                Stop rebuilding multi-tenant user management.
                             </span>
                         </h1>
 
                         {/* Subheadline */}
-                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0">
-                            Production-ready TypeScript toolkit for B2B SaaS. You own the data, we
-                            handle the logic. Get{' '}
-                            <span className="font-semibold text-primary">
-                                18 endpoints in 30 seconds
-                            </span>
-                            .
+                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-4 max-w-2xl mx-auto lg:mx-0">
+                            MultiTenantKit is an open-source TypeScript toolkit that gives you
+                            production-ready users, organizations, and multi-tenant access control
+                            running on top of your own database and infrastructure.
                         </p>
+
+                        {/* Clarifying line */}
+                        <div className="mb-8 max-w-2xl mx-auto lg:mx-0">
+                            <p className="text-base text-gray-500 dark:text-gray-500 border-l-4 border-accent pl-4">
+                                Not an auth provider — bring your own Auth0, Clerk, Supabase,
+                                Cognito, or custom auth. We handle the user, organization, and
+                                membership logic.
+                            </p>
+                        </div>
 
                         {/* CTAs */}
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">

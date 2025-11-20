@@ -57,7 +57,9 @@ app.listen(3000);
                         </span>
                     </h2>
                     <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        No configuration hell. No boilerplate. Just install and ship.
+                        Install the SDK, plug it into your database and auth provider, and you
+                        instantly get an Express-based REST API with 18 endpoints for users,
+                        organizations, and memberships.
                     </p>
                 </motion.div>
 
@@ -72,6 +74,7 @@ app.listen(3000);
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
+                                type="button"
                                 onClick={() => setActiveTab(tab.id)}
                                 className={cn(
                                     'px-6 py-3 rounded-lg font-medium transition-all duration-200',
@@ -135,11 +138,8 @@ app.listen(3000);
                     {/* Bottom Note */}
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                            💡 Works with Express, PostgreSQL, and Supabase Auth out of the box.{' '}
-                            <br className="hidden sm:block" />
-                            <span className="font-medium text-primary">
-                                Swap any adapter for your own implementation.
-                            </span>
+                            Use the domain use cases directly in your services, or expose them
+                            through the built-in Express adapter.
                         </p>
                     </div>
                 </motion.div>
