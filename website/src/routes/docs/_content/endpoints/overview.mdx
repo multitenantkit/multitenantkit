@@ -16,6 +16,54 @@ Most endpoints require authentication via JWT token:
 
 When authentication is required, the `principalExternalId` (user's auth provider ID) is automatically extracted from the JWT token and passed to the use case.
 
+## Setup Options
+
+MultiTenantKit provides two ways to set up your API:
+
+### Option 1: New Express App
+
+Create a complete Express application with all MultiTenantKit endpoints:
+
+```typescript
+import { createExpressApp } from '@multitenantkit/sdk';
+
+const app = createExpressApp({
+  users: {
+    database: { schema: 'auth', table: 'users' }
+  }
+});
+
+app.listen(3000);
+```
+
+This sets up a new Express app with all endpoints at the root level (e.g., `/users/me`, `/organizations`).
+
+### Option 2: Add to Existing App
+
+Add MultiTenantKit routes to an existing Express application:
+
+```typescript
+import express from 'express';
+import { createExpressRouter } from '@multitenantkit/sdk';
+
+const app = express();
+
+// Your existing routes
+app.get('/api/billing', billingHandler);
+
+// Add MultiTenantKit routes
+const multitenantRouter = createExpressRouter({
+  users: {
+    database: { schema: 'auth', table: 'users' }
+  }
+});
+
+app.use('/api', multitenantRouter);
+app.listen(3000);
+```
+
+This mounts MultiTenantKit endpoints under your chosen path (e.g., `/api/users/me`, `/api/organizations`).
+
 ## Response Format
 
 All successful responses follow this format:

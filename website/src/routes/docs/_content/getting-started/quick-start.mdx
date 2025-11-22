@@ -112,6 +112,41 @@ app.listen(port, () => {
 });
 ```
 
+### Alternative: Add to Existing Express App
+
+If you already have an Express app, use `createExpressRouter` to add MultiTenantKit routes:
+
+```typescript
+import 'dotenv/config';
+import express from 'express';
+import { createExpressRouter } from '@multitenantkit/sdk';
+
+const app = express();
+
+// Your existing routes
+app.get('/api/billing', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// Add MultiTenantKit routes
+const multitenantRouter = createExpressRouter({
+  users: {
+    database: {
+      schema: 'auth',
+      table: 'users'
+    }
+  }
+});
+
+// Mount under your preferred path
+app.use('/api', multitenantRouter);
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`);
+});
+```
+
 ## Environment Variables
 
 Create `.env`:

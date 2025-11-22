@@ -29,15 +29,13 @@ yarn add @multitenantkit/sdk
 pnpm add @multitenantkit/sdk
 ```
 
-## Install Individual Packages
-
 For more granular control, install packages individually:
 
 ```bash
-npm install @multitenantkit/core \
-  @multitenantkit/adapters-drizzle-pg \
-  @multitenantkit/adapters-supabase-auth \
-  @multitenantkit/composition
+npm install @multitenantkit/composition \
+  @multitenantkit/adapter-auth-supabase \
+  @multitenantkit/adapter-transport-express \
+  @multitenantkit/api-handlers
 ```
 
 ## Database Setup
