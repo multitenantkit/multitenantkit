@@ -1,0 +1,50 @@
+---
+title: Configuration Overview
+description: Configure MultiTenantKit for your needs
+lastUpdated: '2025-11-21'
+---
+
+# Configuration Overview
+
+MultiTenantKit is highly configurable. This section covers all the ways you can customize the toolkit to fit your specific requirements.
+
+## Configuration Options
+
+- **Custom Fields** - Extend entities with your own data
+- **Hooks** - Inject custom logic into use case execution
+- **Column Mapping** - Map to your existing database schema
+- **Naming Strategy** - Customize table and column names
+
+## Basic Configuration Example
+
+```typescript
+import { createUseCases, z } from '@multitenantkit/core';
+
+const useCases = createUseCases({
+  persistence: persistenceAdapters,
+  system: systemAdapters,
+  config: {
+    // Custom fields schemas
+    customFields: {
+      user: z.object({
+        companyName: z.string().optional(),
+        phoneNumber: z.string().optional()
+      }),
+      organization: z.object({
+        industry: z.string().optional(),
+        employeeCount: z.number().optional()
+      })
+    },
+    // Database naming strategy
+    namingStrategy: {
+      tableName: (entity) => `app_${entity}`,
+      columnName: (field) => field.toLowerCase()
+    }
+  }
+});
+```
+
+## Next Steps
+
+- [Custom Fields](/docs/configuration/custom-fields) - Learn about custom fields
+- [Hooks](/docs/configuration/hooks) - Extend use case behavior

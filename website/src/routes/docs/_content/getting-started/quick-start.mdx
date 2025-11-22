@@ -1,0 +1,166 @@
+---
+title: Quick Start
+description: Get MultiTenantKit running in under 5 minutes with a working Express server
+lastUpdated: '2025-11-22'
+---
+
+> **Note**: This guide assumes you're using **Supabase** for both database and authentication. See [Installation](/docs/getting-started/installation) for setup details.
+
+## Create Database Tables
+
+Supabase provides the `auth.users` table automatically. You only need to create the organizations and memberships tables.
+
+Run this SQL in your Supabase SQL Editor:
+
+```sql
+-- Organizations table
+CREATE TABLE organizations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_user_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  archived_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+-- Organization Memberships table
+CREATE TABLE organization_memberships (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  username TEXT NOT NULL,
+  organization_id UUID NOT NULL REFERENCES organizations(id),
+  role_code TEXT NOT NULL CHECK (role_code IN ('owner', 'admin', 'member')),
+  invited_at TIMESTAMP,
+  joined_at TIMESTAMP,
+  left_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Indexes
+CREATE INDEX idx_orgs_owner ON organizations(owner_user_id);
+CREATE INDEX idx_orgs_deleted_at ON organizations(deleted_at);
+CREATE INDEX idx_orgs_archived_at ON organizations(archived_at);
+
+CREATE INDEX idx_memberships_user ON organization_memberships(user_id);
+CREATE INDEX idx_memberships_org ON organization_memberships(organization_id);
+CREATE INDEX idx_memberships_username ON organization_memberships(username);
+```
+
+> **Prerequisites**: Complete the [Installation Guide](/docs/getting-started/installation) first to install packages and setup your database.
+
+## Initialize Your Project
+
+If you haven't already, create a new Node.js project:
+
+```bash
+npm init -y
+npm install @multitenantkit/sdk dotenv
+npm install -D typescript tsx @types/node
+```
+
+Create `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"]
+}
+```
+
+Add scripts to `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  }
+}
+```
+
+## Create Your Server
+
+Create `src/index.ts`:
+
+```typescript
+import 'dotenv/config';
+import { createExpressApp } from '@multitenantkit/sdk';
+
+const app = createExpressApp({
+  users: {
+    database: {
+      schema: 'auth',
+      table: 'users'
+    }
+  }
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`);
+});
+```
+
+## Environment Variables
+
+Create `.env`:
+
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/postgres
+
+# Supabase Auth
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-service-role-key
+```
+
+## Run Your Server
+
+```bash
+npm run dev
+```
+
+## Test the API
+
+Your server now has all user and organization endpoints ready:
+
+### Get Current User
+
+```bash
+curl -X GET http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Create Organization
+
+```bash
+curl -X POST http://localhost:3000/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+### Get User Organizations
+
+```bash
+curl -X GET http://localhost:3000/users/me/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Next Steps
+
+- **Add custom fields**: [Custom Fields Configuration](/docs/configuration/custom-fields)
+- **Add hooks**: [Use Case Hooks](/docs/configuration/hooks)
+- **Explore endpoints**: [User Endpoints](/docs/endpoints/user-endpoints), [Organization Endpoints](/docs/endpoints/organization-endpoints)
+- **View all use cases**: [Use Cases Overview](/docs/use-cases/overview)

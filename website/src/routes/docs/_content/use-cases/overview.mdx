@@ -1,0 +1,213 @@
+---
+title: Use Cases Overview
+description: MultiTenantKit provides 18 production-ready use cases out of the box, covering all common operations for managing users, organizations, and memberships.
+lastUpdated: '2025-11-21'
+---
+
+Each use case can be invoked in two ways:
+- **Directly in code**: Use the use case's `execute()` method for programmatic access
+- **Via REST API**: Call the corresponding HTTP endpoint (see [Endpoints](/docs/endpoints/overview))
+
+## User Management Use Cases
+
+- **CreateUser** - Register a new user
+- **GetUser** - Retrieve user details
+- **UpdateUser** - Modify user information
+- **DeleteUser** - Remove a user
+- **ListUserOrganizations** - Get all organizations a user belongs to
+
+## Organization Management Use Cases
+
+- **CreateOrganization** - Create a new organization
+- **GetOrganization** - Retrieve organization details
+- **UpdateOrganization** - Modify organization information
+- **ArchiveOrganization** - Soft delete an organization
+- **DeleteOrganization** - Permanently remove an organization
+- **RestoreOrganization** - Restore a soft-deleted organization
+- **TransferOrganizationOwnership** - Transfer organization ownership to another member
+
+## Membership Management Use Cases
+
+- **AddOrganizationMember** - Add a user to an organization
+- **RemoveOrganizationMember** - Remove a user from an organization
+- **UpdateOrganizationMemberRole** - Change a member's role
+- **ListOrganizationMembers** - Get all members of an organization
+- **AcceptOrganizationInvitation** - Accept an invitation to join an organization
+- **LeaveOrganization** - Voluntarily leave an organization
+
+## Initializing Use Cases
+
+If you want to use use cases directly in your code (without REST endpoints), you need to initialize them first using the `createUseCases` factory function.
+
+### Basic Initialization
+
+```typescript
+import { createUseCases } from '@multitenantkit/composition';
+import { createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+
+// 1. Create persistence adapters (PostgreSQL)
+const persistenceAdapters = createPostgresAdapters(
+  undefined,  // Uses DATABASE_URL from environment
+  undefined   // No custom fields
+);
+
+// 2. Create system adapters (UUID, clock, etc.)
+const systemAdapters = createSystemAdapters();
+
+// 3. Initialize use cases
+const useCases = createUseCases(
+  {
+    persistence: persistenceAdapters,
+    system: systemAdapters
+  },
+  undefined  // No toolkit options
+);
+
+// 4. Use them!
+const result = await useCases.users.getUser.execute(
+  { principalExternalId: 'auth-provider-user-id' },
+  {
+    requestId: crypto.randomUUID(),
+    actorUserId: 'auth-provider-user-id'
+  }
+);
+```
+
+### With Custom Fields
+
+You can configure custom fields when initializing use cases:
+
+```typescript
+import { createUseCases } from '@multitenantkit/composition';
+import { createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+import { z } from 'zod';
+
+// Define toolkit options with custom fields
+const toolkitOptions = {
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        phoneNumber: z.string().optional()
+      })
+    }
+  },
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        industry: z.string(),
+        size: z.enum(['Startup', 'SMB', 'Enterprise']).optional()
+      })
+    }
+  },
+  organizationMemberships: {
+    customFields: {
+      customSchema: z.object({
+        department: z.string().optional()
+      })
+    }
+  }
+};
+
+// 1. Create adapters with custom fields
+const persistenceAdapters = createPostgresAdapters(
+  undefined,
+  toolkitOptions
+);
+
+const systemAdapters = createSystemAdapters();
+
+// 2. Initialize use cases with toolkit options
+const useCases = createUseCases(
+  {
+    persistence: persistenceAdapters,
+    system: systemAdapters
+  },
+  toolkitOptions
+);
+
+// 3. Now you can use custom fields
+const result = await useCases.organizations.createOrganization.execute(
+  {
+    principalExternalId: 'auth-provider-user-id',
+    name: 'Acme Corp',
+    industry: 'Technology',
+    size: 'Enterprise'
+  },
+  {
+    requestId: crypto.randomUUID(),
+    actorUserId: 'auth-provider-user-id'
+  }
+);
+```
+
+For more details on custom fields configuration, see [Custom Fields](/docs/configuration/custom-fields).
+
+## Operation Context
+
+All use cases require an `OperationContext` parameter when calling the `execute()` method. This context provides audit information and tracing capabilities.
+
+### Context Structure
+
+```typescript
+interface OperationContext {
+  requestId: string;        // Unique ID for tracing this request
+  actorUserId: string;      // externalId from auth provider (e.g., Supabase user ID)
+  organizationId?: string;  // Optional: Organization context
+  auditAction?: string;     // Optional: Specific action being performed
+  metadata?: {              // Optional: Additional audit metadata
+    ipAddress?: string;
+    userAgent?: string;
+    source?: 'web' | 'mobile' | 'api' | 'system';
+    deviceInfo?: string;
+    [key: string]: any;     // Extensible for custom metadata
+  };
+}
+```
+
+### Required Fields
+
+- **requestId**: A unique identifier for the request (typically a UUID). Used for tracing and correlating logs across the system.
+- **actorUserId**: The `externalId` from your authentication provider (e.g., Supabase user ID, Auth0 user ID). This is NOT the internal database ID.
+
+### Optional Fields
+
+- **organizationId**: The organization context for the operation. Some use cases automatically set this based on business logic.
+- **auditAction**: A descriptive string of the action being performed (e.g., `'CREATE_USER'`, `'UPDATE_ORGANIZATION'`).
+- **metadata**: Additional information about the request (IP address, user agent, device info, etc.).
+
+### Example Usage
+
+```typescript
+const context: OperationContext = {
+  requestId: '550e8400-e29b-41d4-a716-446655440000',
+  actorUserId: 'user-123',
+  organizationId: 'org-456',  // Optional
+  metadata: {
+    ipAddress: '192.168.1.1',
+    userAgent: 'Mozilla/5.0...',
+    source: 'web'
+  }
+};
+
+const result = await useCases.users.getUser.execute(
+  { principalExternalId: 'auth-provider-id' },
+  context
+);
+```
+
+### When Using Endpoints
+
+When calling use cases through REST endpoints, the `OperationContext` is **automatically built** by the handler from the HTTP request. You don't need to provide it manually. The handler extracts:
+- `requestId` from the request headers or generates one
+- `actorUserId` from the authenticated user's JWT token (the `externalId`)
+- `metadata` from the HTTP request (IP, user agent, etc.)
+
+
+
+## Learn More
+
+- [User Management](/docs/use-cases/user-management)
+- [Organization Management](/docs/use-cases/organization-management)
+- [Membership Management](/docs/use-cases/membership-management)

@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { Github, Menu, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTheme } from '../../lib/theme';
@@ -53,19 +54,18 @@ export function Header() {
                         >
                             Quick Start
                         </a>
-                        <a
-                            href="https://github.com/multitenantkit/multitenantkit"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            to="/docs"
                             className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
                         >
                             Docs
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center space-x-3">
                         <button
+                            type="button"
                             onClick={toggleTheme}
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             aria-label="Toggle theme"
@@ -97,6 +97,7 @@ export function Header() {
 
                         {/* Mobile Menu Button */}
                         <button
+                            type="button"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             aria-label="Toggle menu"
@@ -114,43 +115,45 @@ export function Header() {
                 {isMobileMenuOpen && (
                     <div className="md:hidden py-4 border-t border-gray-200 dark:border-dark-border">
                         <div className="flex flex-col space-y-4">
-                            <a
-                                href="#features"
-                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                            <button
+                                type="button"
                                 onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
                             >
                                 Features
-                            </a>
-                            <a
-                                href="#quickstart"
-                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                            </button>
+                            <button
+                                type="button"
                                 onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
                             >
                                 Quick Start
-                            </a>
-                            <a
-                                href="https://github.com/multitenantkit/multitenantkit"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                            </button>
+                            <Link
+                                to="/docs"
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors self-center"
                             >
                                 Docs
-                            </a>
-                            <a
-                                href="https://github.com/multitenantkit/multitenantkit"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
                             >
                                 <Button variant="outline" size="sm" className="w-full">
                                     <Github size={18} className="mr-2" />
                                     GitHub
                                 </Button>
-                            </a>
-                            <a href="#quickstart">
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                            >
                                 <Button variant="primary" size="sm" className="w-full">
                                     Get Started
                                 </Button>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 )}

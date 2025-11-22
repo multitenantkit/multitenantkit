@@ -1,0 +1,567 @@
+---
+title: Custom Fields
+description: Custom fields allow you to extend User, Organization, and Membership entities with your own data while maintaining full type safety through Zod schemas
+lastUpdated: '2025-11-22'
+---
+
+> **Important**: Custom fields are stored as **individual columns** in your database tables, not as JSONB (except for Supabase users, see below). This provides better query performance and indexing capabilities.
+
+> **Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+
+## How Custom Fields Work with Supabase
+
+### Users Table (Supabase Auth)
+
+As mentioned in the installation guide, you **don't need to create a users table** when using Supabase. Supabase provides `auth.users` built-in with a `raw_user_meta_data` JSONB column where your custom user fields will be stored.
+
+### Organizations & Memberships Tables
+
+For organizations and memberships, you create regular tables with custom fields as individual columns:
+
+```sql
+-- Organizations table
+CREATE TABLE organizations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_user_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  archived_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  -- Custom fields (add your own):
+  name TEXT,
+  industry TEXT
+);
+
+-- Organization Memberships table
+CREATE TABLE organization_memberships (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  username TEXT NOT NULL,
+  organization_id UUID NOT NULL REFERENCES organizations(id),
+  role_code TEXT NOT NULL CHECK (role_code IN ('owner', 'admin', 'member')),
+  invited_at TIMESTAMP,
+  joined_at TIMESTAMP,
+  left_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- Custom fields (add your own):
+  department TEXT,
+  job_title TEXT
+);
+```
+
+## Basic Configuration
+
+Define custom fields using Zod schemas and configure how they map to your database.
+
+### Example Setup
+
+```typescript
+import { createExpressApp } from '@multitenantkit/sdk';
+import { z } from 'zod';
+
+// Define custom field schemas
+const customUserFieldsSchema = z.object({
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
+  email: z.string().email()
+});
+
+const customOrganizationFieldsSchema = z.object({
+  name: z.string().min(1).max(100),
+  industry: z.string().optional()
+});
+
+const customMembershipFieldsSchema = z.object({
+  department: z.string().optional(),
+  jobTitle: z.string().optional()
+});
+
+// Configure toolkit options
+const toolkitOptions = {
+  users: {
+    customFields: {
+      customSchema: customUserFieldsSchema,
+      
+      // Map to Supabase's raw_user_meta_data column
+      customMapper: {
+        toDb: (fields) => ({
+          raw_user_meta_data: {
+            sub: fields.id,
+            email: fields.email,
+            firstName: fields.firstName,
+            lastName: fields.lastName,
+            full_name: `${fields.firstName} ${fields.lastName}`,
+            email_verified: true,
+            phone_verified: false
+          }
+        }),
+        
+        toDomain: (dbRow) => ({
+          firstName: dbRow.raw_user_meta_data?.firstName,
+          lastName: dbRow.raw_user_meta_data?.lastName,
+          email: dbRow.email
+        })
+      },
+      
+      // Map base fields to Supabase columns
+      columnMapping: {
+        externalId: 'id',
+        username: 'email' // MultiTenantKit's 'username' maps to Supabase's 'email' column
+      }
+    },
+    
+    // Point to Supabase's auth schema
+    database: {
+      schema: 'auth',
+      table: 'users'
+    }
+  },
+  
+  organizations: {
+    customFields: {
+      customSchema: customOrganizationFieldsSchema
+    },
+    database: {
+      schema: 'public',
+      table: 'organizations'
+    }
+  },
+  
+  organizationMemberships: {
+    customFields: {
+      customSchema: customMembershipFieldsSchema
+    },
+    database: {
+      schema: 'public',
+      table: 'organization_memberships'
+    }
+  }
+};
+
+// Create Express app with custom fields configured
+const app = createExpressApp(toolkitOptions);
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`);
+});
+```
+
+## Using Custom Fields
+
+Once configured, your custom fields are automatically available in all API responses.
+
+### Get User with Custom Fields
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "externalId": "auth-provider-user-id",
+    "username": "john@example.com",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (from raw_user_meta_data):
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "requestId": "req-123"
+}
+```
+
+### Update User with Custom Fields
+
+**Request:**
+```bash
+curl -X PATCH http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Jane",
+    "lastName": "Smith"
+  }'
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "externalId": "auth-provider-user-id",
+    "username": "john@example.com",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T01:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (updated):
+    "firstName": "Jane",
+    "lastName": "Smith"
+  },
+  "requestId": "req-124"
+}
+```
+
+> **Note**: With Supabase, user creation happens through Supabase Auth sign-up flow, not through the `createUser` endpoint. The custom fields are automatically synced when you use `GET /users/me` or `PATCH /users/me`.
+
+## Naming Strategies
+
+The `namingStrategy` determines how camelCase field names are transformed to database column names.
+
+### Available Strategies
+
+| Strategy | Example | Database Column |
+|----------|---------|-----------------|
+| `snake_case` (default) | `firstName` | `first_name` |
+| `camelCase` | `firstName` | `firstName` |
+| `kebab-case` | `firstName` | `first-name` |
+| `PascalCase` | `firstName` | `FirstName` |
+
+### Global vs Entity-Specific
+
+You can set a global strategy and override it per entity:
+
+```typescript
+const toolkitOptions = {
+  // Global default for all entities
+  namingStrategy: 'snake_case',
+  
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string(),
+        companyName: z.string().optional()
+      })
+    },
+    database: {
+      // Override for users only
+      namingStrategy: 'camelCase'
+    }
+  },
+  
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        industry: z.string(),
+        employeeCount: z.number().optional()
+      })
+    }
+    // Uses global snake_case
+  }
+};
+```
+
+**Result:**
+- Users table: `firstName`, `companyName` (camelCase)
+- Organizations table: `industry`, `employee_count` (snake_case)
+
+## Custom Mapper (Advanced)
+
+For complex transformations that can't be handled by `namingStrategy`, use `customMapper`. This gives you full control over how fields are converted between domain and database.
+
+### When to Use Custom Mapper
+
+- Calculated fields (e.g., `fullName` from `firstName` + `lastName`)
+- Special naming that doesn't follow a pattern
+- Complex data transformations
+- JSON serialization for nested objects
+
+> **Note**: `customMapper` has **precedence** over `namingStrategy`. If you provide a custom mapper, the naming strategy is ignored for custom fields.
+
+### Example: Calculated Field
+
+```typescript
+const toolkitOptions = {
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        fullName: z.string() // Calculated field
+      }),
+      
+      customMapper: {
+        // Domain → Database
+        toDb: (user) => ({
+          first_name: user.firstName,
+          last_name: user.lastName
+          // fullName is NOT stored in DB
+        }),
+        
+        // Database → Domain
+        toDomain: (dbRow) => ({
+          firstName: dbRow.first_name,
+          lastName: dbRow.last_name,
+          fullName: `${dbRow.first_name} ${dbRow.last_name}` // Calculated
+        })
+      }
+    }
+  }
+};
+```
+
+**Database columns:**
+```sql
+CREATE TABLE users (
+  -- Base fields...
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL
+  -- fullName is NOT a column (calculated on read)
+);
+```
+
+### Example: Special Naming
+
+```typescript
+const toolkitOptions = {
+  users: {
+    customFields: {
+      customSchema: z.object({
+        companyName: z.string(),
+        address: z.string()
+      }),
+      
+      customMapper: {
+        toDb: (user) => ({
+          company_name: user.companyName,
+          user_address: user.address // Special prefix
+        }),
+        
+        toDomain: (dbRow) => ({
+          companyName: dbRow.company_name,
+          address: dbRow.user_address
+        })
+      }
+    }
+  }
+};
+```
+
+## Column Mapping (Base Fields Only)
+
+Use `columnMapping` to rename **framework base fields** (id, externalId, username, etc.). This is separate from custom fields.
+
+```typescript
+const toolkitOptions = {
+  users: {
+    customFields: {
+      // Map base framework fields to custom column names
+      columnMapping: {
+        id: 'user_id',
+        externalId: 'auth_provider_id',
+        username: 'email_address'
+      },
+      
+      // Custom fields use namingStrategy
+      customSchema: z.object({
+        firstName: z.string()
+      })
+    }
+  }
+};
+```
+
+**Database columns:**
+```sql
+CREATE TABLE users (
+  user_id UUID PRIMARY KEY,           -- mapped from 'id'
+  auth_provider_id TEXT NOT NULL,     -- mapped from 'externalId'
+  email_address TEXT NOT NULL,        -- mapped from 'username'
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+  deleted_at TIMESTAMP,
+  first_name TEXT NOT NULL            -- custom field (snake_case)
+);
+```
+
+## Complete Example
+
+Here's a real-world example combining all features:
+
+```typescript
+import { createUseCases } from '@multitenantkit/composition';
+import { createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+import { z } from 'zod';
+
+const toolkitOptions = {
+  // Global naming strategy
+  namingStrategy: 'snake_case',
+  
+  users: {
+    customFields: {
+      columnMapping: {
+        externalId: 'auth_provider_id'
+      },
+      customSchema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        phoneNumber: z.string().optional(),
+        preferences: z.object({
+          theme: z.enum(['light', 'dark']),
+          notifications: z.boolean()
+        }).optional()
+      }),
+      customMapper: {
+        toDb: (user) => ({
+          first_name: user.firstName,
+          last_name: user.lastName,
+          phone_number: user.phoneNumber,
+          // Serialize nested object to JSON string
+          preferences_json: user.preferences 
+            ? JSON.stringify(user.preferences) 
+            : null
+        }),
+        toDomain: (dbRow) => ({
+          firstName: dbRow.first_name,
+          lastName: dbRow.last_name,
+          phoneNumber: dbRow.phone_number,
+          // Deserialize JSON string to object
+          preferences: dbRow.preferences_json 
+            ? JSON.parse(dbRow.preferences_json) 
+            : undefined
+        })
+      }
+    }
+  },
+  
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        industry: z.string(),
+        website: z.string().url().optional(),
+        employeeCount: z.number().int().positive().optional()
+      })
+    }
+    // Uses global snake_case strategy
+  },
+  
+  organizationMemberships: {
+    customFields: {
+      customSchema: z.object({
+        department: z.string().optional(),
+        startDate: z.date().optional()
+      })
+    }
+  }
+};
+
+// Initialize
+const persistenceAdapters = createPostgresAdapters(undefined, toolkitOptions);
+const systemAdapters = createSystemAdapters();
+const useCases = createUseCases(
+  {
+    persistence: persistenceAdapters,
+    system: systemAdapters
+  },
+  toolkitOptions
+);
+
+// Use with custom fields
+const result = await useCases.users.createUser.execute(
+  {
+    externalId: 'supabase-user-123',
+    username: 'john@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    phoneNumber: '+1234567890',
+    preferences: {
+      theme: 'dark',
+      notifications: true
+    }
+    requestId: crypto.randomUUID(),
+    actorUserId: 'supabase-user-123'
+  }
+);
+```
+
+## Best Practices
+
+### 1. Choose the Right Approach
+
+- **Simple fields**: Use `customSchema` + `namingStrategy`
+- **Complex transformations**: Use `customMapper`
+- **Base field renaming**: Use `columnMapping`
+
+### 2. Naming Strategy
+
+- Use `snake_case` for PostgreSQL (SQL convention)
+- Use `camelCase` for JSON/MongoDB
+- Be consistent across your application
+
+### 3. Validation
+
+Always define proper Zod schemas with validation:
+
+```typescript
+customSchema: z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150),
+  website: z.string().url().optional()
+})
+```
+
+### 4. Optional vs Required
+
+Make fields optional in the schema if they're not always present:
+
+```typescript
+customSchema: z.object({
+  firstName: z.string(),              // Required
+  middleName: z.string().optional(),  // Optional
+  lastName: z.string()                // Required
+})
+```
+
+### 5. Nested Objects
+
+For nested objects, consider JSON serialization:
+
+```typescript
+customMapper: {
+  toDb: (user) => ({
+    settings_json: JSON.stringify(user.settings)
+  }),
+  toDomain: (dbRow) => ({
+    settings: JSON.parse(dbRow.settings_json || '{}')
+  })
+}
+```
+
+## Type Safety
+
+TypeScript enforces your custom field schemas throughout the application:
+
+```typescript
+// ✅ Valid
+await useCases.users.createUser.execute({
+  externalId: 'id',
+  username: 'user@example.com',
+  firstName: 'John',
+  lastName: 'Doe'
+}, context);
+
+// ❌ Type error: missing required field
+await useCases.users.createUser.execute({
+  externalId: 'id',
+  username: 'user@example.com',
+  firstName: 'John'
+  // lastName is missing!
+}, context);
+
+// ❌ Type error: invalid field
+await useCases.users.createUser.execute({
+  externalId: 'id',
+  username: 'user@example.com',
+  firstName: 'John',
+  lastName: 'Doe',
+  invalidField: 'value' // This field doesn't exist!
+}, context);
+```

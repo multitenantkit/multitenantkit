@@ -1,0 +1,263 @@
+---
+title: User Management
+description: User CRUD operations and management
+lastUpdated: '2025-11-21'
+---
+
+# User Management
+
+User management use cases handle all operations related to user accounts, including creation, retrieval, updates, and deletion.
+
+## CreateUser
+
+Creates a new user in the system.
+
+> **Note for Supabase users**: When using Supabase as your auth provider, this use case/endpoint is **not used**. Supabase automatically creates users in the `auth.users` table when they sign up, so user creation is handled by Supabase itself.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.users.createUser.execute(
+  {
+    username: 'john@example.com',
+    externalId: 'auth0|507f1f77bcf86cd',  // Optional: ID from your auth provider
+    id: 'custom-uuid',                     // Optional: Custom user ID
+    // Custom fields (if configured):
+    firstName: 'John',
+    lastName: 'Doe',
+    phoneNumber: '+1234567890'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const user = result.getValue();
+  console.log('User created:', user);
+  // Example output:
+  // {
+  //   id: 'custom-uuid',  // or auto-generated UUID
+  //   externalId: 'auth0|507f1f77bcf86cd',
+  //   username: 'john@example.com',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T00:00:00.000Z',
+  //   deletedAt: undefined,
+  //   firstName: 'John',
+  //   lastName: 'Doe',
+  //   phoneNumber: '+1234567890'
+  // }
+}
+```
+
+**Input Parameters:**
+- `username` (string, required): The user's username (typically email)
+- `externalId` (string, optional): The user's ID from your authentication provider. If not provided, will default to the generated `id`. See [External ID](/docs/architecture/external-id) for more details.
+- `id` (string, optional): Custom user ID. If not provided, a UUID will be auto-generated.
+- Custom fields: Any additional fields defined in your custom schema
+
+**Output:**
+- Returns a `User` object with all base fields plus any configured custom fields
+
+**Validation:**
+- Checks if `externalId` already exists (returns conflict error if duplicate)
+- Validates all fields against the user schema and custom fields schema
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## GetUser
+
+Retrieves the authenticated user's information.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.users.getUser.execute(
+  {
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const user = result.getValue();
+  console.log('User:', user);
+  // Example output with custom fields:
+  // {
+  //   id: '123e4567-e89b-12d3-a456-426614174000',
+  //   externalId: 'auth-provider-user-id',
+  //   username: 'john@example.com',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T00:00:00.000Z',
+  //   deletedAt: undefined,
+  //   // Custom fields (if configured):
+  //   firstName: 'John',
+  //   lastName: 'Doe',
+  //   phoneNumber: '+1234567890'
+  // }
+}
+```
+
+**Input Parameters:**
+- `principalExternalId` (string, required): The `externalId` of the user you want to retrieve. This is the ID that your authentication provider uses to identify the user (e.g., Supabase user ID, Auth0 user ID, etc.). See [External ID](/docs/architecture/external-id) for more details.
+
+**Output:**
+- Returns a `User` object with all base fields plus any configured custom fields
+
+> **Note**: This use case is designed to be called from endpoints, where `principalExternalId` is automatically extracted from the authenticated user's JWT token. When using the REST endpoint, you don't need to provide this parameter manually.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## UpdateUser
+
+Updates the authenticated user's profile information.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.users.updateUser.execute(
+  {
+    principalExternalId: 'auth-provider-user-id',
+    username: 'newemail@example.com',  // Optional
+    // Custom fields (if configured):
+    firstName: 'Jane',                  // Optional
+    phoneNumber: '+0987654321'          // Optional
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const user = result.getValue();
+  console.log('User updated:', user);
+  // Example output:
+  // {
+  //   id: '123e4567-e89b-12d3-a456-426614174000',
+  //   externalId: 'auth-provider-user-id',
+  //   username: 'newemail@example.com',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T01:00:00.000Z',  // Updated timestamp
+  //   deletedAt: undefined,
+  //   // Custom fields (if configured):
+  //   firstName: 'Jane',                       // Updated
+  //   lastName: 'Doe',                         // Unchanged
+  //   phoneNumber: '+0987654321'               // Updated
+  // }
+}
+```
+
+**Input Parameters:**
+- `principalExternalId` (string, required): The `externalId` of the user to update. See [External ID](/docs/architecture/external-id) for more details.
+- `username` (string, optional): New username
+- Custom fields: Any additional fields defined in your custom schema (all optional)
+
+**Output:**
+- Returns the updated `User` object with all fields
+
+**Validation:**
+- At least one field (besides `principalExternalId`) must be provided
+- Only provided fields are updated; undefined fields preserve their existing values
+- Validates all fields against the user schema and custom fields schema
+
+> **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token, so you can only update your own profile.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## ListUserOrganizations
+
+Lists all organizations where the authenticated user is a member or owner.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.users.listUserOrganizations.execute(
+  {
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organizations = result.getValue();
+  console.log('Organizations:', organizations);
+  // Example output:
+  // [
+  //   {
+  //     id: 'org-123',
+  //     name: 'Acme Corp',
+  //     ownerId: '123e4567-e89b-12d3-a456-426614174000',
+  //     createdAt: '2025-11-22T00:00:00.000Z',
+  //     updatedAt: '2025-11-22T00:00:00.000Z',
+  //     deletedAt: undefined,
+  //     // Custom fields (if configured):
+  //     industry: 'Technology',
+  //     size: 'Enterprise'
+  //   },
+  //   // ... more organizations
+  // ]
+}
+```
+
+**Input Parameters:**
+- `principalExternalId` (string, required): The `externalId` of the user. See [External ID](/docs/architecture/external-id) for more details.
+
+**Output:**
+- Returns an array of `Organization` objects with all base fields plus any configured custom fields
+
+**Behavior:**
+- Returns organizations where the user has an active membership (not left, not deleted)
+- Includes organizations owned by the user (even without explicit membership)
+- Excludes soft-deleted organizations
+- Deduplicates organizations (if user is both owner and member)
+
+> **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## DeleteUser
+
+Soft deletes the authenticated user by setting the `deletedAt` timestamp.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.users.deleteUser.execute(
+  {
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const user = result.getValue();
+  console.log('User deleted:', user);
+  // Example output:
+  // {
+  //   id: '123e4567-e89b-12d3-a456-426614174000',
+  //   externalId: 'auth-provider-user-id',
+  //   username: 'john@example.com',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T02:00:00.000Z',
+  //   deletedAt: '2025-11-22T02:00:00.000Z',  // Soft delete timestamp
+  //   // Custom fields (if configured):
+  //   firstName: 'John',
+  //   lastName: 'Doe',
+  //   phoneNumber: '+1234567890'
+  // }
+}
+```
+
+**Input Parameters:**
+- `principalExternalId` (string, required): The `externalId` of the user to delete. See [External ID](/docs/architecture/external-id) for more details.
+
+**Output:**
+- Returns the deleted `User` object with `deletedAt` timestamp set
+
+**Cascade Behavior:**
+- **Owned organizations**: Soft deletes all organizations owned by the user (sets `deletedAt`)
+- **Owned organization memberships**: Preserves membership state for potential future restore
+- **Non-owned organization memberships**: Soft deletes memberships and sets `leftAt` timestamp (user is leaving)
+
+**Validation:**
+- Returns error if user is already deleted
+
+> **Note**: This is a soft delete operation. The user data remains in the database but is marked as deleted. When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).

@@ -1,0 +1,218 @@
+---
+title: Membership Management
+description: Manage organization memberships and roles
+lastUpdated: '2025-11-21'
+---
+
+# Membership Management
+
+Membership use cases handle the relationship between users and organizations, including roles and permissions.
+
+## AddOrganizationMember
+
+Adds a user to an organization or sends an invitation if the user doesn't exist yet.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizationMemberships.addOrganizationMember.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    username: 'newmember@example.com',
+    roleCode: 'member'  // 'owner', 'admin', or 'member'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const membership = result.getValue();
+  console.log('Member added:', membership);
+  // Example output:
+  // {
+  //   id: 'membership-456',
+  //   userId: '789e0123-e89b-12d3-a456-426614174002',
+  //   username: 'newmember@example.com',
+  //   organizationId: 'org-123',
+  //   roleCode: 'member',
+  //   invitedAt: '2025-11-22T00:00:00.000Z',
+  //   joinedAt: undefined,  // Pending until user accepts
+  //   leftAt: undefined,
+  //   deletedAt: undefined,
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T00:00:00.000Z'
+  // }
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the user adding the member
+- `username` (string, required): Username/email of the user to add
+- `roleCode` (string, required): Role to assign ('owner', 'admin', or 'member')
+
+**Output:**
+- Returns the created or reactivated `OrganizationMembership` object
+
+**Behavior:**
+- If user exists: Creates membership with `invitedAt` set (pending invitation)
+- If user doesn't exist: Creates membership without `userId` (invitation for future registration)
+- If user previously left: Reactivates the membership
+
+**Authorization:**
+- Owners can add members with any role
+- Admins can only add regular members (not admins or owners)
+- Cannot add members to archived organizations
+
+> **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## AcceptOrganizationInvitation
+
+Accepts a pending organization invitation.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizationMemberships.acceptOrganizationInvitation.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const membership = result.getValue();
+  console.log('Invitation accepted:', membership);
+  // joinedAt is now set
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the user accepting the invitation
+
+**Output:**
+- Returns the updated `OrganizationMembership` object with `joinedAt` timestamp set
+
+**Validation:**
+- User must have a pending invitation (`invitedAt` set, `joinedAt` not set)
+- Membership must not be deleted or left
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## UpdateOrganizationMemberRole
+
+Updates a member's role in the organization.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizationMemberships.updateOrganizationMemberRole.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    userId: '789e0123-e89b-12d3-a456-426614174002',
+    roleCode: 'admin'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const membership = result.getValue();
+  console.log('Role updated:', membership);
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the user updating the role
+- `userId` (string, required): The internal user ID of the member to update
+- `roleCode` (string, required): New role ('owner', 'admin', or 'member')
+
+**Output:**
+- Returns the updated `OrganizationMembership` object
+
+**Authorization:**
+- Owners can change any member's role
+- Admins can only change regular members' roles (not admins or owners)
+- Cannot change the owner's role
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## RemoveOrganizationMember
+
+Removes a member from the organization.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizationMemberships.removeOrganizationMember.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    userId: '789e0123-e89b-12d3-a456-426614174002'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const membership = result.getValue();
+  console.log('Member removed:', membership);
+  // deletedAt is now set
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the user removing the member
+- `userId` (string, required): The internal user ID of the member to remove
+
+**Output:**
+- Returns the updated `OrganizationMembership` object with `deletedAt` timestamp set
+
+**Authorization:**
+- Owners can remove any member
+- Admins can only remove regular members (not admins or owners)
+- Cannot remove the organization owner
+
+> **Note**: This is a soft delete. The membership data remains in the database but is marked as deleted.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## LeaveOrganization
+
+Allows a user to voluntarily leave an organization.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizationMemberships.leaveOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const membership = result.getValue();
+  console.log('Left organization:', membership);
+  // leftAt is now set
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the user leaving
+
+**Output:**
+- Returns the updated `OrganizationMembership` object with `leftAt` timestamp set
+
+**Validation:**
+- Organization owner cannot leave (must transfer ownership first)
+- User must be an active member
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).

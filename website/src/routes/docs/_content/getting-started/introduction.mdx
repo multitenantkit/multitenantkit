@@ -1,0 +1,213 @@
+---
+title: Introduction
+description: Learn what MultiTenantKit is and why you should use it
+lastUpdated: '2025-11-22'
+---
+
+MultiTenantKit is a **production-ready TypeScript toolkit** that provides the business logic for managing Users, Organizations, and Organization Memberships in B2B SaaS applications.
+
+## What is MultiTenantKit?
+
+Instead of building user management, organization (team/workspace) management, and membership logic from scratch for every project, MultiTenantKit provides:
+
+- **18 production-ready use cases** covering all common operations
+- **REST API endpoints** ready to use with Express, Fastify, or any HTTP framework
+- **Type-safe custom fields** using Zod schemas
+- **Flexible adapters** for any database, auth provider, or framework
+
+## Core Entities
+
+### User
+
+Represents an individual user account in your system.
+
+```typescript
+interface User {
+  id: string;                    // Internal UUID
+  externalId: string;            // Auth provider ID (e.g., Supabase user ID)
+  username: string;              // Email, nickname, or phone number
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;              // Soft delete timestamp
+  // Custom fields can be added via configuration
+}
+```
+
+**Key Points:**
+- `externalId`: Links to your authentication provider (Supabase, Auth0, Clerk, etc.)
+- `username`: How users identify themselves (typically email)
+- Soft delete: Users are marked as deleted, not removed from database
+
+### Organization
+
+Represents a team, company, or workspace in your B2B application.
+
+```typescript
+interface Organization {
+  id: string;                    // Internal UUID
+  ownerUserId: string;           // User ID of the organization owner
+  createdAt: Date;
+  updatedAt: Date;
+  archivedAt?: Date;             // Soft archive timestamp
+  deletedAt?: Date;              // Soft delete timestamp
+  // Custom fields can be added via configuration
+}
+```
+
+**Key Points:**
+- `ownerUserId`: References the User who owns the organization
+- Archive vs Delete: Organizations can be archived (recoverable) or deleted (permanent)
+- No built-in `name` field - add it as a custom field if needed
+
+### OrganizationMembership
+
+Links users to organizations with roles and tracks membership lifecycle.
+
+```typescript
+interface OrganizationMembership {
+  id: string;                    // Internal UUID
+  userId?: string;               // User ID (null for pending invitations)
+  username: string;              // Username/email of member
+  organizationId: string;        // Organization ID
+  roleCode: 'owner' | 'admin' | 'member';
+  invitedAt?: Date;              // When invitation was sent
+  joinedAt?: Date;               // When user accepted invitation
+  leftAt?: Date;                 // When user left organization
+  deletedAt?: Date;              // Soft delete timestamp
+  createdAt: Date;
+  updatedAt: Date;
+  // Custom fields can be added via configuration
+}
+```
+
+**Key Points:**
+- `userId` can be null for pending invitations (user not yet registered)
+- Tracks complete lifecycle: invited → joined → left
+- Three roles: `owner` (one per org), `admin`, `member`
+
+## Key Features
+
+### 1. Production-Ready Use Cases
+
+18 battle-tested use cases out of the box:
+
+**Users (5):**
+- CreateUser, GetUser, UpdateUser, DeleteUser, ListUserOrganizations
+
+**Organizations (8):**
+- CreateOrganization, GetOrganization, UpdateOrganization
+- ArchiveOrganization, RestoreOrganization, DeleteOrganization
+- ListOrganizationMembers, TransferOrganizationOwnership
+
+**Memberships (5):**
+- AddOrganizationMember, AcceptOrganizationInvitation
+- UpdateOrganizationMemberRole, RemoveOrganizationMember, LeaveOrganization
+
+### 2. Your Infrastructure
+
+Unlike Auth0 or Clerk, **your data stays in your database**. MultiTenantKit is not a service—it's a toolkit that runs in your infrastructure.
+
+- No vendor lock-in
+- Full control over your data
+- No external API dependencies
+- Works offline
+
+### 3. Hexagonal Architecture
+
+Business logic is completely independent of:
+
+- **Databases**: PostgreSQL, MySQL, MongoDB, JSON files, etc.
+- **Auth providers**: Supabase, Auth0, Clerk, custom JWT
+- **HTTP frameworks**: Express, Fastify, Hono, AWS Lambda
+- **ORMs**: Drizzle, Prisma, TypeORM, raw SQL
+
+You can swap any adapter without changing business logic.
+
+### 4. Type-Safe Extensibility
+
+Add custom fields with full type safety using Zod schemas:
+
+```typescript
+const toolkitOptions = {
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        phoneNumber: z.string().optional()
+      })
+    }
+  }
+};
+```
+
+Custom fields are stored as individual database columns, not JSONB.
+
+### 5. REST API Ready
+
+Built-in HTTP handlers for Express, Fastify, and other frameworks:
+
+- Automatic request validation
+- JWT authentication integration
+- Standardized error responses
+- OpenAPI/Swagger compatible
+
+## Architecture Overview
+
+MultiTenantKit follows a clean hexagonal architecture, keeping business logic independent from infrastructure:
+
+```
+                Your Application Layer
+    ┌───────────────────────────────────────┐
+    │  Express  │  Fastify  │  AWS Lambda   │
+    │  Routes   │  Routes   │  Functions    │
+    └───────────┴───────────┴───────────────┘
+                      │
+              ┌───────▼────────┐
+              │ API Handlers   │
+              │  (HTTP Layer)  │
+              └───────┬────────┘
+                      │
+              ┌───────▼────────┐
+              │    Use Cases   │
+              │ Business Logic │
+              │ MultiTenantKit │
+              └───────┬────────┘
+                      │
+         ┌────────────┼──────────┐
+         │            │          │
+    ┌────▼────┐  ┌────▼───┐  ┌───▼────┐
+    │Postgres │  │  Auth  │  │ System │
+    │ Adapter │  │Adapter │  │Adapter │
+    └─────────┘  └────────┘  └────────┘
+```
+
+**Key Benefits:**
+
+- **Business logic** (use cases) is completely independent of infrastructure
+- **Swap adapters** without changing business logic (PostgreSQL → MySQL, Supabase → Auth0, etc.)
+- **Test easily** by mocking adapters
+- **Deploy anywhere** - your infrastructure, your rules
+
+## Use Cases
+
+MultiTenantKit can be used for:
+
+- **B2B SaaS**: Team collaboration tools, project management, CRM
+- **Multi-tenant platforms**: Each organization is a tenant
+- **Workspace-based apps**: Slack-like, Notion-like applications
+- **Enterprise applications**: Department/team management
+
+## What MultiTenantKit is NOT
+
+- ❌ Not an authentication service (use Supabase, Auth0, etc.)
+- ❌ Not a hosted service (runs in your infrastructure)
+- ❌ Not a full backend framework (focuses on user/org management)
+- ❌ Not opinionated about UI (backend/API only)
+
+## Next Steps
+
+- [Installation](/docs/getting-started/installation) - Install MultiTenantKit
+- [Quick Start](/docs/getting-started/quick-start) - Get running in 5 minutes
+- [Use Cases](/docs/use-cases/overview) - Explore all 18 use cases
+- [Custom Fields](/docs/configuration/custom-fields) - Extend entities with your own fields

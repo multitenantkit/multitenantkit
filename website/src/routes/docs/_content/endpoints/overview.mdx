@@ -1,0 +1,69 @@
+---
+title: Endpoints Overview
+description: REST API endpoints for MultiTenantKit
+lastUpdated: '2025-11-22'
+---
+
+# Endpoints Overview
+
+MultiTenantKit provides a complete REST API with 18 endpoints for managing users, organizations, and memberships. Each endpoint corresponds to a use case and follows REST conventions.
+
+## Authentication
+
+Most endpoints require authentication via JWT token:
+- **Required**: User must be authenticated (JWT token in `Authorization` header)
+- **Optional**: Endpoint works with or without authentication
+
+When authentication is required, the `principalExternalId` (user's auth provider ID) is automatically extracted from the JWT token and passed to the use case.
+
+## Response Format
+
+All successful responses follow this format:
+
+```json
+{
+  "data": { /* Response data */ },
+  "requestId": "uuid-v4"
+}
+```
+
+Error responses follow this format:
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message"
+  },
+  "requestId": "uuid-v4"
+}
+```
+
+## Endpoints by Category
+
+### User Endpoints
+- `GET /users/me` - Get authenticated user
+- `PUT /users/:userId` - Update user
+- `DELETE /users/:userId` - Delete user
+- `GET /users/:userId/organizations` - List user's organizations
+
+### Organization Endpoints
+- `POST /organizations` - Create organization
+- `GET /organizations/:organizationId` - Get organization
+- `PUT /organizations/:organizationId` - Update organization
+- `DELETE /organizations/:organizationId` - Delete organization
+- `POST /organizations/:organizationId/restore` - Restore organization
+- `GET /organizations/:organizationId/members` - List organization members
+- `POST /organizations/:organizationId/transfer-ownership` - Transfer ownership
+
+### Membership Endpoints
+- `POST /organizations/:organizationId/members` - Add member
+- `PUT /organizations/:organizationId/members/:userId` - Update member role
+- `DELETE /organizations/:organizationId/members/:userId` - Remove member
+- `POST /organizations/:organizationId/leave` - Leave organization
+
+## Learn More
+
+- [User Endpoints](/docs/endpoints/user-endpoints)
+- [Organization Endpoints](/docs/endpoints/organization-endpoints)
+- [Membership Endpoints](/docs/endpoints/membership-endpoints)

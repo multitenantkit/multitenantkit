@@ -1,0 +1,381 @@
+# Organization Management
+
+Organization management use cases handle all operations related to organizations (teams, companies, workspaces, etc.).
+
+## CreateOrganization
+
+Creates a new organization and automatically adds the creator as the owner.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.createOrganization.execute(
+  {
+    principalExternalId: 'auth-provider-user-id',
+    name: 'Acme Corporation',
+    // Custom fields (if configured):
+    industry: 'Technology',
+    size: 'Enterprise'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Organization created:', organization);
+  // Example output:
+  // {
+  //   id: 'org-123',
+  //   name: 'Acme Corporation',
+  //   ownerId: '123e4567-e89b-12d3-a456-426614174000',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T00:00:00.000Z',
+  //   deletedAt: undefined,
+  //   // Custom fields (if configured):
+  //   industry: 'Technology',
+  //   size: 'Enterprise'
+  // }
+}
+```
+
+**Input Parameters:**
+- `principalExternalId` (string, required): The `externalId` of the user creating the organization. See [External ID](/docs/architecture/external-id) for more details.
+- `name` (string, required): Organization name
+- Custom fields: Any additional fields defined in your custom schema
+
+**Output:**
+- Returns the created `Organization` object with all fields
+
+**Automatic Actions:**
+- Sets the creator as the organization owner (`ownerId`)
+- Creates an owner membership record automatically
+
+> **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## GetOrganization
+
+Retrieves organization details.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.getOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Organization:', organization);
+  // Example output:
+  // {
+  //   id: 'org-123',
+  //   name: 'Acme Corporation',
+  //   ownerId: '123e4567-e89b-12d3-a456-426614174000',
+  //   createdAt: '2025-11-22T00:00:00.000Z',
+  //   updatedAt: '2025-11-22T00:00:00.000Z',
+  //   deletedAt: undefined,
+  //   // Custom fields (if configured):
+  //   industry: 'Technology',
+  //   size: 'Enterprise'
+  // }
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user
+
+**Output:**
+- Returns the `Organization` object with all fields
+
+**Authorization:**
+- Only organization members (including owner) can view organization details
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## UpdateOrganization
+
+Updates organization information.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.updateOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    name: 'Acme Corp Inc.',
+    // Custom fields (if configured):
+    size: 'Large Enterprise'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Organization updated:', organization);
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user
+- `name` (string, optional): New organization name
+- Custom fields: Any additional fields (all optional)
+
+**Output:**
+- Returns the updated `Organization` object
+
+**Validation:**
+- At least one field (besides `organizationId` and `principalExternalId`) must be provided
+- Only provided fields are updated
+
+**Authorization:**
+- Only organization owner can update organization details
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## ArchiveOrganization
+
+Soft deletes an organization by setting the `deletedAt` timestamp.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.archiveOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Organization archived:', organization);
+  // deletedAt is now set
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user
+
+**Output:**
+- Returns the archived `Organization` object with `deletedAt` timestamp set
+
+**Authorization:**
+- Only organization owner can archive the organization
+
+> **Note**: This is a soft delete. The organization data remains in the database but is marked as deleted. Use `RestoreOrganization` to restore it.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## DeleteOrganization
+
+Permanently deletes an organization and all related data.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.deleteOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  console.log('Organization permanently deleted');
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user
+
+**Output:**
+- Returns the deleted `Organization` object
+
+**Cascade Behavior:**
+- Permanently deletes all organization memberships
+- This action cannot be undone
+
+**Authorization:**
+- Only organization owner can permanently delete the organization
+
+> **Warning**: This is a hard delete operation. All data is permanently removed and cannot be recovered.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## RestoreOrganization
+
+Restores a soft-deleted (archived) organization.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.restoreOrganization.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Organization restored:', organization);
+  // deletedAt is now null
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user
+
+**Output:**
+- Returns the restored `Organization` object with `deletedAt` set to null
+
+**Authorization:**
+- Only organization owner can restore the organization
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## ListOrganizationMembers
+
+Lists all members of an organization with pagination and status filtering.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.listOrganizationMembers.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    options: {
+      includeActive: true,      // Optional: Include active members
+      includePending: false,    // Optional: Include pending invitations
+      includeRemoved: false,    // Optional: Include removed members
+      page: 1,                  // Optional: Page number (default: 1)
+      pageSize: 20              // Optional: Items per page (default: 20, max: 100)
+    }
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const { items, pagination } = result.getValue();
+  console.log('Members:', items);
+  // Example output:
+  // items: [
+  //   {
+  //     id: 'membership-123',
+  //     userId: '123e4567-e89b-12d3-a456-426614174000',
+  //     organizationId: 'org-123',
+  //     roleCode: 'owner',
+  //     invitedAt: '2025-11-22T00:00:00.000Z',
+  //     joinedAt: '2025-11-22T00:00:00.000Z',
+  //     leftAt: undefined,
+  //     deletedAt: undefined,
+  //     createdAt: '2025-11-22T00:00:00.000Z',
+  //     updatedAt: '2025-11-22T00:00:00.000Z',
+  //     // Custom membership fields (if configured):
+  //     department: 'Engineering',
+  //     // Nested user object:
+  //     user: {
+  //       id: '123e4567-e89b-12d3-a456-426614174000',
+  //       externalId: 'auth-provider-user-id',
+  //       username: 'john@example.com',
+  //       // Custom user fields (if configured):
+  //       firstName: 'John',
+  //       lastName: 'Doe'
+  //     },
+  //     // Nested organization object:
+  //     organization: {
+  //       id: 'org-123',
+  //       name: 'Acme Corp',
+  //       ownerId: '123e4567-e89b-12d3-a456-426614174000',
+  //       // Custom organization fields (if configured):
+  //       industry: 'Technology'
+  //     }
+  //   }
+  // ]
+  // pagination: { total: 5, page: 1, pageSize: 20, totalPages: 1 }
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the requesting user. See [External ID](/docs/architecture/external-id) for more details.
+- `options` (object, optional):
+  - `includeActive` (boolean): Include active members (default: varies by role)
+  - `includePending` (boolean): Include pending invitations (default: varies by role)
+  - `includeRemoved` (boolean): Include removed members (default: varies by role)
+  - `page` (number): Page number, 1-indexed (default: 1)
+  - `pageSize` (number): Items per page, max 100 (default: 20)
+
+**Output:**
+- Returns an object with:
+  - `items`: Array of membership objects with nested `user` and `organization` objects
+  - `pagination`: Object with `total`, `page`, `pageSize`, `totalPages`
+
+**Role-Based Access Control:**
+- **Regular members**: Can only see active members
+- **Admins and owners**: Can see all member statuses (active, pending, removed) if not specified
+
+**Authorization:**
+- Only organization members (including owner) can list members
+- Returns `UnauthorizedError` if user is not a member
+
+> **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
+
+## TransferOrganizationOwnership
+
+Transfers organization ownership to another member.
+
+### Direct Usage
+
+```typescript
+const result = await useCases.organizations.transferOrganizationOwnership.execute(
+  {
+    organizationId: 'org-123',
+    principalExternalId: 'auth-provider-user-id',
+    newOwnerUserId: '456e7890-e89b-12d3-a456-426614174001'
+  },
+  context
+);
+
+if (result.isSuccess) {
+  const organization = result.getValue();
+  console.log('Ownership transferred:', organization);
+  // ownerId is now the new owner's ID
+}
+```
+
+**Input Parameters:**
+- `organizationId` (string, required): The organization ID
+- `principalExternalId` (string, required): The `externalId` of the current owner
+- `newOwnerUserId` (string, required): The internal user ID of the new owner (must be an existing member)
+
+**Output:**
+- Returns the updated `Organization` object with new `ownerId`
+
+**Automatic Actions:**
+- Updates the new owner's membership role to 'owner'
+- Updates the previous owner's membership role to 'admin'
+
+**Authorization:**
+- Only the current organization owner can transfer ownership
+- The new owner must be an existing active member of the organization
+
+> **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).

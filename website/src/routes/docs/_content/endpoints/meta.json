@@ -1,0 +1,4 @@
+{
+    "title": "Endpoints",
+    "pages": ["overview", "user-endpoints", "organization-endpoints", "membership-endpoints"]
+}

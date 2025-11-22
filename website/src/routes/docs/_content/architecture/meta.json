@@ -1,0 +1,4 @@
+{
+    "title": "Architecture",
+    "pages": ["overview", "domain", "ports-adapters"]
+}

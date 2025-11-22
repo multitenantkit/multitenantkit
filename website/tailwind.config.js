@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './content/**/*.{md,mdx}'],
     darkMode: 'class',
     theme: {
         extend: {
@@ -56,8 +56,28 @@ export default {
             },
             maxWidth: {
                 container: '1280px'
-            }
+            },
+            typography: ({ theme }) => ({
+                DEFAULT: {
+                    css: {
+                        '--tw-prose-body': theme('colors.gray[700]'),
+                        '--tw-prose-headings': theme('colors.gray[900]'),
+                        '--tw-prose-links': theme('colors.primary.DEFAULT'),
+                        '--tw-prose-code': theme('colors.gray[900]'),
+                        '--tw-prose-pre-bg': theme('colors.gray[50]')
+                    }
+                },
+                invert: {
+                    css: {
+                        '--tw-prose-body': theme('colors.gray[300]'),
+                        '--tw-prose-headings': theme('colors.gray[100]'),
+                        '--tw-prose-links': theme('colors.primary.light'),
+                        '--tw-prose-code': theme('colors.gray[100]'),
+                        '--tw-prose-pre-bg': theme('colors.gray[900]')
+                    }
+                }
+            })
         }
     },
-    plugins: []
+    plugins: [require('@tailwindcss/typography')]
 };

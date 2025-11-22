@@ -1,3 +1,5 @@
+@import './routes/docs/_styles/docs.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

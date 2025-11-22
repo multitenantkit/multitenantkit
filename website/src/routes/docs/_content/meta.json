@@ -1,0 +1,13 @@
+{
+    "title": "Documentation",
+    "pages": [
+        "getting-started",
+        "endpoints",
+        "use-cases",
+        "configuration",
+        "adapters",
+        "guides",
+        "architecture",
+        "examples"
+    ]
+}

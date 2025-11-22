@@ -28,6 +28,7 @@ export function CodeBlock({
     return (
         <div className={cn('relative group', className)}>
             <button
+                type="button"
                 onClick={handleCopy}
                 className="absolute top-3 right-3 p-2 rounded-lg bg-gray-700 hover:bg-gray-600
                    text-gray-300 hover:text-white transition-all duration-150

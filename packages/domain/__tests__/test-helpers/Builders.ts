@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/noUnusedPrivateClassMembers: false positive */
 import {
     createPrincipal,
     type Principal,

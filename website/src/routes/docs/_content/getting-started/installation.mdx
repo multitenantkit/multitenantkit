@@ -1,0 +1,166 @@
+---
+title: Installation
+description: MultiTenantKit can be installed via npm or yarn. Choose your preferred package manager below.
+lastUpdated: '2025-11-22'
+---
+
+## Prerequisites
+
+- **Node.js 18+** or Bun 1.0+
+- **TypeScript 5.0+**
+- **PostgreSQL 13+** (for persistence)
+- **Supabase Account** (for authentication)
+
+> **Note**: This guide assumes you're using **Supabase** for both database persistence (PostgreSQL) and authentication. While MultiTenantKit supports other databases and auth providers, we'll use Supabase for simplicity.
+
+## Install the SDK
+
+The SDK bundle includes everything you need to get started quickly:
+
+```bash title="npm"
+npm install @multitenantkit/sdk
+```
+
+```bash title="yarn"
+yarn add @multitenantkit/sdk
+```
+
+```bash title="pnpm"
+pnpm add @multitenantkit/sdk
+```
+
+## Install Individual Packages
+
+For more granular control, install packages individually:
+
+```bash
+npm install @multitenantkit/core \
+  @multitenantkit/adapters-drizzle-pg \
+  @multitenantkit/adapters-supabase-auth \
+  @multitenantkit/composition
+```
+
+## Database Setup
+
+> **Important**: When using Supabase, you **don't need to create a users table**. Supabase provides `auth.users` built-in, which MultiTenantKit uses automatically. You only need to create the organizations and memberships tables.
+
+Run these SQL commands in your Supabase SQL Editor (or any PostgreSQL client):
+
+```sql
+-- Organizations table
+CREATE TABLE organizations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_user_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  archived_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  -- Custom fields (optional, add your own):
+  name TEXT,
+  industry TEXT
+);
+
+-- Organization Memberships table
+CREATE TABLE organization_memberships (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  username TEXT NOT NULL,
+  organization_id UUID NOT NULL REFERENCES organizations(id),
+  role_code TEXT NOT NULL CHECK (role_code IN ('owner', 'admin', 'member')),
+  invited_at TIMESTAMP,
+  joined_at TIMESTAMP,
+  left_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- Custom fields (optional, add your own):
+  department TEXT,
+  job_title TEXT
+);
+
+-- Indexes for better query performance
+CREATE INDEX idx_orgs_owner ON organizations(owner_user_id);
+CREATE INDEX idx_orgs_deleted_at ON organizations(deleted_at);
+CREATE INDEX idx_orgs_archived_at ON organizations(archived_at);
+
+CREATE INDEX idx_memberships_user ON organization_memberships(user_id);
+CREATE INDEX idx_memberships_org ON organization_memberships(organization_id);
+CREATE INDEX idx_memberships_username ON organization_memberships(username);
+```
+
+> **Note**: The custom fields shown above (`name`, `industry`, `department`, `job_title`) are just examples. You can add any fields you need. For more details on custom fields configuration and validation, see [Custom Fields Configuration](/docs/configuration/custom-fields).
+
+> **Note**: For user custom fields with Supabase, use the `raw_user_meta_data` column in `auth.users`. See [Custom Fields Configuration](/docs/configuration/custom-fields#supabase-users) for details.
+
+## Environment Variables
+
+Create a `.env` file in your project root with the following variables:
+
+```bash title=".env"
+# Database (Required)
+DATABASE_URL=postgresql://user:password@localhost:5432/multitenantkit_dev
+
+# Supabase Auth (Required)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-service-role-key
+
+# Optional: Database Pool Size (defaults to 10)
+DB_POOL_SIZE=10
+```
+
+### Required Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@localhost:5432/dbname` |
+| `SUPABASE_URL` | Your Supabase project URL | `https://xyz.supabase.co` |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key (not anon key!) | Found in Supabase Dashboard → Settings → API |
+
+### Optional Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_POOL_SIZE` | Maximum database connections | `10` |
+| `DB_SSL` | SSL mode: `false`, `true`, or `rejectUnauthorized` | `false` |
+
+> **Security Note**: Use the **service role key**, not the anon key. The service role key has admin privileges needed for user management.
+
+## Verify Installation
+
+Create a simple test file to verify your setup:
+
+```typescript title="test.ts"
+import { createUseCases, createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+
+const toolkitOptions = {
+  namingStrategy: 'snake_case' as const
+};
+
+const persistenceAdapters = createPostgresAdapters(undefined, toolkitOptions);
+const systemAdapters = createSystemAdapters();
+
+const useCases = createUseCases(
+  {
+    persistence: persistenceAdapters,
+    system: systemAdapters
+  },
+  toolkitOptions
+);
+
+console.log('✅ MultiTenantKit initialized successfully!');
+console.log('Available use cases:', Object.keys(useCases));
+```
+
+Run the test:
+
+```bash
+npx tsx test.ts
+```
+
+If you see the success message, you're all set! 🎉
+
+## Next Steps
+
+- [Quick Start](/docs/getting-started/quick-start) - Build your first app in 5 minutes
+- [Custom Fields](/docs/configuration/custom-fields) - Extend entities with your own fields
+- [Use Cases](/docs/use-cases/overview) - Explore all 18 use cases

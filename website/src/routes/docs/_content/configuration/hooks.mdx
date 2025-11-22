@@ -1,0 +1,680 @@
+---
+title: Hooks
+description: Use Case Hooks provide powerful lifecycle hooks to inject custom logic at specific points during use case execution without modifying core business logic
+lastUpdated: '2025-11-22'
+---
+
+> **Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+
+## Overview
+
+Use Case Hooks allow you to implement cross-cutting concerns like logging, rate limiting, custom validations, and side effects without modifying your core business logic. They provide clean extension points throughout the use case execution lifecycle.
+
+### Key Features
+
+- ✅ **Full Adapter Access**: Direct access to all adapters (persistence, system, observability)
+- ✅ **Graceful Abort**: Stop execution cleanly without throwing exceptions
+- ✅ **Immutable Safety**: Input and step results are readonly, preventing bugs
+- ✅ **Shared State**: Mutable object for passing data between hooks
+- ✅ **Type-Safe**: Full TypeScript support for each use case
+- ✅ **Comprehensive**: 7 hook points covering the entire execution pipeline
+
+## Hook Lifecycle
+
+Hook execute in this order during use case execution:
+
+```
+1. onStart          → Before input validation
+                      ↓
+2. afterValidation  → After successful validation
+                      ↓
+3. beforeExecution  → After authorization, before business logic
+                      ↓
+4. afterExecution   → After successful business logic
+                      ↓
+5. onError          → If an error occurs (alternative path)
+   OR
+   onAbort          → If abort() is called (alternative path)
+                      ↓
+6. onFinally        → Always executes (success, error, or abort)
+```
+
+## Basic Configuration
+
+Configure hooks in your toolkit options when creating your Express app:
+
+```typescript
+import { createExpressApp } from '@multitenantkit/sdk';
+
+const app = createExpressApp({
+  useCaseHooks: {
+    // Hooks for GetUser use case
+    GetUser: {
+      onStart: ({ shared }) => {
+        shared.startTime = Date.now();
+      },
+      onFinally: ({ result, shared }) => {
+        const duration = Date.now() - shared.startTime;
+        console.log(`GetUser completed in ${duration}ms`);
+      }
+    },
+
+    // Hooks for UpdateUser use case
+    UpdateUser: {
+      afterValidation: async ({ stepResults, adapters, abort }) => {
+        const user = await adapters.persistence.userRepository.findById(
+          stepResults.validatedInput.userId
+        );
+
+        if (user.status === 'suspended') {
+          abort('Cannot update suspended user');
+        }
+      }
+    }
+  }
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+## Hook Context API
+
+Every hook receives a `HookContext` object with these properties:
+
+### Readonly Properties
+
+#### `executionId`: Unique execution ID for tracking
+
+```typescript
+onStart: ({ executionId }) => {
+  console.log(`Starting execution ${executionId}`);
+};
+```
+
+#### `useCaseName`: Name of the use case being executed
+
+```typescript
+onFinally: ({ useCaseName, result }) => {
+  console.log(`${useCaseName} ${result.isSuccess ? 'succeeded' : 'failed'}`);
+};
+```
+
+#### `input`: Original input (immutable)
+
+```typescript
+onStart: ({ input }) => {
+  console.log('Processing input:', input);
+  // input is readonly - cannot modify
+};
+```
+
+#### `stepResults`: Results from previous pipeline steps
+
+Available results depend on which hook is executing:
+
+| Hook              | Available Results                        |
+| ----------------- | ---------------------------------------- |
+| `onStart`         | none                                     |
+| `afterValidation` | `validatedInput`                         |
+| `beforeExecution` | `validatedInput`, `authorized`           |
+| `afterExecution`  | `validatedInput`, `authorized`, `output` |
+| `onError`         | varies (depends on where error occurred) |
+| `onAbort`         | varies (depends on where abort called)   |
+| `onFinally`       | all available                            |
+
+```typescript
+afterValidation: ({ stepResults }) => {
+  const validated = stepResults.validatedInput!;
+  console.log('Validated input:', validated);
+};
+```
+
+#### `context`: Operation context for audit logging
+
+```typescript
+interface OperationContext {
+  requestId: string;       // Unique request identifier
+  actorUserId: string;     // User performing the operation
+  organizationId?: string; // Organization context (optional)
+  metadata?: AuditMetadata;
+  auditAction?: string;
+}
+```
+
+#### `adapters`: Full access to infrastructure
+
+```typescript
+beforeExecution: async ({ adapters, stepResults }) => {
+  // Access persistence
+  const user = await adapters.persistence.userRepository.findById(
+    stepResults.validatedInput.userId
+  );
+
+  // Access system utilities
+  const now = adapters.system.clock.now();
+  const newId = adapters.system.uuid.generate();
+
+  // Log to observability
+  await adapters.observability?.logHookExecution({
+    hookName: 'beforeExecution',
+    timestamp: now
+  });
+};
+```
+
+### Mutable Properties
+
+#### `shared`: Pass data between hooks
+
+```typescript
+onStart: ({ shared }) => {
+  shared.startTime = Date.now();
+  shared.userAgent = 'Mozilla/5.0...';
+};
+
+onFinally: ({ shared }) => {
+  const duration = Date.now() - shared.startTime;
+  console.log(`Execution took ${duration}ms`);
+};
+```
+
+### Functions
+
+#### `abort(reason)`: Gracefully abort execution
+
+Unlike throwing an error, `abort()` provides a clean way to stop execution for non-error conditions:
+
+```typescript
+afterValidation: async ({ abort, stepResults, adapters }) => {
+  // Rate limiting check
+  const attempts = await rateLimiter.getAttempts(
+    stepResults.validatedInput.userId
+  );
+
+  if (attempts > 5) {
+    abort('Rate limit exceeded: too many requests');
+    return; // abort() doesn't throw, so return to exit hook
+  }
+};
+```
+
+## Available Hooks
+
+### 1. onStart
+
+**Executes**: Before input validation
+
+**Use cases**:
+- Initial logging and tracking
+- Rate limiting checks
+- Feature flag checks
+- Circuit breaker checks
+
+**Example**:
+
+```typescript
+GetUser: {
+  onStart: async ({ input, shared, context, abort }) => {
+    // Track execution start time
+    shared.startTime = Date.now();
+
+    // Log start
+    console.log(`[${context.requestId}] Getting user:`, input.userId);
+
+    // Rate limiting
+    const attempts = await rateLimiter.getAttempts(context.actorUserId);
+    if (attempts > 10) {
+      abort('Rate limit exceeded');
+      return;
+    }
+
+    // Feature flag check
+    const featureEnabled = await featureFlags.isEnabled('user-api');
+    if (!featureEnabled) {
+      abort('Feature is temporarily disabled');
+      return;
+    }
+  }
+}
+```
+
+### 2. afterValidation
+
+**Executes**: After input validation succeeds
+
+**Use cases**:
+- Additional custom validations
+- Business rule checks
+- Data enrichment
+- Resource existence checks
+
+**Example**:
+
+```typescript
+UpdateUser: {
+  afterValidation: async ({ stepResults, adapters, abort, shared }) => {
+    const validated = stepResults.validatedInput!;
+
+    // Custom validation: check email domain
+    const emailDomain = validated.email?.split('@')[1];
+    const blockedDomains = ['spam.com', 'fake.com'];
+
+    if (emailDomain && blockedDomains.includes(emailDomain)) {
+      shared.blockedDomain = emailDomain;
+      throw new ValidationError(`Domain ${emailDomain} is not allowed`);
+    }
+
+    // Check user exists and is active
+    const user = await adapters.persistence.userRepository.findById(
+      validated.userId
+    );
+
+    if (!user) {
+      abort('User not found');
+      return;
+    }
+
+    if (user.status === 'suspended') {
+      abort('User is suspended');
+      return;
+    }
+
+    // Check quota
+    const quota = await quotaService.getQuota(validated.userId);
+    if (quota.exceeded) {
+      abort('User quota exceeded');
+      return;
+    }
+  }
+}
+```
+
+### 3. beforeExecution
+
+**Executes**: After authorization, before business logic
+
+**Use cases**:
+- Logging successful authorization
+- Recording audit information
+- Pre-execution checks
+- Preparing shared data
+
+**Example**:
+
+```typescript
+DeleteOrganization: {
+  beforeExecution: async ({ stepResults, context, adapters, abort }) => {
+    const validated = stepResults.validatedInput!;
+
+    // Log authorization success for audit
+    await auditLog.record({
+      requestId: context.requestId,
+      userId: context.actorUserId,
+      action: 'DELETE_ORGANIZATION',
+      organizationId: validated.organizationId,
+      timestamp: adapters.system.clock.now()
+    });
+
+    // Final check: ensure organization has no active subscriptions
+    const hasActiveSubscriptions = await billingService.hasActiveSubscriptions(
+      validated.organizationId
+    );
+
+    if (hasActiveSubscriptions) {
+      abort('Cannot delete organization with active subscriptions');
+      return;
+    }
+  }
+}
+```
+
+### 4. afterExecution
+
+**Executes**: After business logic succeeds
+
+**Use cases**:
+- Side effects (emails, notifications, webhooks)
+- Post-processing
+- Updating caches
+- Triggering workflows
+
+**Important**: Wrap side effects in try/catch to prevent aborting on failures.
+
+**Example**:
+
+```typescript
+CreateOrganization: {
+  afterExecution: async ({ stepResults, shared, context }) => {
+    const output = stepResults.output!;
+
+    // Send welcome email (don't abort on failure)
+    try {
+      await emailService.sendOrganizationWelcome({
+        to: output.ownerEmail,
+        organizationName: output.name,
+        organizationId: output.id
+      });
+      shared.emailSent = true;
+    } catch (error) {
+      console.error('Failed to send welcome email:', error);
+      shared.emailSent = false;
+      // Error is caught, execution continues
+    }
+
+    // Trigger webhook (fire-and-forget)
+    webhookService
+      .trigger('organization.created', {
+        organizationId: output.id,
+        name: output.name,
+        ownerId: context.actorUserId
+      })
+      .catch((err) => console.error('Webhook failed:', err));
+
+    // Update cache
+    try {
+      await cache.set(`org:${output.id}`, output, 3600);
+    } catch (error) {
+      console.error('Cache update failed:', error);
+    }
+  }
+}
+```
+
+### 5. onError
+
+**Executes**: When an error occurs in any step
+
+**Use cases**:
+- Error logging with context
+- Error notifications
+- Alert critical errors
+- Error recovery attempts
+
+**Example**:
+
+```typescript
+CreateUser: {
+  onError: async ({ error, shared, context, stepResults }) => {
+    // Log error with full context
+    console.error('CreateUser failed', {
+      useCaseName: 'CreateUser',
+      executionId: context.executionId,
+      requestId: context.requestId,
+      error: error.message,
+      errorCode: error.code,
+      shared,
+      stepResults
+    });
+
+    // Send alert for critical infrastructure errors
+    if (error instanceof InfrastructureError) {
+      await alertService.sendCriticalAlert({
+        service: 'MultiTenantKit',
+        error: error.message,
+        context: context.requestId,
+        severity: 'critical'
+      });
+  }
+}
+```
+
+### 6. onAbort
+
+**Executes**: When execution is aborted via `abort()`
+
+**Use cases**:
+- Log abort reason
+- Clean up resources
+- Send notifications if needed
+- Different handling than errors
+
+**Example**:
+
+```typescript
+GetUser: {
+  onAbort: async ({ reason, shared, context }) => {
+    // Log abort with context
+    console.log('GetUser aborted', {
+      executionId: context.executionId,
+      requestId: context.requestId,
+      reason,
+      duration: Date.now() - shared.startTime
+    });
+
+    // Send notification for specific abort reasons
+    if (reason.includes('quota exceeded')) {
+      await notificationService.send({
+        userId: context.actorUserId,
+        type: 'quota_warning',
+        message: 'You have reached your usage quota'
+      });
+    }
+
+    // No alerts for aborts (they're expected conditions)
+  }
+}
+```
+
+### 7. onFinally
+
+**Executes**: Always at the end (success, error, or abort)
+
+**Use cases**:
+- Logging completion
+- Cleanup operations
+- Resource release
+
+**Example**:
+
+```typescript
+UpdateUser: {
+  onFinally: async ({ result, shared, context }) => {
+    const duration = Date.now() - shared.startTime;
+
+    // Log completion
+    const status = result.isSuccess ? 'SUCCESS' : 'FAILURE';
+    console.log(`[${context.requestId}] UpdateUser ${status} in ${duration}ms`);
+
+    // Cleanup temp resources
+    if (shared.tempFile) {
+      fs.unlinkSync(shared.tempFile);
+    }
+  }
+}
+```
+
+## Common Use Cases
+
+### Rate Limiting
+
+```typescript
+CreateUser: {
+  onStart: async ({ context, abort }) => {
+    const attempts = await rateLimiter.getAttempts(context.actorUserId);
+    if (attempts > 5) {
+      abort('Rate limit exceeded');
+      return;
+    }
+  }
+}
+```
+
+### Custom Validation
+
+```typescript
+UpdateOrganization: {
+  afterValidation: async ({ stepResults, adapters, abort }) => {
+    const validated = stepResults.validatedInput!;
+
+    // Check if name is already taken by another organization
+    const existing = await adapters.persistence.organizationRepository
+      .findByName(validated.name);
+
+    if (existing && existing.id !== validated.organizationId) {
+      abort('Organization name is already taken');
+      return;
+    }
+  }
+}
+```
+
+### Audit Logging
+
+```typescript
+RemoveOrganizationMember: {
+  beforeExecution: async ({ stepResults, context, adapters }) => {
+    await auditLog.record({
+      requestId: context.requestId,
+      userId: context.actorUserId,
+      action: 'REMOVE_MEMBER',
+      targetUserId: stepResults.validatedInput.userId,
+      organizationId: stepResults.validatedInput.organizationId,
+      timestamp: adapters.system.clock.now()
+    });
+  }
+}
+```
+
+## Best Practices
+
+### 1. Use abort() for Expected Conditions
+
+✅ **Good**: Using abort for rate limiting
+
+```typescript
+afterValidation: ({ abort }) => {
+  if (rateLimitExceeded) {
+    abort('Rate limit exceeded');
+    return;
+  }
+}
+```
+
+❌ **Bad**: Throwing error for expected condition
+
+```typescript
+afterValidation: () => {
+  if (rateLimitExceeded) {
+    throw new Error('Rate limit exceeded'); // Will trigger onError
+  }
+}
+```
+
+### 2. Wrap Side Effects in try/catch
+
+✅ **Good**: Catching side effect errors
+
+```typescript
+afterExecution: async ({ stepResults, shared }) => {
+  try {
+    await emailService.send(stepResults.output);
+    shared.emailSent = true;
+  } catch (error) {
+    console.error('Email failed:', error);
+    shared.emailSent = false;
+  }
+}
+```
+
+❌ **Bad**: Letting side effect errors propagate
+
+```typescript
+afterExecution: async ({ stepResults }) => {
+  await emailService.send(stepResults.output); // Will abort if fails
+}
+```
+
+### 3. Use Shared State for Data Between Hooks
+
+✅ **Good**: Using shared state
+
+```typescript
+onStart: ({ shared }) => {
+  shared.startTime = Date.now();
+}
+onFinally: ({ shared }) => {
+  const duration = Date.now() - shared.startTime;
+}
+```
+
+❌ **Bad**: Using external variables
+
+```typescript
+let startTime: number; // Breaks with concurrent executions
+onStart: () => {
+  startTime = Date.now();
+}
+```
+
+### 4. Return After Calling abort()
+
+✅ **Good**: Returning after abort
+
+```typescript
+afterValidation: ({ abort }) => {
+  if (condition) {
+    abort('Reason');
+    return; // Exit hook
+  }
+  // Continue processing
+}
+```
+
+❌ **Bad**: Not returning after abort
+
+```typescript
+afterValidation: ({ abort }) => {
+  if (condition) {
+    abort('Reason');
+  }
+  // Hook continues executing (might cause errors)
+}
+```
+
+### 5. Choose the Right Hook
+
+- **onStart**: Setup, rate limiting, feature flags
+- **afterValidation**: Custom validations, resource checks
+- **beforeExecution**: Audit logging, final checks
+- **afterExecution**: Side effects, notifications
+- **onError**: Error logging, alerts
+- **onAbort**: Abort logging, abort-specific handling
+- **onFinally**: Cleanup, always-run operations
+
+## Type Safety
+
+All hooks are fully type-safe. TypeScript knows the exact input/output types for each use case:
+
+```typescript
+useCaseHooks: {
+  GetUser: {
+    onStart: ({ input }) => {
+      // TypeScript knows: input is GetUserInput
+      console.log(input.userId); // ✅ Correct
+      console.log(input.invalidField); // ❌ TypeScript error
+    },
+    afterExecution: ({ stepResults }) => {
+      // TypeScript knows: output is GetUserOutput
+      const output = stepResults.output!;
+      console.log(output.email); // ✅ Correct
+      console.log(output.invalidField); // ❌ TypeScript error
+    }
+  }
+}
+```
+
+## Summary
+
+Use Case Hooks provide a powerful, flexible, and type-safe way to extend use case behavior:
+
+- ✅ **Non-invasive**: Extend behavior without modifying core logic
+- ✅ **Type-safe**: Full TypeScript support
+- ✅ **Flexible**: 7 hook points covering entire lifecycle
+- ✅ **Powerful**: Full adapter access for complex operations
+- ✅ **Clean**: Graceful abort mechanism for expected conditions
+- ✅ **Safe**: Immutable input/stepResults prevent bugs
+
+Use hooks for cross-cutting concerns like logging, rate limiting, validation, side effects, and audit trails while keeping your business logic clean and focused.

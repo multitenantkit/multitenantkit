@@ -1,0 +1,217 @@
+# Membership Endpoints
+
+REST API endpoints for managing organization memberships.
+
+## POST /organizations/:organizationId/members
+
+Add a member to an organization or send an invitation.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations/org-123/members \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "newmember@example.com",
+    "roleCode": "member"
+  }'
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "membership-456",
+    "userId": "789e0123-e89b-12d3-a456-426614174002",
+    "username": "newmember@example.com",
+    "organizationId": "org-123",
+    "roleCode": "member",
+    "invitedAt": "2025-11-22T00:00:00.000Z",
+    "joinedAt": null,
+    "leftAt": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z"
+  },
+  "requestId": "req-134"
+}
+```
+
+**Notes:**
+- If user exists: Creates pending invitation (`invitedAt` set, `joinedAt` null)
+- If user doesn't exist: Creates invitation for future registration
+- If user previously left: Reactivates the membership
+- **Authorization**:
+  - Owners can add members with any role
+  - Admins can only add regular members
+- Cannot add members to archived organizations
+- Returns 403 if not authorized
+
+---
+
+## POST /organizations/:organizationId/accept-invitation
+
+Accept a pending organization invitation.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations/org-123/accept-invitation \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "membership-456",
+    "userId": "789e0123-e89b-12d3-a456-426614174002",
+    "username": "newmember@example.com",
+    "organizationId": "org-123",
+    "roleCode": "member",
+    "invitedAt": "2025-11-22T00:00:00.000Z",
+    "joinedAt": "2025-11-22T00:05:00.000Z",
+    "leftAt": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:05:00.000Z"
+  },
+  "requestId": "req-135"
+}
+```
+
+**Notes:**
+- The authenticated user (from JWT token) is automatically used
+- User must have a pending invitation
+- Sets `joinedAt` timestamp
+- Returns 400 if no pending invitation found
+
+---
+
+## PUT /organizations/:organizationId/members/:userId
+
+Update a member's role.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X PUT http://localhost:3000/organizations/org-123/members/789e0123-e89b-12d3-a456-426614174002 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "roleCode": "admin"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "membership-456",
+    "userId": "789e0123-e89b-12d3-a456-426614174002",
+    "username": "newmember@example.com",
+    "organizationId": "org-123",
+    "roleCode": "admin",
+    "invitedAt": "2025-11-22T00:00:00.000Z",
+    "joinedAt": "2025-11-22T00:05:00.000Z",
+    "leftAt": null,
+    "deletedAt": null,
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T01:00:00.000Z"
+  },
+  "requestId": "req-136"
+}
+```
+
+**Notes:**
+- **Authorization**:
+  - Owners can change any member's role
+  - Admins can only change regular members' roles
+- Cannot change the owner's role
+- Returns 403 if not authorized
+
+---
+
+## DELETE /organizations/:organizationId/members/:userId
+
+Remove a member from an organization.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X DELETE http://localhost:3000/organizations/org-123/members/789e0123-e89b-12d3-a456-426614174002 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "membership-456",
+    "userId": "789e0123-e89b-12d3-a456-426614174002",
+    "username": "newmember@example.com",
+    "organizationId": "org-123",
+    "roleCode": "admin",
+    "invitedAt": "2025-11-22T00:00:00.000Z",
+    "joinedAt": "2025-11-22T00:05:00.000Z",
+    "leftAt": null,
+    "deletedAt": "2025-11-22T02:00:00.000Z",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T02:00:00.000Z"
+  },
+  "requestId": "req-137"
+}
+```
+
+**Notes:**
+- This is a soft delete (sets `deletedAt` timestamp)
+- **Authorization**:
+  - Owners can remove any member
+  - Admins can only remove regular members
+- Cannot remove the organization owner
+- Returns 403 if not authorized
+
+---
+
+## POST /organizations/:organizationId/leave
+
+Leave an organization (authenticated user leaves).
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations/org-123/leave \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "membership-123",
+    "userId": "123e4567-e89b-12d3-a456-426614174000",
+    "username": "user@example.com",
+    "organizationId": "org-123",
+    "roleCode": "member",
+    "invitedAt": "2025-11-22T00:00:00.000Z",
+    "joinedAt": "2025-11-22T00:00:00.000Z",
+    "leftAt": "2025-11-22T03:00:00.000Z",
+    "deletedAt": null,
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T03:00:00.000Z"
+  },
+  "requestId": "req-138"
+}
+```
+
+**Notes:**
+- The authenticated user (from JWT token) is automatically used as the user leaving
+- Sets `leftAt` timestamp
+- Organization owners cannot leave (must transfer ownership first)
+- Returns 400 if user is the owner

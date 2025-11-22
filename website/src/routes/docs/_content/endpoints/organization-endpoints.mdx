@@ -1,0 +1,321 @@
+---
+title: Organization Endpoints
+description: REST API endpoints for organization management
+lastUpdated: '2025-11-22'
+---
+
+# Organization Endpoints
+
+REST API endpoints for managing organizations.
+
+## POST /organizations
+
+Create a new organization.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Corporation",
+    "industry": "Technology",
+    "size": "Enterprise"
+  }'
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corporation",
+    "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "industry": "Technology",
+    "size": "Enterprise"
+  },
+  "requestId": "req-127"
+}
+```
+
+**Notes:**
+- The authenticated user (from JWT token) becomes the organization owner
+- An owner membership is automatically created
+- Custom fields can be included if configured
+- Returns 201 Created on success
+
+---
+
+## GET /organizations/:organizationId
+
+Get organization details.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/organizations/org-123 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corporation",
+    "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "industry": "Technology",
+    "size": "Enterprise"
+  },
+  "requestId": "req-128"
+}
+```
+
+**Notes:**
+- Only organization members can view organization details
+- Returns 403 if not a member
+- Returns 404 if organization not found
+
+---
+
+## PUT /organizations/:organizationId
+
+Update organization information.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X PUT http://localhost:3000/organizations/org-123 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Corp Inc.",
+    "size": "Large Enterprise"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corp Inc.",
+    "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T01:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "industry": "Technology",
+    "size": "Large Enterprise"
+  },
+  "requestId": "req-129"
+}
+```
+
+**Notes:**
+- Only organization owner can update organization
+- At least one field must be provided
+- Only provided fields are updated
+- Returns 403 if not the owner
+
+---
+
+## DELETE /organizations/:organizationId
+
+Delete (archive) an organization.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X DELETE http://localhost:3000/organizations/org-123 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corp Inc.",
+    "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T02:00:00.000Z",
+    "deletedAt": "2025-11-22T02:00:00.000Z"
+  },
+  "requestId": "req-130"
+}
+```
+
+**Notes:**
+- This is a soft delete (archive) operation
+- Only organization owner can archive
+- Organization data remains in database but is marked as deleted
+- Use POST /organizations/:organizationId/restore to restore
+
+---
+
+## POST /organizations/:organizationId/restore
+
+Restore a soft-deleted organization.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations/org-123/restore \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corp Inc.",
+    "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T03:00:00.000Z",
+    "deletedAt": null
+  },
+  "requestId": "req-131"
+}
+```
+
+**Notes:**
+- Only organization owner can restore
+- Restores a soft-deleted organization
+- Sets `deletedAt` to null
+
+---
+
+## GET /organizations/:organizationId/members
+
+List all members of an organization with pagination and filtering.
+
+**Authentication:** Required
+
+**Query Parameters:**
+- `includeActive` (boolean, optional): Include active members
+- `includePending` (boolean, optional): Include pending invitations
+- `includeRemoved` (boolean, optional): Include removed members
+- `page` (number, optional): Page number (default: 1)
+- `pageSize` (number, optional): Items per page (default: 20, max: 100)
+
+**Request:**
+```bash
+curl -X GET "http://localhost:3000/organizations/org-123/members?includeActive=true&page=1&pageSize=20" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "items": [
+      {
+        "id": "membership-123",
+        "userId": "123e4567-e89b-12d3-a456-426614174000",
+        "organizationId": "org-123",
+        "roleCode": "owner",
+        "invitedAt": "2025-11-22T00:00:00.000Z",
+        "joinedAt": "2025-11-22T00:00:00.000Z",
+        "leftAt": null,
+        "deletedAt": null,
+        "createdAt": "2025-11-22T00:00:00.000Z",
+        "updatedAt": "2025-11-22T00:00:00.000Z",
+        // Custom membership fields (if configured):
+        "department": "Engineering",
+        "user": {
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "externalId": "auth-provider-user-id",
+          "username": "john@example.com",
+          "createdAt": "2025-11-22T00:00:00.000Z",
+          "updatedAt": "2025-11-22T00:00:00.000Z",
+          "deletedAt": null,
+          // Custom user fields (if configured):
+          "firstName": "John",
+          "lastName": "Doe"
+        },
+        "organization": {
+          "id": "org-123",
+          "name": "Acme Corp",
+          "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+          "createdAt": "2025-11-22T00:00:00.000Z",
+          "updatedAt": "2025-11-22T00:00:00.000Z",
+          "deletedAt": null,
+          // Custom organization fields (if configured):
+          "industry": "Technology",
+          "size": "Enterprise"
+        }
+      }
+    ],
+    "total": 5,
+    "page": 1,
+    "limit": 20
+  },
+  "requestId": "req-132"
+}
+```
+
+**Notes:**
+- Only organization members can list members
+- **Role-based filtering**:
+  - Regular members: Can only see active members
+  - Admins and owners: Can see all statuses if filters not specified
+- Each member includes nested `user` and `organization` objects
+- Response is paginated
+- Returns 401 if not authenticated
+- Returns 403 if not a member of the organization
+- Returns 404 if organization not found
+
+---
+
+## POST /organizations/:organizationId/transfer-ownership
+
+Transfer organization ownership to another member.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/organizations/org-123/transfer-ownership \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "newOwnerId": "456e7890-e89b-12d3-a456-426614174001"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "org-123",
+    "name": "Acme Corp Inc.",
+    "ownerId": "456e7890-e89b-12d3-a456-426614174001",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T04:00:00.000Z",
+    "deletedAt": null
+  },
+  "requestId": "req-133"
+}
+```
+
+**Notes:**
+- Only current organization owner can transfer ownership
+- New owner must be an existing active member
+- Previous owner's role is automatically changed to 'admin'
+- New owner's role is automatically changed to 'owner'

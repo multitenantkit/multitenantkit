@@ -1,0 +1,214 @@
+---
+title: User Endpoints
+description: REST API endpoints for user management
+lastUpdated: '2025-11-22'
+---
+
+## POST /users
+
+Create a new user.
+
+**Authentication:** None (public endpoint for registration)
+
+> **Note for Supabase users**: When using Supabase as your auth provider, this endpoint is **not used**. Supabase automatically creates users in the `auth.users` table when they sign up through Supabase Auth, so user creation is handled by Supabase itself.
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "john@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "phoneNumber": "+1234567890"
+  }'
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "externalId": "123e4567-e89b-12d3-a456-426614174000",
+    "username": "john@example.com",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "firstName": "John",
+    "lastName": "Doe",
+    "phoneNumber": "+1234567890"
+  },
+  "requestId": "req-100"
+}
+```
+
+**Notes:**
+- This endpoint does not require authentication (it's for user registration)
+- If `externalId` is not provided in the request, it defaults to the generated `id`
+- Custom fields (like `firstName`, `lastName`, `phoneNumber`) are included if configured
+- Returns 409 Conflict if `externalId` already exists
+
+---
+
+## GET /users/me
+
+Get the authenticated user's information.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "externalId": "auth-provider-user-id",
+    "username": "john@example.com",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "firstName": "John",
+    "lastName": "Doe",
+    "phoneNumber": "+1234567890"
+  },
+  "requestId": "req-123"
+}
+```
+
+**Notes:**
+- The `principalExternalId` is automatically extracted from the JWT token
+- Custom fields (like `firstName`, `lastName`, `phoneNumber`) are included if configured
+- Returns 401 if not authenticated
+
+---
+
+## PATCH /users/me
+
+Update the authenticated user's profile.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X PATCH http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "newemail@example.com",
+    "firstName": "Jane",
+    "phoneNumber": "+0987654321"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "externalId": "auth-provider-user-id",
+    "username": "newemail@example.com",
+    "createdAt": "2025-11-22T00:00:00.000Z",
+    "updatedAt": "2025-11-22T01:00:00.000Z",
+    "deletedAt": null,
+    // Custom fields (if configured):
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phoneNumber": "+0987654321"
+  },
+  "requestId": "req-124"
+}
+```
+
+**Notes:**
+- The authenticated user (from JWT token) is automatically used as the target user
+- At least one field must be provided in the request body
+- Only provided fields are updated; omitted fields preserve their existing values
+- Custom fields can be updated if configured
+
+---
+
+## DELETE /users/me
+
+Soft delete the authenticated user.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X DELETE http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "deletedAt": "2025-11-22T02:00:00.000Z"
+  },
+  "requestId": "req-125"
+}
+```
+
+**Notes:**
+- This is a **soft delete** operation - the user data remains in the database but is marked as deleted
+- The authenticated user (from JWT token) is automatically used as the target user
+- **Cascade behavior**:
+  - Soft deletes all organizations owned by the user
+  - Preserves memberships in owned organizations (for potential restore)
+  - Soft deletes memberships in non-owned organizations (user is leaving)
+- Returns 400 if user is already deleted
+
+---
+
+## GET /users/me/organizations
+
+List all organizations the authenticated user belongs to.
+
+**Authentication:** Required
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/users/me/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "items": [
+      {
+        "id": "org-123",
+        "name": "Acme Corp",
+        "ownerId": "123e4567-e89b-12d3-a456-426614174000",
+        "createdAt": "2025-11-22T00:00:00.000Z",
+        "updatedAt": "2025-11-22T00:00:00.000Z",
+        "deletedAt": null,
+        // Custom fields (if configured):
+        "industry": "Technology",
+        "size": "Enterprise"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 20
+  },
+  "requestId": "req-126"
+}
+```
+
+**Notes:**
+- The authenticated user (from JWT token) is automatically used
+- Returns organizations where the user has an active membership
+- Includes organizations owned by the user
+- Excludes soft-deleted organizations
+- Response is paginated
+

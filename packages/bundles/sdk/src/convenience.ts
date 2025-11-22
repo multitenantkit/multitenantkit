@@ -7,7 +7,6 @@ import { buildExpressApp, buildExpressRouter } from '@multitenantkit/adapter-tra
 import { buildHandlers } from '@multitenantkit/api-handlers';
 import {
     createJsonAdapters,
-    createMetricsAdapter,
     createPostgresAdapters,
     createSystemAdapters,
     createUseCases
@@ -222,7 +221,6 @@ export function createExpressApp<
 
     // 2. Create system and metrics adapters
     const systemAdapters = createSystemAdapters();
-    const metricsAdapter = createMetricsAdapter();
 
     // 3. Create use cases with all adapters
     const useCases = createUseCases<
@@ -232,8 +230,7 @@ export function createExpressApp<
     >(
         {
             persistence: persistenceAdapters,
-            system: systemAdapters,
-            observability: metricsAdapter
+            system: systemAdapters
         },
         toolkitOptions
     );
@@ -349,7 +346,6 @@ export function createExpressRouter<
 
     // 2. Create system and metrics adapters
     const systemAdapters = createSystemAdapters();
-    const metricsAdapter = createMetricsAdapter();
 
     // 3. Create use cases with all adapters
     const useCases = createUseCases<
@@ -359,8 +355,7 @@ export function createExpressRouter<
     >(
         {
             persistence: persistenceAdapters,
-            system: systemAdapters,
-            observability: metricsAdapter
+            system: systemAdapters
         },
         toolkitOptions
     );
