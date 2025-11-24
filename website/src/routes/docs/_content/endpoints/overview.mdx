@@ -91,14 +91,14 @@ Error responses follow this format:
 
 ### User Endpoints
 - `GET /users/me` - Get authenticated user
-- `PUT /users/:userId` - Update user
-- `DELETE /users/:userId` - Delete user
-- `GET /users/:userId/organizations` - List user's organizations
+- `PATCH /users/me` - Update user
+- `DELETE /users/me` - Delete user
+- `GET /users/me/organizations` - List user's organizations
 
 ### Organization Endpoints
 - `POST /organizations` - Create organization
 - `GET /organizations/:organizationId` - Get organization
-- `PUT /organizations/:organizationId` - Update organization
+- `PATCH /organizations/:id` - Update organization
 - `DELETE /organizations/:organizationId` - Delete organization
 - `POST /organizations/:organizationId/restore` - Restore organization
 - `GET /organizations/:organizationId/members` - List organization members
@@ -106,7 +106,7 @@ Error responses follow this format:
 
 ### Membership Endpoints
 - `POST /organizations/:organizationId/members` - Add member
-- `PUT /organizations/:organizationId/members/:userId` - Update member role
+- `PUT /organizations/:organizationId/members/:userId/role` - Update member role
 - `DELETE /organizations/:organizationId/members/:userId` - Remove member
 - `POST /organizations/:organizationId/leave` - Leave organization
 

@@ -89,7 +89,7 @@ curl -X GET http://localhost:3000/organizations/org-123 \
 
 ---
 
-## PUT /organizations/:organizationId
+## PATCH /organizations/:id
 
 Update organization information.
 
@@ -97,7 +97,7 @@ Update organization information.
 
 **Request:**
 ```bash
-curl -X PUT http://localhost:3000/organizations/org-123 \
+curl -X PATCH http://localhost:3000/organizations/org-123 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

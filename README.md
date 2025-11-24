@@ -115,22 +115,21 @@ Users (5 endpoints)
   DELETE /users/me                    # Delete User
   GET    /users/me/organizations      # List User Organizations
 
-Organizations (8 endpoints)
+Organizations (7 endpoints)
   POST   /organizations                                   # Create Organization
-  GET    /organizations/:id                               # Get Organization
-  PATCH  /organizations/:id/name                          # Update Organization
+  GET    /organizations/:organizationId                   # Get Organization
+  PATCH  /organizations/:id                               # Update Organization
   DELETE /organizations/:organizationId                   # Delete Organization
-  POST   /organizations/:organizationId/archive           # Archive Organization
   POST   /organizations/:organizationId/restore           # Restore Organization
   POST   /organizations/:organizationId/transfer-ownership # Transfer Organization Ownership
   GET    /organizations/:organizationId/members           # List Organization Members
 
-Memberships (5 endpoints)
+Memberships (6 endpoints)
   POST   /organizations/:organizationId/members                # Add Organization Member
-  POST   /organizations/:organizationId/accept                 # Accept Organization Invitation
+  POST   /organizations/:organizationId/accept-invitation      # Accept Organization Invitation
   PUT    /organizations/:organizationId/members/:userId/role   # Update Organization Member Role
   DELETE /organizations/:organizationId/members/:userId        # Remove Organization Member
-  DELETE /organizations/:organizationId/members/me             # Leave Organization
+  POST   /organizations/:organizationId/leave                  # Leave Organization
 ```
 
 ---

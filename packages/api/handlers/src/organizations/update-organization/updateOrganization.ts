@@ -18,7 +18,7 @@ import { applyResponseTransformer } from '../../utils/transformResponse';
  */
 export const updateOrganizationRoute: RouteDefinition = {
     method: 'PATCH',
-    path: '/organizations/:id/name',
+    path: '/organizations/:id',
     auth: 'required' // Authentication required to update organization
 };
 
