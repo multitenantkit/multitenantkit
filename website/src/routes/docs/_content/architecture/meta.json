@@ -1,4 +1,4 @@
 {
     "title": "Architecture",
-    "pages": ["overview", "domain", "ports-adapters"]
+    "pages": ["overview", "domain", "ports-adapters", "external-id", "username"]
 }

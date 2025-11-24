@@ -1,0 +1,71 @@
+---
+title: Username
+description: Understanding the username field and how it enables user identification across your application
+lastUpdated: '2025-11-24'
+---
+
+# Username
+
+The `username` field is the **human-friendly identifier** used to find and invite users across your application. Unlike `id` or `externalId` (which are internal identifiers), the username is what users actually know and share—typically an email, but it could be a phone number, handle, or any unique human-readable identifier.
+
+## What is Username?
+
+In MultiTenantKit, the `username` field serves as the **user-facing identifier** for finding and referencing other users. While `id` and `externalId` are technical identifiers managed by the system, the `username` is designed for end-users to interact with.
+
+```typescript
+interface User {
+  id: string;           // Internal UUID
+  externalId: string;   // Auth provider's ID
+  username: string;     // User-facing identifier (email, handle, etc.)
+  // ... other fields
+}
+```
+
+## Why Do We Need Username?
+
+The key problem username solves is: **How do you identify a user who may or may not exist in your database yet?**
+
+Consider the team invitation scenario:
+- **UserA** exists in your database and is part of TeamX
+- **UserB** doesn't exist yet—they haven't signed up
+
+If you want to invite UserB to your team, you can't use their `id` or `externalId` because they don't have one yet. The `username` provides a **stable, human-known identifier** that works regardless of whether the user exists in your system.
+
+### Identifying Users: Existing vs. New
+
+When inviting someone to a team:
+
+- **Existing user** (already in database): Can be identified by `id`, `externalId`, or `username`
+- **New user** (not in database): Can only be identified by `username`
+
+The username is the **common identifier** that works in both cases, without needing to know if the user exists in your database.
+
+```typescript
+// Look up user by username (works whether they exist or not)
+const user = await userRepository.findByUsername("colleague@example.com");
+
+if (user) {
+  // User exists → proceed with internal ID
+  await addMemberToOrganization(user.id, organizationId);
+} else {
+  // User doesn't exist → send invitation using username
+  await sendInvitation("colleague@example.com", organizationId);
+}
+```
+
+## Common Username Types
+
+Different applications use different username formats based on their use case:
+
+| Use Case | Username Format | Example |
+|----------|----------------|---------|
+| **B2B SaaS** | Email address | `john@company.com` |
+| **Consumer App** | Handle/username | `@johndoe` |
+| **Mobile-first** | Phone number | `+1234567890` |
+| **Enterprise** | Employee ID | `E12345` |
+
+## See Also
+
+- [External ID](/docs/architecture/external-id) - Understanding the relationship with auth providers
+- [User Management Use Cases](/docs/use-cases/user-management) - User operations including lookup by username
+- [User Endpoints](/docs/endpoints/user-endpoints) - REST API endpoints

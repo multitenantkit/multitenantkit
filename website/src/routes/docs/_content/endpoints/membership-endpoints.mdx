@@ -43,6 +43,7 @@ curl -X POST http://localhost:3000/organizations/org-123/members \
 - If user exists: Creates pending invitation (`invitedAt` set, `joinedAt` null)
 - If user doesn't exist: Creates invitation for future registration
 - If user previously left: Reactivates the membership
+- The `username` field is used because the user may or may not exist in your database. See [Username concept](/docs/architecture/username) for details.
 - **Authorization**:
   - Owners can add members with any role
   - Admins can only add regular members

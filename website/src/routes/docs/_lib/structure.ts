@@ -193,6 +193,12 @@ export const docsStructure: DocsSection[] = [
                 description: 'Understanding externalId and auth providers',
                 url: '/docs/architecture/external-id',
                 slug: ['architecture', 'external-id']
+            },
+            {
+                title: 'Username',
+                description: 'Understanding username and user identification',
+                url: '/docs/architecture/username',
+                slug: ['architecture', 'username']
             }
         ]
     },

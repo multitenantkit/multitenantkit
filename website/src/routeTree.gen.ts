@@ -35,6 +35,7 @@ import { Route as DocsLayoutEndpointsMembershipEndpointsRouteImport } from './ro
 import { Route as DocsLayoutConfigurationOverviewRouteImport } from './routes/docs/_layout/configuration/overview'
 import { Route as DocsLayoutConfigurationHooksRouteImport } from './routes/docs/_layout/configuration/hooks'
 import { Route as DocsLayoutConfigurationCustomFieldsRouteImport } from './routes/docs/_layout/configuration/custom-fields'
+import { Route as DocsLayoutArchitectureUsernameRouteImport } from './routes/docs/_layout/architecture/username'
 import { Route as DocsLayoutArchitecturePortsAdaptersRouteImport } from './routes/docs/_layout/architecture/ports-adapters'
 import { Route as DocsLayoutArchitectureOverviewRouteImport } from './routes/docs/_layout/architecture/overview'
 import { Route as DocsLayoutArchitectureExternalIdRouteImport } from './routes/docs/_layout/architecture/external-id'
@@ -189,6 +190,12 @@ const DocsLayoutConfigurationCustomFieldsRoute =
     path: '/configuration/custom-fields',
     getParentRoute: () => DocsLayoutRoute,
   } as any)
+const DocsLayoutArchitectureUsernameRoute =
+  DocsLayoutArchitectureUsernameRouteImport.update({
+    id: '/architecture/username',
+    path: '/architecture/username',
+    getParentRoute: () => DocsLayoutRoute,
+  } as any)
 const DocsLayoutArchitecturePortsAdaptersRoute =
   DocsLayoutArchitecturePortsAdaptersRouteImport.update({
     id: '/architecture/ports-adapters',
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
   '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
   '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
+  '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
   '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
   '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
   '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
@@ -284,6 +292,7 @@ export interface FileRoutesByTo {
   '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
   '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
   '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
+  '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
   '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
   '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
   '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
@@ -320,6 +329,7 @@ export interface FileRoutesById {
   '/docs/_layout/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
   '/docs/_layout/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
   '/docs/_layout/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
+  '/docs/_layout/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
   '/docs/_layout/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
   '/docs/_layout/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
   '/docs/_layout/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/docs/architecture/external-id'
     | '/docs/architecture/overview'
     | '/docs/architecture/ports-adapters'
+    | '/docs/architecture/username'
     | '/docs/configuration/custom-fields'
     | '/docs/configuration/hooks'
     | '/docs/configuration/overview'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/docs/architecture/external-id'
     | '/docs/architecture/overview'
     | '/docs/architecture/ports-adapters'
+    | '/docs/architecture/username'
     | '/docs/configuration/custom-fields'
     | '/docs/configuration/hooks'
     | '/docs/configuration/overview'
@@ -424,6 +436,7 @@ export interface FileRouteTypes {
     | '/docs/_layout/architecture/external-id'
     | '/docs/_layout/architecture/overview'
     | '/docs/_layout/architecture/ports-adapters'
+    | '/docs/_layout/architecture/username'
     | '/docs/_layout/configuration/custom-fields'
     | '/docs/_layout/configuration/hooks'
     | '/docs/_layout/configuration/overview'
@@ -629,6 +642,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsLayoutConfigurationCustomFieldsRouteImport
       parentRoute: typeof DocsLayoutRoute
     }
+    '/docs/_layout/architecture/username': {
+      id: '/docs/_layout/architecture/username'
+      path: '/architecture/username'
+      fullPath: '/docs/architecture/username'
+      preLoaderRoute: typeof DocsLayoutArchitectureUsernameRouteImport
+      parentRoute: typeof DocsLayoutRoute
+    }
     '/docs/_layout/architecture/ports-adapters': {
       id: '/docs/_layout/architecture/ports-adapters'
       path: '/architecture/ports-adapters'
@@ -698,6 +718,7 @@ interface DocsLayoutRouteChildren {
   DocsLayoutArchitectureExternalIdRoute: typeof DocsLayoutArchitectureExternalIdRoute
   DocsLayoutArchitectureOverviewRoute: typeof DocsLayoutArchitectureOverviewRoute
   DocsLayoutArchitecturePortsAdaptersRoute: typeof DocsLayoutArchitecturePortsAdaptersRoute
+  DocsLayoutArchitectureUsernameRoute: typeof DocsLayoutArchitectureUsernameRoute
   DocsLayoutConfigurationCustomFieldsRoute: typeof DocsLayoutConfigurationCustomFieldsRoute
   DocsLayoutConfigurationHooksRoute: typeof DocsLayoutConfigurationHooksRoute
   DocsLayoutConfigurationOverviewRoute: typeof DocsLayoutConfigurationOverviewRoute
@@ -731,6 +752,7 @@ const DocsLayoutRouteChildren: DocsLayoutRouteChildren = {
   DocsLayoutArchitectureOverviewRoute: DocsLayoutArchitectureOverviewRoute,
   DocsLayoutArchitecturePortsAdaptersRoute:
     DocsLayoutArchitecturePortsAdaptersRoute,
+  DocsLayoutArchitectureUsernameRoute: DocsLayoutArchitectureUsernameRoute,
   DocsLayoutConfigurationCustomFieldsRoute:
     DocsLayoutConfigurationCustomFieldsRoute,
   DocsLayoutConfigurationHooksRoute: DocsLayoutConfigurationHooksRoute,

@@ -4,9 +4,11 @@ description: Custom fields allow you to extend User, Organization, and Membershi
 lastUpdated: '2025-11-22'
 ---
 
-> **Important**: Custom fields are stored as **individual columns** in your database tables, not as JSONB (except for Supabase users, see below). This provides better query performance and indexing capabilities.
+<Callout type="info">
+**Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+</Callout>
 
-> **Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+> **Important**: Custom fields are stored as **individual columns** in your database tables, not as JSONB (except for Supabase users, see below). This provides better query performance and indexing capabilities.
 
 ## How Custom Fields Work with Supabase
 
@@ -83,7 +85,7 @@ const toolkitOptions = {
   users: {
     customFields: {
       customSchema: customUserFieldsSchema,
-      
+
       // Map to Supabase's raw_user_meta_data column
       customMapper: {
         toDb: (fields) => ({
@@ -97,28 +99,28 @@ const toolkitOptions = {
             phone_verified: false
           }
         }),
-        
+
         toDomain: (dbRow) => ({
           firstName: dbRow.raw_user_meta_data?.firstName,
           lastName: dbRow.raw_user_meta_data?.lastName,
           email: dbRow.email
         })
       },
-      
+
       // Map base fields to Supabase columns
       columnMapping: {
         externalId: 'id',
         username: 'email' // MultiTenantKit's 'username' maps to Supabase's 'email' column
       }
     },
-    
+
     // Point to Supabase's auth schema
     database: {
       schema: 'auth',
       table: 'users'
     }
   },
-  
+
   organizations: {
     customFields: {
       customSchema: customOrganizationFieldsSchema
@@ -128,7 +130,7 @@ const toolkitOptions = {
       table: 'organizations'
     }
   },
-  
+
   organizationMemberships: {
     customFields: {
       customSchema: customMembershipFieldsSchema
@@ -233,7 +235,7 @@ You can set a global strategy and override it per entity:
 const toolkitOptions = {
   // Global default for all entities
   namingStrategy: 'snake_case',
-  
+
   users: {
     customFields: {
       customSchema: z.object({
@@ -246,7 +248,7 @@ const toolkitOptions = {
       namingStrategy: 'camelCase'
     }
   },
-  
+
   organizations: {
     customFields: {
       customSchema: z.object({
@@ -287,7 +289,7 @@ const toolkitOptions = {
         lastName: z.string(),
         fullName: z.string() // Calculated field
       }),
-      
+
       customMapper: {
         // Domain → Database
         toDb: (user) => ({
@@ -295,7 +297,7 @@ const toolkitOptions = {
           last_name: user.lastName
           // fullName is NOT stored in DB
         }),
-        
+
         // Database → Domain
         toDomain: (dbRow) => ({
           firstName: dbRow.first_name,
@@ -328,13 +330,13 @@ const toolkitOptions = {
         companyName: z.string(),
         address: z.string()
       }),
-      
+
       customMapper: {
         toDb: (user) => ({
           company_name: user.companyName,
           user_address: user.address // Special prefix
         }),
-        
+
         toDomain: (dbRow) => ({
           companyName: dbRow.company_name,
           address: dbRow.user_address
@@ -359,7 +361,7 @@ const toolkitOptions = {
         externalId: 'auth_provider_id',
         username: 'email_address'
       },
-      
+
       // Custom fields use namingStrategy
       customSchema: z.object({
         firstName: z.string()
@@ -394,7 +396,7 @@ import { z } from 'zod';
 const toolkitOptions = {
   // Global naming strategy
   namingStrategy: 'snake_case',
-  
+
   users: {
     customFields: {
       columnMapping: {
@@ -415,8 +417,8 @@ const toolkitOptions = {
           last_name: user.lastName,
           phone_number: user.phoneNumber,
           // Serialize nested object to JSON string
-          preferences_json: user.preferences 
-            ? JSON.stringify(user.preferences) 
+          preferences_json: user.preferences
+            ? JSON.stringify(user.preferences)
             : null
         }),
         toDomain: (dbRow) => ({
@@ -424,14 +426,14 @@ const toolkitOptions = {
           lastName: dbRow.last_name,
           phoneNumber: dbRow.phone_number,
           // Deserialize JSON string to object
-          preferences: dbRow.preferences_json 
-            ? JSON.parse(dbRow.preferences_json) 
+          preferences: dbRow.preferences_json
+            ? JSON.parse(dbRow.preferences_json)
             : undefined
         })
       }
     }
   },
-  
+
   organizations: {
     customFields: {
       customSchema: z.object({
@@ -442,7 +444,7 @@ const toolkitOptions = {
     }
     // Uses global snake_case strategy
   },
-  
+
   organizationMemberships: {
     customFields: {
       customSchema: z.object({
