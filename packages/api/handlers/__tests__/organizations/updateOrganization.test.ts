@@ -52,7 +52,7 @@ describe('UpdateOrganization Handler', () => {
     describe('Route Configuration', () => {
         it('should have correct route definition', () => {
             expect(updateOrganizationRoute.method).toBe('PATCH');
-            expect(updateOrganizationRoute.path).toBe('/organizations/:id/name');
+            expect(updateOrganizationRoute.path).toBe('/organizations/:id');
             expect(updateOrganizationRoute.auth).toBe('required');
         });
     });

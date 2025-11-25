@@ -60,10 +60,23 @@ export function makeCreateOrganizationHandler<
         ? OrganizationSchema.merge(customOrganizationFieldsSchema as any)
         : OrganizationSchema;
 
-    // Build body schema for runtime parsing with custom fields
-    const customBodySchema = customOrganizationFieldsSchema
+    // Build body schema for runtime parsing with organization AND membership custom fields
+    const customMembershipFieldsSchema =
+        toolkitOptions?.organizationMemberships?.customFields?.customSchema;
+
+    let customBodySchema = customOrganizationFieldsSchema
         ? CreateOrganizationRequestSchema.shape.body.merge(customOrganizationFieldsSchema as any)
-        : null;
+        : CreateOrganizationRequestSchema.shape.body;
+
+    // Add optional ownerMembershipCustomFields if membership custom schema is configured
+    if (customMembershipFieldsSchema) {
+        customBodySchema = customBodySchema.extend({
+            ownerMembershipCustomFields: (customMembershipFieldsSchema as any).partial().optional()
+        });
+    }
+
+    const finalBodySchema =
+        customBodySchema !== CreateOrganizationRequestSchema.shape.body ? customBodySchema : null;
 
     return async ({
         input,
@@ -102,7 +115,7 @@ export function makeCreateOrganizationHandler<
             );
 
             // Validate body with custom fields schema if available
-            const bodyValidation = await validateWithSchema(customBodySchema, input.body, {
+            const bodyValidation = await validateWithSchema(finalBodySchema, input.body, {
                 requestId,
                 field: 'body',
                 message: 'Invalid request body'
@@ -218,17 +231,34 @@ export function createOrganizationHandlerPackage<
     CreateOrganizationRequest,
     ApiResponse<Organization & TOrganizationCustomFields> | HttpErrorResponse
 > {
-    // Build request schema with custom fields if provided
+    // Build request schema with organization and membership custom fields if provided
     const customOrganizationFieldsSchema =
         toolkitOptions?.organizations?.customFields?.customSchema;
+    const customMembershipFieldsSchema =
+        toolkitOptions?.organizationMemberships?.customFields?.customSchema;
+
     let requestSchema: any = CreateOrganizationRequestSchema;
 
-    if (customOrganizationFieldsSchema) {
-        // Extract base body schema from existing schema and merge with custom fields
+    if (customOrganizationFieldsSchema || customMembershipFieldsSchema) {
+        // Extract base body schema from existing schema
         const baseBodySchema = CreateOrganizationRequestSchema.shape.body;
 
-        // Merge with custom fields (required for create)
-        const extendedBodySchema = baseBodySchema.merge(customOrganizationFieldsSchema as any);
+        // Start with base schema
+        let extendedBodySchema = baseBodySchema;
+
+        // Merge with organization custom fields if provided
+        if (customOrganizationFieldsSchema) {
+            extendedBodySchema = extendedBodySchema.merge(customOrganizationFieldsSchema as any);
+        }
+
+        // Add optional ownerMembershipCustomFields if membership custom schema is configured
+        if (customMembershipFieldsSchema) {
+            extendedBodySchema = extendedBodySchema.extend({
+                ownerMembershipCustomFields: (customMembershipFieldsSchema as any)
+                    .partial()
+                    .optional()
+            });
+        }
 
         requestSchema = z.object({
             body: extendedBodySchema

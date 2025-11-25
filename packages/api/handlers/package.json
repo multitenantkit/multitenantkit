@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/api-handlers",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "type": "module",
     "description": "HTTP request handlers for MultiTenantKit API",
     "keywords": [

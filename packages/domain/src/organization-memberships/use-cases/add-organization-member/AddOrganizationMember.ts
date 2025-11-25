@@ -7,7 +7,8 @@ import type {
 import {
     AddOrganizationMemberInputSchema,
     AddOrganizationMemberOutputSchema,
-    type OrganizationMembership
+    type OrganizationMembership,
+    OrganizationMembershipSchema
 } from '@multitenantkit/domain-contracts/organization-memberships';
 import type { OperationContext, ToolkitOptions } from '@multitenantkit/domain-contracts/shared';
 import {
@@ -17,6 +18,7 @@ import {
     UnauthorizedError,
     ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
+import { z } from 'zod';
 import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
@@ -36,7 +38,7 @@ export class AddOrganizationMember<
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
-        AddOrganizationMemberInput,
+        AddOrganizationMemberInput & TOrganizationMembershipCustomFields,
         AddOrganizationMemberOutput,
         DomainError,
         TUserCustomFields,
@@ -45,6 +47,8 @@ export class AddOrganizationMember<
     >
     implements IAddOrganizationMember
 {
+    private readonly membershipCustomSchema?: z.ZodObject<any>;
+
     constructor(
         adapters: Adapters<
             TUserCustomFields,
@@ -57,14 +61,27 @@ export class AddOrganizationMember<
             TOrganizationMembershipCustomFields
         >
     ) {
+        // Extract organization membership custom schema from toolkit options
+        const membershipCustomSchema = toolkitOptions?.organizationMemberships?.customFields
+            ?.customSchema as z.ZodObject<any> | undefined;
+
+        // Build input schema with membership custom fields if provided
+        const inputSchema = (membershipCustomSchema
+            ? AddOrganizationMemberInputSchema.and(membershipCustomSchema.partial())
+            : AddOrganizationMemberInputSchema) as unknown as z.ZodType<
+            AddOrganizationMemberInput & TOrganizationMembershipCustomFields
+        >;
+
         super(
             'organizationMembership-addOrganizationMember',
             adapters,
             toolkitOptions,
-            AddOrganizationMemberInputSchema,
-            AddOrganizationMemberOutputSchema as unknown as import('zod').ZodType<AddOrganizationMemberOutput>,
+            inputSchema,
+            AddOrganizationMemberOutputSchema as unknown as z.ZodType<AddOrganizationMemberOutput>,
             'Failed to add organization member'
         );
+
+        this.membershipCustomSchema = membershipCustomSchema;
     }
 
     protected async authorize(
@@ -124,12 +141,17 @@ export class AddOrganizationMember<
     }
 
     protected async executeBusinessLogic(
-        input: AddOrganizationMemberInput,
+        input: AddOrganizationMemberInput & TOrganizationMembershipCustomFields,
         context: OperationContext
     ): Promise<Result<AddOrganizationMemberOutput, DomainError>> {
-        // 1. Validate target user exists
+        // 1. Extract custom fields from input
+        const { principalExternalId, organizationId, username, roleCode, ...customFields } =
+            input as any;
+        const baseInput = { principalExternalId, organizationId, username, roleCode };
+
+        // 2. Validate target user exists
         const targetUser = await this.adapters.persistence.userRepository.findByUsername(
-            input.username
+            baseInput.username
         );
 
         const now = this.adapters.system.clock.now();
@@ -137,11 +159,11 @@ export class AddOrganizationMember<
         let existingMembership: OrganizationMembership | null = null;
         // If user doesn't exist, just create the membership without user id
         if (targetUser) {
-            // 2. Check if user already has a membership
+            // 3. Check if user already has a membership
             const existingMembershipDB =
                 await this.adapters.persistence.organizationMembershipRepository.findByUserIdAndOrganizationId(
                     targetUser.id,
-                    input.organizationId
+                    baseInput.organizationId
                 );
             existingMembership = existingMembershipDB;
 
@@ -149,7 +171,7 @@ export class AddOrganizationMember<
                 return Result.fail(
                     new ConflictError(
                         'OrganizationMembership',
-                        `${targetUser.id}:${input.organizationId}`,
+                        `${targetUser.id}:${baseInput.organizationId}`,
                         {
                             reason: 'User is already a member of this organization'
                         }
@@ -158,11 +180,11 @@ export class AddOrganizationMember<
             }
         }
 
-        let membership: OrganizationMembership;
+        let membership: OrganizationMembership & TOrganizationMembershipCustomFields;
 
         if (existingMembership && !!existingMembership.leftAt && !existingMembership.deletedAt) {
             // 4a. Reactivate existing membership that was left
-            const reactivatedMembership: OrganizationMembership = {
+            const reactivatedMembershipBase: OrganizationMembership = {
                 ...existingMembership,
                 invitedAt: now,
                 joinedAt: undefined,
@@ -171,20 +193,27 @@ export class AddOrganizationMember<
                 updatedAt: now
             } as OrganizationMembership;
 
+            // Merge base with custom fields
+            const reactivatedMembership: OrganizationMembership &
+                TOrganizationMembershipCustomFields = {
+                ...reactivatedMembershipBase,
+                ...(customFields as any)
+            } as any;
+
             // Then update the role if it's different from current role
             membership =
-                reactivatedMembership.roleCode !== input.roleCode
-                    ? { ...reactivatedMembership, roleCode: input.roleCode, updatedAt: now }
+                reactivatedMembership.roleCode !== baseInput.roleCode
+                    ? { ...reactivatedMembership, roleCode: baseInput.roleCode, updatedAt: now }
                     : reactivatedMembership;
         } else {
-            // 4b. Create new membership
+            // 4b. Create new membership with custom fields
             const membershipId = this.adapters.system.uuid.generate();
-            membership = {
+            const membershipBase: OrganizationMembership = {
                 id: membershipId,
                 userId: targetUser?.id,
-                username: input.username,
-                organizationId: input.organizationId,
-                roleCode: input.roleCode,
+                username: baseInput.username,
+                organizationId: baseInput.organizationId,
+                roleCode: baseInput.roleCode,
                 invitedAt: now,
                 joinedAt: undefined,
                 leftAt: undefined,
@@ -192,12 +221,34 @@ export class AddOrganizationMember<
                 createdAt: now,
                 updatedAt: now
             } as OrganizationMembership;
+
+            // Merge base membership with custom fields
+            membership = {
+                ...membershipBase,
+                ...(customFields as any)
+            } as any;
         }
 
-        // 5. Persist the entity (save or update) using Unit of Work (transaction) with audit context
+        // 5. Validate the membership data (base + custom) if custom schema exists
+        if (this.membershipCustomSchema) {
+            const membershipSchema = OrganizationMembershipSchema.and(this.membershipCustomSchema);
+
+            const membershipValidation = membershipSchema.safeParse(membership);
+            if (!membershipValidation.success) {
+                const firstError = membershipValidation.error.errors[0];
+                return Result.fail(
+                    new ValidationError(
+                        `Membership validation failed: ${firstError.message}`,
+                        firstError.path.join('.')
+                    )
+                );
+            }
+        }
+
+        // 6. Persist the entity (save or update) using Unit of Work (transaction) with audit context
         const auditContext: OperationContext = {
             ...context,
-            organizationId: input.organizationId,
+            organizationId: baseInput.organizationId,
             auditAction: 'ADD_ORGANIZATION_MEMBER'
         };
 
@@ -221,7 +272,7 @@ export class AddOrganizationMember<
             );
         }
 
-        // 6. KEY PATTERN: Spread + Parse to guarantee contract
+        // 7. KEY PATTERN: Spread + Parse to guarantee contract
         const output = AddOrganizationMemberOutputSchema.parse({
             ...membership
         });

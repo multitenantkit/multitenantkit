@@ -15,7 +15,7 @@ import {
     type DomainError,
     ValidationError
 } from '@multitenantkit/domain-contracts/shared/errors/index';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { Result } from '../../../shared/result/Result';
 import { BaseUseCase } from '../../../shared/use-case';
 
@@ -35,7 +35,10 @@ export class CreateOrganization<
         TOrganizationMembershipCustomFields = {}
     >
     extends BaseUseCase<
-        CreateOrganizationInput & TOrganizationCustomFields,
+        CreateOrganizationInput &
+            TOrganizationCustomFields & {
+                ownerMembershipCustomFields?: TOrganizationMembershipCustomFields;
+            },
         CreateOrganizationOutput,
         DomainError,
         TUserCustomFields,
@@ -45,6 +48,7 @@ export class CreateOrganization<
     implements ICreateOrganization
 {
     private readonly customSchema?: z.ZodObject<any>;
+    private readonly membershipCustomSchema?: z.ZodObject<any>;
 
     constructor(
         adapters: Adapters<
@@ -63,11 +67,30 @@ export class CreateOrganization<
             | z.ZodObject<any>
             | undefined;
 
-        // Build input schema with custom fields if provided
-        const inputSchema = (customSchema
-            ? CreateOrganizationInputSchema.and(customSchema.partial())
-            : CreateOrganizationInputSchema) as unknown as z.ZodType<
-            CreateOrganizationInput & TOrganizationCustomFields
+        // Extract organization membership custom schema from toolkit options
+        const membershipCustomSchema = toolkitOptions?.organizationMemberships?.customFields
+            ?.customSchema as z.ZodObject<any> | undefined;
+
+        // Build input schema with organization custom fields and optional membership custom fields
+        let inputSchema = CreateOrganizationInputSchema as z.ZodType<any>;
+
+        if (customSchema) {
+            inputSchema = inputSchema.and(customSchema.partial());
+        }
+
+        if (membershipCustomSchema) {
+            inputSchema = inputSchema.and(
+                z.object({
+                    ownerMembershipCustomFields: membershipCustomSchema.partial().optional()
+                })
+            );
+        }
+
+        const finalInputSchema = inputSchema as unknown as z.ZodType<
+            CreateOrganizationInput &
+                TOrganizationCustomFields & {
+                    ownerMembershipCustomFields?: TOrganizationMembershipCustomFields;
+                }
         >;
 
         // Build output schema with custom fields if provided
@@ -79,16 +102,20 @@ export class CreateOrganization<
             'organization-createOrganization',
             adapters,
             toolkitOptions,
-            inputSchema,
+            finalInputSchema,
             outputSchema,
             'Failed to create organization'
         );
 
         this.customSchema = customSchema;
+        this.membershipCustomSchema = membershipCustomSchema;
     }
 
     protected async executeBusinessLogic(
-        input: CreateOrganizationInput & TOrganizationCustomFields,
+        input: CreateOrganizationInput &
+            TOrganizationCustomFields & {
+                ownerMembershipCustomFields?: TOrganizationMembershipCustomFields;
+            },
         context: OperationContext
     ): Promise<Result<CreateOrganizationOutput, DomainError>> {
         // 1. Business validation - e.g., ensure no conflicting organization constraints
@@ -106,16 +133,19 @@ export class CreateOrganization<
         const organizationId = this.adapters.system.uuid.generate();
         const now = this.adapters.system.clock.now();
 
-        // 3. Create Organization entity
+        // 3. Extract membership custom fields from input (if provided)
+        const { ownerMembershipCustomFields, ...organizationInput } = input as any;
+
+        // 4. Create Organization entity
         const organization: Organization & TOrganizationCustomFields = {
             id: organizationId,
-            ...(input as any),
+            ...organizationInput,
             ownerUserId: existingUser.id,
             createdAt: now,
             updatedAt: now
         } as any;
 
-        // 4. Validate the organization data (base + custom)
+        // 5. Validate the organization data (base + custom)
         const organizationSchema = this.customSchema
             ? CreateOrganizationOutputSchema.strip().and(this.customSchema.strip())
             : CreateOrganizationOutputSchema.strip();
@@ -126,7 +156,60 @@ export class CreateOrganization<
         }
         const validatedOrganization = validation.data as Organization & TOrganizationCustomFields;
 
-        // 5. Persist organization and owner membership using Unit of Work
+        // 6. Create owner membership with custom fields
+        const ownerMembershipBase: OrganizationMembership = {
+            id: this.adapters.system.uuid.generate(),
+            organizationId: validatedOrganization.id,
+            userId: validatedOrganization.ownerUserId,
+            username: existingUser.username,
+            roleCode: 'owner',
+            invitedAt: undefined,
+            joinedAt: now,
+            leftAt: undefined,
+            deletedAt: undefined,
+            createdAt: now,
+            updatedAt: now
+        };
+
+        // Merge membership base fields with custom fields
+        const ownerMembership: OrganizationMembership & TOrganizationMembershipCustomFields = {
+            ...ownerMembershipBase,
+            ...(ownerMembershipCustomFields as any)
+        } as any;
+
+        // 7. Validate the membership data (base + custom) if custom schema exists
+        if (this.membershipCustomSchema) {
+            const membershipSchema = this.membershipCustomSchema
+                ? z
+                      .object({
+                          id: z.string(),
+                          organizationId: z.string(),
+                          userId: z.string(),
+                          username: z.string(),
+                          roleCode: z.enum(['owner', 'admin', 'member']),
+                          invitedAt: z.date().optional(),
+                          joinedAt: z.date().optional(),
+                          leftAt: z.date().optional(),
+                          deletedAt: z.date().optional(),
+                          createdAt: z.date(),
+                          updatedAt: z.date()
+                      })
+                      .and(this.membershipCustomSchema)
+                : z.any();
+
+            const membershipValidation = membershipSchema.safeParse(ownerMembership);
+            if (!membershipValidation.success) {
+                const firstError = membershipValidation.error.errors[0];
+                return Result.fail(
+                    new ValidationError(
+                        `Owner membership validation failed: ${firstError.message}`,
+                        `ownerMembershipCustomFields.${firstError.path.join('.')}`
+                    )
+                );
+            }
+        }
+
+        // 8. Persist organization and owner membership using Unit of Work
         const auditContext: OperationContext = {
             ...context,
             organizationId: validatedOrganization.id,
@@ -142,20 +225,6 @@ export class CreateOrganization<
             await this.adapters.persistence.uow.transaction(async (repos) => {
                 await repos.organizations.insert(validatedOrganization, auditContext);
 
-                const ownerMembership: OrganizationMembership = {
-                    id: this.adapters.system.uuid.generate(),
-                    organizationId: validatedOrganization.id,
-                    userId: validatedOrganization.ownerUserId,
-                    username: existingUser.username,
-                    roleCode: 'owner',
-                    invitedAt: undefined,
-                    joinedAt: now,
-                    leftAt: undefined,
-                    deletedAt: undefined,
-                    createdAt: now,
-                    updatedAt: now
-                } as OrganizationMembership;
-
                 await repos.organizationMemberships.insert(
                     ownerMembership as any,
                     membershipAuditContext
@@ -169,7 +238,7 @@ export class CreateOrganization<
             );
         }
 
-        // 6. Return success; BaseUseCase will parse with output schema
+        // 9. Return success; BaseUseCase will parse with output schema
         return Result.ok({ ...(validatedOrganization as any) } as CreateOrganizationOutput);
     }
 }

@@ -72,10 +72,10 @@ export function buildHandlers<
         deleteOrganizationHandlerPackage(useCases, toolkitOptions), // DELETE should come last
 
         // Organization Membership handlers - Order matters! More specific routes first
-        addOrganizationMemberHandlerPackage(useCases),
+        addOrganizationMemberHandlerPackage(useCases, toolkitOptions),
         acceptOrganizationInvitationHandlerPackage(useCases, toolkitOptions),
-        updateOrganizationMemberRoleHandlerPackage(useCases),
-        leaveOrganizationHandlerPackage(useCases),
-        removeOrganizationMemberHandlerPackage(useCases) // DELETE should come last
+        updateOrganizationMemberRoleHandlerPackage(useCases, toolkitOptions as any),
+        leaveOrganizationHandlerPackage(useCases, toolkitOptions as any),
+        removeOrganizationMemberHandlerPackage(useCases, toolkitOptions as any) // DELETE should come last
     ];
 }

@@ -10,6 +10,7 @@ import { ErrorMapper, type HttpErrorResponse } from '../../errors/ErrorMapper';
 import type { Handler, HandlerPackage, RouteDefinition } from '../../types';
 import { buildOperationContext } from '../../utils/auditContext';
 import { ResponseBuilder } from '../../utils/responseBuilder';
+import { validateWithSchema } from '../../utils/schemaValidator';
 import { applyResponseTransformer } from '../../utils/transformResponse';
 
 /**
@@ -24,9 +25,21 @@ export const addOrganizationMemberRoute: RouteDefinition = {
 /**
  * Add organization member handler factory
  */
-export function makeAddOrganizationMemberHandler(
+export function makeAddOrganizationMemberHandler<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TOrganizationMembershipCustomFields = {}
+>(
     useCases: UseCases,
-    toolkitOptions?: ToolkitOptions
+    toolkitOptions?: ToolkitOptions<
+        TUserCustomFields,
+        TOrganizationCustomFields,
+        TOrganizationMembershipCustomFields
+    >,
+    customBodySchema?: any
 ): Handler<
     AddOrganizationMemberRequest,
     ApiResponse<AddOrganizationMemberResponse> | HttpErrorResponse
@@ -68,16 +81,29 @@ export function makeAddOrganizationMemberHandler(
                 input.params.organizationId
             );
 
-            // Execute the use case
+            // Validate body with custom fields schema if available
+            const bodyValidation = await validateWithSchema(customBodySchema, input.body, {
+                requestId,
+                field: 'body',
+                message: 'Invalid request body'
+            });
+
+            if (!bodyValidation.success) {
+                return bodyValidation.httpErrorResponse;
+            }
+
+            const bodyData = bodyValidation.data;
+
+            // Execute the use case with validated custom fields from body
             const result = await useCases.memberships.addOrganizationMember.execute(
                 {
                     principalExternalId: principal.authProviderId,
                     organizationId: input.params.organizationId,
-                    username: input.body.username,
-                    roleCode: input.body.roleCode
+                    ...(bodyData as any) // Use validated body data
                 },
                 operationContext
             );
+
             // Handle successful result
             if (result.isSuccess) {
                 const data = result.getValue();
@@ -135,16 +161,47 @@ export function makeAddOrganizationMemberHandler(
 /**
  * Complete handler package for add organization member
  */
-export function addOrganizationMemberHandlerPackage(
+export function addOrganizationMemberHandlerPackage<
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TUserCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TOrganizationCustomFields = {},
+    // biome-ignore lint/complexity/noBannedTypes: ignore
+    TOrganizationMembershipCustomFields = {}
+>(
     useCases: UseCases,
-    toolkitOptions?: ToolkitOptions
+    toolkitOptions?: ToolkitOptions<
+        TUserCustomFields,
+        TOrganizationCustomFields,
+        TOrganizationMembershipCustomFields
+    >
 ): HandlerPackage<
     AddOrganizationMemberRequest,
     ApiResponse<AddOrganizationMemberResponse> | HttpErrorResponse
 > {
+    // Build request schema with membership custom fields if provided
+    const customMembershipFieldsSchema =
+        toolkitOptions?.organizationMemberships?.customFields?.customSchema;
+
+    let requestSchema: any = AddOrganizationMemberRequestSchema;
+    let customBodySchema: any = null;
+
+    if (customMembershipFieldsSchema) {
+        // Extract base body schema and merge with custom fields
+        const baseBodySchema = AddOrganizationMemberRequestSchema.shape.body;
+        const extendedBodySchema = baseBodySchema.merge(customMembershipFieldsSchema as any);
+
+        customBodySchema = extendedBodySchema;
+
+        // Create proper Zod schema for validation middleware
+        requestSchema = AddOrganizationMemberRequestSchema.extend({
+            body: extendedBodySchema
+        });
+    }
+
     return {
         route: addOrganizationMemberRoute,
-        schema: AddOrganizationMemberRequestSchema,
-        handler: makeAddOrganizationMemberHandler(useCases, toolkitOptions)
+        schema: requestSchema,
+        handler: makeAddOrganizationMemberHandler(useCases, toolkitOptions, customBodySchema)
     };
 }
