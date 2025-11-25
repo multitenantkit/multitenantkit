@@ -24,3 +24,5 @@ export * from '@multitenantkit/domain';
 export * from '@multitenantkit/domain-contracts';
 // Convenience functions for quick setup
 export * from './convenience';
+// Supabase-specific convenience functions
+export * from './supabase';
