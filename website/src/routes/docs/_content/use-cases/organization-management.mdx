@@ -13,9 +13,14 @@ const result = await useCases.organizations.createOrganization.execute(
   {
     principalExternalId: 'auth-provider-user-id',
     name: 'Acme Corporation',
-    // Custom fields (if configured):
+    // Organization custom fields (if configured):
     industry: 'Technology',
-    size: 'Enterprise'
+    size: 'Enterprise',
+    // Owner membership custom fields (if configured):
+    ownerMembershipCustomFields: {
+      department: 'Executive',
+      title: 'CEO'
+    }
   },
   context
 );
@@ -41,16 +46,19 @@ if (result.isSuccess) {
 **Input Parameters:**
 - `principalExternalId` (string, required): The `externalId` of the user creating the organization. See [External ID](/docs/architecture/external-id) for more details.
 - `name` (string, required): Organization name
-- Custom fields: Any additional fields defined in your custom schema
+- Organization custom fields: Any additional fields defined in your organization custom schema
+- `ownerMembershipCustomFields` (object, optional): Custom fields for the automatically created owner membership. Only applicable if you have configured custom fields for organization memberships.
 
 **Output:**
 - Returns the created `Organization` object with all fields
 
 **Automatic Actions:**
 - Sets the creator as the organization owner (`ownerId`)
-- Creates an owner membership record automatically
+- Creates an owner membership record automatically with the provided custom fields (if any)
 
 > **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Note**: The `ownerMembershipCustomFields` parameter is particularly useful when organization membership custom fields are required (non-nullable), as it allows you to provide these values during organization creation.
 
 > **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
 

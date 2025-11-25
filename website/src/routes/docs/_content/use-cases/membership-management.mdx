@@ -20,7 +20,11 @@ const result = await useCases.organizationMemberships.addOrganizationMember.exec
     organizationId: 'org-123',
     principalExternalId: 'auth-provider-user-id',
     username: 'newmember@example.com',
-    roleCode: 'member'  // 'owner', 'admin', or 'member'
+    roleCode: 'member',  // 'owner', 'admin', or 'member'
+    // Membership custom fields (if configured):
+    department: 'Engineering',
+    title: 'Software Engineer',
+    startDate: new Date('2025-01-01')
   },
   context
 );
@@ -40,7 +44,11 @@ if (result.isSuccess) {
   //   leftAt: undefined,
   //   deletedAt: undefined,
   //   createdAt: '2025-11-22T00:00:00.000Z',
-  //   updatedAt: '2025-11-22T00:00:00.000Z'
+  //   updatedAt: '2025-11-22T00:00:00.000Z',
+  //   // Custom fields (if configured):
+  //   department: 'Engineering',
+  //   title: 'Software Engineer',
+  //   startDate: '2025-01-01T00:00:00.000Z'
   // }
 }
 ```
@@ -50,14 +58,15 @@ if (result.isSuccess) {
 - `principalExternalId` (string, required): The `externalId` of the user adding the member
 - `username` (string, required): Username/email of the user to add. [See Username concept](/docs/architecture/username)
 - `roleCode` (string, required): Role to assign ('owner', 'admin', or 'member')
+- Membership custom fields: Any additional fields defined in your organization membership custom schema
 
 **Output:**
-- Returns the created or reactivated `OrganizationMembership` object
+- Returns the created or reactivated `OrganizationMembership` object with custom fields
 
 **Behavior:**
 - If user exists: Creates membership with `invitedAt` set (pending invitation)
 - If user doesn't exist: Creates membership without `userId` (invitation for future registration)
-- If user previously left: Reactivates the membership
+- If user previously left: Reactivates the membership and updates custom fields
 
 **Authorization:**
 - Owners can add members with any role
@@ -65,6 +74,8 @@ if (result.isSuccess) {
 - Cannot add members to archived organizations
 
 > **Note**: When using the REST endpoint, `principalExternalId` is automatically extracted from the authenticated user's JWT token.
+
+> **Note**: Custom fields are particularly useful for storing member-specific information like department, title, start date, or any other metadata relevant to your organization.
 
 > **Context Parameter**: For details about the `context` parameter, see [Operation Context](/docs/use-cases/overview#operation-context).
 

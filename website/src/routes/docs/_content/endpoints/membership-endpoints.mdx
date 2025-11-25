@@ -15,7 +15,9 @@ curl -X POST http://localhost:3000/organizations/org-123/members \
   -H "Content-Type: application/json" \
   -d '{
     "username": "newmember@example.com",
-    "roleCode": "member"
+    "roleCode": "member",
+    "department": "Engineering",
+    "title": "Software Engineer"
   }'
 ```
 
@@ -33,7 +35,10 @@ curl -X POST http://localhost:3000/organizations/org-123/members \
     "leftAt": null,
     "deletedAt": null,
     "createdAt": "2025-11-22T00:00:00.000Z",
-    "updatedAt": "2025-11-22T00:00:00.000Z"
+    "updatedAt": "2025-11-22T00:00:00.000Z",
+    // Custom fields (if configured):
+    "department": "Engineering",
+    "title": "Software Engineer"
   },
   "requestId": "req-134"
 }
@@ -42,8 +47,9 @@ curl -X POST http://localhost:3000/organizations/org-123/members \
 **Notes:**
 - If user exists: Creates pending invitation (`invitedAt` set, `joinedAt` null)
 - If user doesn't exist: Creates invitation for future registration
-- If user previously left: Reactivates the membership
+- If user previously left: Reactivates the membership and updates custom fields
 - The `username` field is used because the user may or may not exist in your database. See [Username concept](/docs/architecture/username) for details.
+- Membership custom fields can be included if configured (e.g., department, title, startDate)
 - **Authorization**:
   - Owners can add members with any role
   - Admins can only add regular members

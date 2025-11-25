@@ -22,7 +22,11 @@ curl -X POST http://localhost:3000/organizations \
   -d '{
     "name": "Acme Corporation",
     "industry": "Technology",
-    "size": "Enterprise"
+    "size": "Enterprise",
+    "ownerMembershipCustomFields": {
+      "department": "Executive",
+      "title": "CEO"
+    }
   }'
 ```
 
@@ -47,7 +51,8 @@ curl -X POST http://localhost:3000/organizations \
 **Notes:**
 - The authenticated user (from JWT token) becomes the organization owner
 - An owner membership is automatically created
-- Custom fields can be included if configured
+- Organization custom fields can be included if configured
+- `ownerMembershipCustomFields` (optional): Custom fields for the automatically created owner membership. This is particularly useful when membership custom fields are required (non-nullable).
 - Returns 201 Created on success
 
 ---
