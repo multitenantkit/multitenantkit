@@ -1,5 +1,13 @@
 # @multitenantkit/composition
 
+## 0.1.2
+
+### Patch Changes
+
+- Add Supabase-specific convenience functions and configuration, and add support for custom fields in organization memberships with dynamic schema validation and updated documentation.
+- Updated dependencies
+  - @multitenantkit/domain@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
