@@ -11,33 +11,27 @@ export function CustomFieldsSection() {
         threshold: 0.1
     });
 
-    const customFieldsCode = `import { createExpressApp } from '@multitenantkit/sdk';
+    const customFieldsCode = `import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
-const app = createExpressApp({
-  namingStrategy: 'snake_case',
+const app = createSupabaseExpressApp({
   users: {
     customFields: {
       customSchema: z.object({
-        company: z.string(),
-        department: z.string(),
-        onboardingCompleted: z.boolean(),
-        preferences: z.object({
-          theme: z.enum(['light', 'dark']),
-          notifications: z.boolean()
-        })
-      })
-    }
+        firstName: z.string(),
+        lastName: z.string(),
+        avatar: z.string().url().optional(),
+      }),
+    },
   },
   organizations: {
     customFields: {
       customSchema: z.object({
-        plan: z.enum(['free', 'pro', 'enterprise']),
-        maxMembers: z.number(),
-        billingEmail: z.string().email()
-      })
-    }
-  }
+        industry: z.string().optional(),
+        size: z.enum(['startup', 'small', 'medium', 'enterprise']).optional(),
+      }),
+    },
+  },
 });
 
 app.listen(3000);`;

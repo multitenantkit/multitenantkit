@@ -23,10 +23,10 @@ export function QuickStartSection() {
 
     const installCode = `npm install @multitenantkit/sdk`;
 
-    const setupCode = `import { createExpressApp } from '@multitenantkit/sdk';
+    const setupCode = `import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
 // One line to get your API ready
-const app = createExpressApp();
+const app = createSupabaseExpressApp();
 
 app.listen(3000);
 // Works with Express, Lambda, Hono, Fastify...`;

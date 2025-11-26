@@ -53,24 +53,26 @@ export function Footer() {
                             </h3>
                             <ul className="space-y-2">
                                 <li>
-                                    <a
-                                        href="https://github.com/multitenantkit/multitenantkit"
+                                    <Link
+                                        to="/docs"
                                         className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                                     >
                                         Documentation
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
                                     <a
-                                        href="https://github.com/multitenantkit/multitenantkit/tree/main/examples"
+                                        href="/blog"
                                         className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                                     >
-                                        Examples
+                                        Blog
                                     </a>
                                 </li>
                                 <li>
                                     <a
                                         href="https://github.com/multitenantkit/multitenantkit"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                                     >
                                         GitHub
@@ -95,7 +97,7 @@ export function Footer() {
                                 </li>
                                 <li>
                                     <a
-                                        href="https://github.com/multitenantkit/multitenantkit/discussions"
+                                        href="https://github.com/multitenantkit/multitenantkit/issues"
                                         className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                                     >
                                         Discussions

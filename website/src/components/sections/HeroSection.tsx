@@ -8,10 +8,10 @@ import { Section } from '../ui/Section';
 export function HeroSection() {
     const installCode = `npm install @multitenantkit/sdk`;
 
-    const quickStartCode = `import { createExpressApp } from '@multitenantkit/sdk';
+    const quickStartCode = `import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
 // One line to get your API ready
-const app = createExpressApp();
+const app = createSupabaseExpressApp();
 
 app.listen(3000);
 // → 18 endpoints running ✅

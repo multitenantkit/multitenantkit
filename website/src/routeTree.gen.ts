@@ -8,800 +8,864 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DocsLayoutRouteImport } from './routes/docs/_layout'
-import { Route as DocsLayoutIndexRouteImport } from './routes/docs/_layout/index'
-import { Route as DocsLayoutUseCasesUserManagementRouteImport } from './routes/docs/_layout/use-cases/user-management'
-import { Route as DocsLayoutUseCasesOverviewRouteImport } from './routes/docs/_layout/use-cases/overview'
-import { Route as DocsLayoutUseCasesOrganizationManagementRouteImport } from './routes/docs/_layout/use-cases/organization-management'
-import { Route as DocsLayoutUseCasesMembershipManagementRouteImport } from './routes/docs/_layout/use-cases/membership-management'
-import { Route as DocsLayoutGuidesTestingRouteImport } from './routes/docs/_layout/guides/testing'
-import { Route as DocsLayoutGuidesDeploymentRouteImport } from './routes/docs/_layout/guides/deployment'
-import { Route as DocsLayoutGuidesCustomAdaptersRouteImport } from './routes/docs/_layout/guides/custom-adapters'
-import { Route as DocsLayoutGettingStartedQuickStartRouteImport } from './routes/docs/_layout/getting-started/quick-start'
-import { Route as DocsLayoutGettingStartedIntroductionRouteImport } from './routes/docs/_layout/getting-started/introduction'
-import { Route as DocsLayoutGettingStartedInstallationRouteImport } from './routes/docs/_layout/getting-started/installation'
-import { Route as DocsLayoutExamplesRealWorldRouteImport } from './routes/docs/_layout/examples/real-world'
-import { Route as DocsLayoutExamplesBasicSetupRouteImport } from './routes/docs/_layout/examples/basic-setup'
-import { Route as DocsLayoutExamplesAdvancedSetupRouteImport } from './routes/docs/_layout/examples/advanced-setup'
-import { Route as DocsLayoutEndpointsUserEndpointsRouteImport } from './routes/docs/_layout/endpoints/user-endpoints'
-import { Route as DocsLayoutEndpointsOverviewRouteImport } from './routes/docs/_layout/endpoints/overview'
-import { Route as DocsLayoutEndpointsOrganizationEndpointsRouteImport } from './routes/docs/_layout/endpoints/organization-endpoints'
-import { Route as DocsLayoutEndpointsMembershipEndpointsRouteImport } from './routes/docs/_layout/endpoints/membership-endpoints'
-import { Route as DocsLayoutConfigurationOverviewRouteImport } from './routes/docs/_layout/configuration/overview'
-import { Route as DocsLayoutConfigurationHooksRouteImport } from './routes/docs/_layout/configuration/hooks'
-import { Route as DocsLayoutConfigurationCustomFieldsRouteImport } from './routes/docs/_layout/configuration/custom-fields'
-import { Route as DocsLayoutArchitectureUsernameRouteImport } from './routes/docs/_layout/architecture/username'
-import { Route as DocsLayoutArchitecturePortsAdaptersRouteImport } from './routes/docs/_layout/architecture/ports-adapters'
-import { Route as DocsLayoutArchitectureOverviewRouteImport } from './routes/docs/_layout/architecture/overview'
-import { Route as DocsLayoutArchitectureExternalIdRouteImport } from './routes/docs/_layout/architecture/external-id'
-import { Route as DocsLayoutArchitectureDomainRouteImport } from './routes/docs/_layout/architecture/domain'
-import { Route as DocsLayoutAdaptersTransportRouteImport } from './routes/docs/_layout/adapters/transport'
-import { Route as DocsLayoutAdaptersPersistenceRouteImport } from './routes/docs/_layout/adapters/persistence'
-import { Route as DocsLayoutAdaptersOverviewRouteImport } from './routes/docs/_layout/adapters/overview'
-import { Route as DocsLayoutAdaptersAuthenticationRouteImport } from './routes/docs/_layout/adapters/authentication'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as BlogLayoutRouteImport } from './routes/blog/_layout';
+import { Route as BlogLayoutIndexRouteImport } from './routes/blog/_layout/index';
+import { Route as BlogLayoutIntroducingMultitenantkitRouteImport } from './routes/blog/_layout/introducing-multitenantkit';
+import { Route as DocsLayoutRouteImport } from './routes/docs/_layout';
+import { Route as DocsLayoutAdaptersAuthenticationRouteImport } from './routes/docs/_layout/adapters/authentication';
+import { Route as DocsLayoutAdaptersOverviewRouteImport } from './routes/docs/_layout/adapters/overview';
+import { Route as DocsLayoutAdaptersPersistenceRouteImport } from './routes/docs/_layout/adapters/persistence';
+import { Route as DocsLayoutAdaptersTransportRouteImport } from './routes/docs/_layout/adapters/transport';
+import { Route as DocsLayoutArchitectureDomainRouteImport } from './routes/docs/_layout/architecture/domain';
+import { Route as DocsLayoutArchitectureExternalIdRouteImport } from './routes/docs/_layout/architecture/external-id';
+import { Route as DocsLayoutArchitectureOverviewRouteImport } from './routes/docs/_layout/architecture/overview';
+import { Route as DocsLayoutArchitecturePortsAdaptersRouteImport } from './routes/docs/_layout/architecture/ports-adapters';
+import { Route as DocsLayoutArchitectureUsernameRouteImport } from './routes/docs/_layout/architecture/username';
+import { Route as DocsLayoutConfigurationCustomFieldsRouteImport } from './routes/docs/_layout/configuration/custom-fields';
+import { Route as DocsLayoutConfigurationHooksRouteImport } from './routes/docs/_layout/configuration/hooks';
+import { Route as DocsLayoutConfigurationOverviewRouteImport } from './routes/docs/_layout/configuration/overview';
+import { Route as DocsLayoutEndpointsMembershipEndpointsRouteImport } from './routes/docs/_layout/endpoints/membership-endpoints';
+import { Route as DocsLayoutEndpointsOrganizationEndpointsRouteImport } from './routes/docs/_layout/endpoints/organization-endpoints';
+import { Route as DocsLayoutEndpointsOverviewRouteImport } from './routes/docs/_layout/endpoints/overview';
+import { Route as DocsLayoutEndpointsUserEndpointsRouteImport } from './routes/docs/_layout/endpoints/user-endpoints';
+import { Route as DocsLayoutExamplesAdvancedSetupRouteImport } from './routes/docs/_layout/examples/advanced-setup';
+import { Route as DocsLayoutExamplesBasicSetupRouteImport } from './routes/docs/_layout/examples/basic-setup';
+import { Route as DocsLayoutExamplesRealWorldRouteImport } from './routes/docs/_layout/examples/real-world';
+import { Route as DocsLayoutGettingStartedInstallationRouteImport } from './routes/docs/_layout/getting-started/installation';
+import { Route as DocsLayoutGettingStartedIntroductionRouteImport } from './routes/docs/_layout/getting-started/introduction';
+import { Route as DocsLayoutGettingStartedQuickStartRouteImport } from './routes/docs/_layout/getting-started/quick-start';
+import { Route as DocsLayoutGuidesCustomAdaptersRouteImport } from './routes/docs/_layout/guides/custom-adapters';
+import { Route as DocsLayoutGuidesDeploymentRouteImport } from './routes/docs/_layout/guides/deployment';
+import { Route as DocsLayoutGuidesTestingRouteImport } from './routes/docs/_layout/guides/testing';
+import { Route as DocsLayoutIndexRouteImport } from './routes/docs/_layout/index';
+import { Route as DocsLayoutUseCasesMembershipManagementRouteImport } from './routes/docs/_layout/use-cases/membership-management';
+import { Route as DocsLayoutUseCasesOrganizationManagementRouteImport } from './routes/docs/_layout/use-cases/organization-management';
+import { Route as DocsLayoutUseCasesOverviewRouteImport } from './routes/docs/_layout/use-cases/overview';
+import { Route as DocsLayoutUseCasesUserManagementRouteImport } from './routes/docs/_layout/use-cases/user-management';
+import { Route as IndexRouteImport } from './routes/index';
+import { Route as PrivacyRouteImport } from './routes/privacy';
 
-const DocsRouteImport = createFileRoute('/docs')()
+const DocsRouteImport = createFileRoute('/docs')();
+const BlogRouteImport = createFileRoute('/blog')();
 
 const DocsRoute = DocsRouteImport.update({
-  id: '/docs',
-  path: '/docs',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: '/docs',
+    path: '/docs',
+    getParentRoute: () => rootRouteImport
+} as any);
+const BlogRoute = BlogRouteImport.update({
+    id: '/blog',
+    path: '/blog',
+    getParentRoute: () => rootRouteImport
+} as any);
 const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: '/privacy',
+    path: '/privacy',
+    getParentRoute: () => rootRouteImport
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+    id: '/',
+    path: '/',
+    getParentRoute: () => rootRouteImport
+} as any);
 const DocsLayoutRoute = DocsLayoutRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => DocsRoute,
-} as any)
+    id: '/_layout',
+    getParentRoute: () => DocsRoute
+} as any);
+const BlogLayoutRoute = BlogLayoutRouteImport.update({
+    id: '/_layout',
+    getParentRoute: () => BlogRoute
+} as any);
 const DocsLayoutIndexRoute = DocsLayoutIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DocsLayoutRoute,
-} as any)
-const DocsLayoutUseCasesUserManagementRoute =
-  DocsLayoutUseCasesUserManagementRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const BlogLayoutIndexRoute = BlogLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => BlogLayoutRoute
+} as any);
+const BlogLayoutIntroducingMultitenantkitRoute =
+    BlogLayoutIntroducingMultitenantkitRouteImport.update({
+        id: '/introducing-multitenantkit',
+        path: '/introducing-multitenantkit',
+        getParentRoute: () => BlogLayoutRoute
+    } as any);
+const DocsLayoutUseCasesUserManagementRoute = DocsLayoutUseCasesUserManagementRouteImport.update({
     id: '/use-cases/user-management',
     path: '/use-cases/user-management',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutUseCasesOverviewRoute =
-  DocsLayoutUseCasesOverviewRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutUseCasesOverviewRoute = DocsLayoutUseCasesOverviewRouteImport.update({
     id: '/use-cases/overview',
     path: '/use-cases/overview',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 const DocsLayoutUseCasesOrganizationManagementRoute =
-  DocsLayoutUseCasesOrganizationManagementRouteImport.update({
-    id: '/use-cases/organization-management',
-    path: '/use-cases/organization-management',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    DocsLayoutUseCasesOrganizationManagementRouteImport.update({
+        id: '/use-cases/organization-management',
+        path: '/use-cases/organization-management',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
 const DocsLayoutUseCasesMembershipManagementRoute =
-  DocsLayoutUseCasesMembershipManagementRouteImport.update({
-    id: '/use-cases/membership-management',
-    path: '/use-cases/membership-management',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    DocsLayoutUseCasesMembershipManagementRouteImport.update({
+        id: '/use-cases/membership-management',
+        path: '/use-cases/membership-management',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
 const DocsLayoutGuidesTestingRoute = DocsLayoutGuidesTestingRouteImport.update({
-  id: '/guides/testing',
-  path: '/guides/testing',
-  getParentRoute: () => DocsLayoutRoute,
-} as any)
-const DocsLayoutGuidesDeploymentRoute =
-  DocsLayoutGuidesDeploymentRouteImport.update({
+    id: '/guides/testing',
+    path: '/guides/testing',
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutGuidesDeploymentRoute = DocsLayoutGuidesDeploymentRouteImport.update({
     id: '/guides/deployment',
     path: '/guides/deployment',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutGuidesCustomAdaptersRoute =
-  DocsLayoutGuidesCustomAdaptersRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutGuidesCustomAdaptersRoute = DocsLayoutGuidesCustomAdaptersRouteImport.update({
     id: '/guides/custom-adapters',
     path: '/guides/custom-adapters',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 const DocsLayoutGettingStartedQuickStartRoute =
-  DocsLayoutGettingStartedQuickStartRouteImport.update({
-    id: '/getting-started/quick-start',
-    path: '/getting-started/quick-start',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    DocsLayoutGettingStartedQuickStartRouteImport.update({
+        id: '/getting-started/quick-start',
+        path: '/getting-started/quick-start',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
 const DocsLayoutGettingStartedIntroductionRoute =
-  DocsLayoutGettingStartedIntroductionRouteImport.update({
-    id: '/getting-started/introduction',
-    path: '/getting-started/introduction',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    DocsLayoutGettingStartedIntroductionRouteImport.update({
+        id: '/getting-started/introduction',
+        path: '/getting-started/introduction',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
 const DocsLayoutGettingStartedInstallationRoute =
-  DocsLayoutGettingStartedInstallationRouteImport.update({
-    id: '/getting-started/installation',
-    path: '/getting-started/installation',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutExamplesRealWorldRoute =
-  DocsLayoutExamplesRealWorldRouteImport.update({
+    DocsLayoutGettingStartedInstallationRouteImport.update({
+        id: '/getting-started/installation',
+        path: '/getting-started/installation',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
+const DocsLayoutExamplesRealWorldRoute = DocsLayoutExamplesRealWorldRouteImport.update({
     id: '/examples/real-world',
     path: '/examples/real-world',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutExamplesBasicSetupRoute =
-  DocsLayoutExamplesBasicSetupRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutExamplesBasicSetupRoute = DocsLayoutExamplesBasicSetupRouteImport.update({
     id: '/examples/basic-setup',
     path: '/examples/basic-setup',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutExamplesAdvancedSetupRoute =
-  DocsLayoutExamplesAdvancedSetupRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutExamplesAdvancedSetupRoute = DocsLayoutExamplesAdvancedSetupRouteImport.update({
     id: '/examples/advanced-setup',
     path: '/examples/advanced-setup',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutEndpointsUserEndpointsRoute =
-  DocsLayoutEndpointsUserEndpointsRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutEndpointsUserEndpointsRoute = DocsLayoutEndpointsUserEndpointsRouteImport.update({
     id: '/endpoints/user-endpoints',
     path: '/endpoints/user-endpoints',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutEndpointsOverviewRoute =
-  DocsLayoutEndpointsOverviewRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutEndpointsOverviewRoute = DocsLayoutEndpointsOverviewRouteImport.update({
     id: '/endpoints/overview',
     path: '/endpoints/overview',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 const DocsLayoutEndpointsOrganizationEndpointsRoute =
-  DocsLayoutEndpointsOrganizationEndpointsRouteImport.update({
-    id: '/endpoints/organization-endpoints',
-    path: '/endpoints/organization-endpoints',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    DocsLayoutEndpointsOrganizationEndpointsRouteImport.update({
+        id: '/endpoints/organization-endpoints',
+        path: '/endpoints/organization-endpoints',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
 const DocsLayoutEndpointsMembershipEndpointsRoute =
-  DocsLayoutEndpointsMembershipEndpointsRouteImport.update({
-    id: '/endpoints/membership-endpoints',
-    path: '/endpoints/membership-endpoints',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutConfigurationOverviewRoute =
-  DocsLayoutConfigurationOverviewRouteImport.update({
+    DocsLayoutEndpointsMembershipEndpointsRouteImport.update({
+        id: '/endpoints/membership-endpoints',
+        path: '/endpoints/membership-endpoints',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
+const DocsLayoutConfigurationOverviewRoute = DocsLayoutConfigurationOverviewRouteImport.update({
     id: '/configuration/overview',
     path: '/configuration/overview',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutConfigurationHooksRoute =
-  DocsLayoutConfigurationHooksRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutConfigurationHooksRoute = DocsLayoutConfigurationHooksRouteImport.update({
     id: '/configuration/hooks',
     path: '/configuration/hooks',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 const DocsLayoutConfigurationCustomFieldsRoute =
-  DocsLayoutConfigurationCustomFieldsRouteImport.update({
-    id: '/configuration/custom-fields',
-    path: '/configuration/custom-fields',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutArchitectureUsernameRoute =
-  DocsLayoutArchitectureUsernameRouteImport.update({
+    DocsLayoutConfigurationCustomFieldsRouteImport.update({
+        id: '/configuration/custom-fields',
+        path: '/configuration/custom-fields',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
+const DocsLayoutArchitectureUsernameRoute = DocsLayoutArchitectureUsernameRouteImport.update({
     id: '/architecture/username',
     path: '/architecture/username',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 const DocsLayoutArchitecturePortsAdaptersRoute =
-  DocsLayoutArchitecturePortsAdaptersRouteImport.update({
-    id: '/architecture/ports-adapters',
-    path: '/architecture/ports-adapters',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutArchitectureOverviewRoute =
-  DocsLayoutArchitectureOverviewRouteImport.update({
+    DocsLayoutArchitecturePortsAdaptersRouteImport.update({
+        id: '/architecture/ports-adapters',
+        path: '/architecture/ports-adapters',
+        getParentRoute: () => DocsLayoutRoute
+    } as any);
+const DocsLayoutArchitectureOverviewRoute = DocsLayoutArchitectureOverviewRouteImport.update({
     id: '/architecture/overview',
     path: '/architecture/overview',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutArchitectureExternalIdRoute =
-  DocsLayoutArchitectureExternalIdRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutArchitectureExternalIdRoute = DocsLayoutArchitectureExternalIdRouteImport.update({
     id: '/architecture/external-id',
     path: '/architecture/external-id',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutArchitectureDomainRoute =
-  DocsLayoutArchitectureDomainRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutArchitectureDomainRoute = DocsLayoutArchitectureDomainRouteImport.update({
     id: '/architecture/domain',
     path: '/architecture/domain',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutAdaptersTransportRoute =
-  DocsLayoutAdaptersTransportRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutAdaptersTransportRoute = DocsLayoutAdaptersTransportRouteImport.update({
     id: '/adapters/transport',
     path: '/adapters/transport',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutAdaptersPersistenceRoute =
-  DocsLayoutAdaptersPersistenceRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutAdaptersPersistenceRoute = DocsLayoutAdaptersPersistenceRouteImport.update({
     id: '/adapters/persistence',
     path: '/adapters/persistence',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutAdaptersOverviewRoute =
-  DocsLayoutAdaptersOverviewRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutAdaptersOverviewRoute = DocsLayoutAdaptersOverviewRouteImport.update({
     id: '/adapters/overview',
     path: '/adapters/overview',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
-const DocsLayoutAdaptersAuthenticationRoute =
-  DocsLayoutAdaptersAuthenticationRouteImport.update({
+    getParentRoute: () => DocsLayoutRoute
+} as any);
+const DocsLayoutAdaptersAuthenticationRoute = DocsLayoutAdaptersAuthenticationRouteImport.update({
     id: '/adapters/authentication',
     path: '/adapters/authentication',
-    getParentRoute: () => DocsLayoutRoute,
-  } as any)
+    getParentRoute: () => DocsLayoutRoute
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/privacy': typeof PrivacyRoute
-  '/docs': typeof DocsLayoutRouteWithChildren
-  '/docs/': typeof DocsLayoutIndexRoute
-  '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
-  '/docs/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute
-  '/docs/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute
-  '/docs/adapters/transport': typeof DocsLayoutAdaptersTransportRoute
-  '/docs/architecture/domain': typeof DocsLayoutArchitectureDomainRoute
-  '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
-  '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
-  '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
-  '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
-  '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
-  '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
-  '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
-  '/docs/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute
-  '/docs/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute
-  '/docs/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute
-  '/docs/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute
-  '/docs/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute
-  '/docs/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute
-  '/docs/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute
-  '/docs/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute
-  '/docs/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute
-  '/docs/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute
-  '/docs/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute
-  '/docs/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute
-  '/docs/guides/testing': typeof DocsLayoutGuidesTestingRoute
-  '/docs/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute
-  '/docs/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute
-  '/docs/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute
-  '/docs/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute
+    '/': typeof IndexRoute;
+    '/privacy': typeof PrivacyRoute;
+    '/blog': typeof BlogLayoutRouteWithChildren;
+    '/docs': typeof DocsLayoutRouteWithChildren;
+    '/blog/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute;
+    '/blog/': typeof BlogLayoutIndexRoute;
+    '/docs/': typeof DocsLayoutIndexRoute;
+    '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute;
+    '/docs/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute;
+    '/docs/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute;
+    '/docs/adapters/transport': typeof DocsLayoutAdaptersTransportRoute;
+    '/docs/architecture/domain': typeof DocsLayoutArchitectureDomainRoute;
+    '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute;
+    '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute;
+    '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute;
+    '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute;
+    '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute;
+    '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute;
+    '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute;
+    '/docs/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute;
+    '/docs/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute;
+    '/docs/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute;
+    '/docs/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute;
+    '/docs/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute;
+    '/docs/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute;
+    '/docs/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute;
+    '/docs/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute;
+    '/docs/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute;
+    '/docs/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute;
+    '/docs/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute;
+    '/docs/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute;
+    '/docs/guides/testing': typeof DocsLayoutGuidesTestingRoute;
+    '/docs/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute;
+    '/docs/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute;
+    '/docs/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute;
+    '/docs/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/privacy': typeof PrivacyRoute
-  '/docs': typeof DocsLayoutIndexRoute
-  '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
-  '/docs/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute
-  '/docs/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute
-  '/docs/adapters/transport': typeof DocsLayoutAdaptersTransportRoute
-  '/docs/architecture/domain': typeof DocsLayoutArchitectureDomainRoute
-  '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
-  '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
-  '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
-  '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
-  '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
-  '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
-  '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
-  '/docs/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute
-  '/docs/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute
-  '/docs/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute
-  '/docs/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute
-  '/docs/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute
-  '/docs/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute
-  '/docs/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute
-  '/docs/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute
-  '/docs/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute
-  '/docs/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute
-  '/docs/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute
-  '/docs/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute
-  '/docs/guides/testing': typeof DocsLayoutGuidesTestingRoute
-  '/docs/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute
-  '/docs/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute
-  '/docs/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute
-  '/docs/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute
+    '/': typeof IndexRoute;
+    '/privacy': typeof PrivacyRoute;
+    '/blog': typeof BlogLayoutIndexRoute;
+    '/docs': typeof DocsLayoutIndexRoute;
+    '/blog/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute;
+    '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute;
+    '/docs/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute;
+    '/docs/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute;
+    '/docs/adapters/transport': typeof DocsLayoutAdaptersTransportRoute;
+    '/docs/architecture/domain': typeof DocsLayoutArchitectureDomainRoute;
+    '/docs/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute;
+    '/docs/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute;
+    '/docs/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute;
+    '/docs/architecture/username': typeof DocsLayoutArchitectureUsernameRoute;
+    '/docs/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute;
+    '/docs/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute;
+    '/docs/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute;
+    '/docs/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute;
+    '/docs/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute;
+    '/docs/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute;
+    '/docs/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute;
+    '/docs/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute;
+    '/docs/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute;
+    '/docs/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute;
+    '/docs/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute;
+    '/docs/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute;
+    '/docs/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute;
+    '/docs/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute;
+    '/docs/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute;
+    '/docs/guides/testing': typeof DocsLayoutGuidesTestingRoute;
+    '/docs/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute;
+    '/docs/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute;
+    '/docs/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute;
+    '/docs/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/privacy': typeof PrivacyRoute
-  '/docs': typeof DocsRouteWithChildren
-  '/docs/_layout': typeof DocsLayoutRouteWithChildren
-  '/docs/_layout/': typeof DocsLayoutIndexRoute
-  '/docs/_layout/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
-  '/docs/_layout/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute
-  '/docs/_layout/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute
-  '/docs/_layout/adapters/transport': typeof DocsLayoutAdaptersTransportRoute
-  '/docs/_layout/architecture/domain': typeof DocsLayoutArchitectureDomainRoute
-  '/docs/_layout/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute
-  '/docs/_layout/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute
-  '/docs/_layout/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute
-  '/docs/_layout/architecture/username': typeof DocsLayoutArchitectureUsernameRoute
-  '/docs/_layout/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute
-  '/docs/_layout/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute
-  '/docs/_layout/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute
-  '/docs/_layout/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute
-  '/docs/_layout/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute
-  '/docs/_layout/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute
-  '/docs/_layout/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute
-  '/docs/_layout/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute
-  '/docs/_layout/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute
-  '/docs/_layout/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute
-  '/docs/_layout/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute
-  '/docs/_layout/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute
-  '/docs/_layout/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute
-  '/docs/_layout/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute
-  '/docs/_layout/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute
-  '/docs/_layout/guides/testing': typeof DocsLayoutGuidesTestingRoute
-  '/docs/_layout/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute
-  '/docs/_layout/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute
-  '/docs/_layout/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute
-  '/docs/_layout/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute
+    __root__: typeof rootRouteImport;
+    '/': typeof IndexRoute;
+    '/privacy': typeof PrivacyRoute;
+    '/blog': typeof BlogRouteWithChildren;
+    '/blog/_layout': typeof BlogLayoutRouteWithChildren;
+    '/docs': typeof DocsRouteWithChildren;
+    '/docs/_layout': typeof DocsLayoutRouteWithChildren;
+    '/blog/_layout/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute;
+    '/blog/_layout/': typeof BlogLayoutIndexRoute;
+    '/docs/_layout/': typeof DocsLayoutIndexRoute;
+    '/docs/_layout/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute;
+    '/docs/_layout/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute;
+    '/docs/_layout/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute;
+    '/docs/_layout/adapters/transport': typeof DocsLayoutAdaptersTransportRoute;
+    '/docs/_layout/architecture/domain': typeof DocsLayoutArchitectureDomainRoute;
+    '/docs/_layout/architecture/external-id': typeof DocsLayoutArchitectureExternalIdRoute;
+    '/docs/_layout/architecture/overview': typeof DocsLayoutArchitectureOverviewRoute;
+    '/docs/_layout/architecture/ports-adapters': typeof DocsLayoutArchitecturePortsAdaptersRoute;
+    '/docs/_layout/architecture/username': typeof DocsLayoutArchitectureUsernameRoute;
+    '/docs/_layout/configuration/custom-fields': typeof DocsLayoutConfigurationCustomFieldsRoute;
+    '/docs/_layout/configuration/hooks': typeof DocsLayoutConfigurationHooksRoute;
+    '/docs/_layout/configuration/overview': typeof DocsLayoutConfigurationOverviewRoute;
+    '/docs/_layout/endpoints/membership-endpoints': typeof DocsLayoutEndpointsMembershipEndpointsRoute;
+    '/docs/_layout/endpoints/organization-endpoints': typeof DocsLayoutEndpointsOrganizationEndpointsRoute;
+    '/docs/_layout/endpoints/overview': typeof DocsLayoutEndpointsOverviewRoute;
+    '/docs/_layout/endpoints/user-endpoints': typeof DocsLayoutEndpointsUserEndpointsRoute;
+    '/docs/_layout/examples/advanced-setup': typeof DocsLayoutExamplesAdvancedSetupRoute;
+    '/docs/_layout/examples/basic-setup': typeof DocsLayoutExamplesBasicSetupRoute;
+    '/docs/_layout/examples/real-world': typeof DocsLayoutExamplesRealWorldRoute;
+    '/docs/_layout/getting-started/installation': typeof DocsLayoutGettingStartedInstallationRoute;
+    '/docs/_layout/getting-started/introduction': typeof DocsLayoutGettingStartedIntroductionRoute;
+    '/docs/_layout/getting-started/quick-start': typeof DocsLayoutGettingStartedQuickStartRoute;
+    '/docs/_layout/guides/custom-adapters': typeof DocsLayoutGuidesCustomAdaptersRoute;
+    '/docs/_layout/guides/deployment': typeof DocsLayoutGuidesDeploymentRoute;
+    '/docs/_layout/guides/testing': typeof DocsLayoutGuidesTestingRoute;
+    '/docs/_layout/use-cases/membership-management': typeof DocsLayoutUseCasesMembershipManagementRoute;
+    '/docs/_layout/use-cases/organization-management': typeof DocsLayoutUseCasesOrganizationManagementRoute;
+    '/docs/_layout/use-cases/overview': typeof DocsLayoutUseCasesOverviewRoute;
+    '/docs/_layout/use-cases/user-management': typeof DocsLayoutUseCasesUserManagementRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/privacy'
-    | '/docs'
-    | '/docs/'
-    | '/docs/adapters/authentication'
-    | '/docs/adapters/overview'
-    | '/docs/adapters/persistence'
-    | '/docs/adapters/transport'
-    | '/docs/architecture/domain'
-    | '/docs/architecture/external-id'
-    | '/docs/architecture/overview'
-    | '/docs/architecture/ports-adapters'
-    | '/docs/architecture/username'
-    | '/docs/configuration/custom-fields'
-    | '/docs/configuration/hooks'
-    | '/docs/configuration/overview'
-    | '/docs/endpoints/membership-endpoints'
-    | '/docs/endpoints/organization-endpoints'
-    | '/docs/endpoints/overview'
-    | '/docs/endpoints/user-endpoints'
-    | '/docs/examples/advanced-setup'
-    | '/docs/examples/basic-setup'
-    | '/docs/examples/real-world'
-    | '/docs/getting-started/installation'
-    | '/docs/getting-started/introduction'
-    | '/docs/getting-started/quick-start'
-    | '/docs/guides/custom-adapters'
-    | '/docs/guides/deployment'
-    | '/docs/guides/testing'
-    | '/docs/use-cases/membership-management'
-    | '/docs/use-cases/organization-management'
-    | '/docs/use-cases/overview'
-    | '/docs/use-cases/user-management'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/privacy'
-    | '/docs'
-    | '/docs/adapters/authentication'
-    | '/docs/adapters/overview'
-    | '/docs/adapters/persistence'
-    | '/docs/adapters/transport'
-    | '/docs/architecture/domain'
-    | '/docs/architecture/external-id'
-    | '/docs/architecture/overview'
-    | '/docs/architecture/ports-adapters'
-    | '/docs/architecture/username'
-    | '/docs/configuration/custom-fields'
-    | '/docs/configuration/hooks'
-    | '/docs/configuration/overview'
-    | '/docs/endpoints/membership-endpoints'
-    | '/docs/endpoints/organization-endpoints'
-    | '/docs/endpoints/overview'
-    | '/docs/endpoints/user-endpoints'
-    | '/docs/examples/advanced-setup'
-    | '/docs/examples/basic-setup'
-    | '/docs/examples/real-world'
-    | '/docs/getting-started/installation'
-    | '/docs/getting-started/introduction'
-    | '/docs/getting-started/quick-start'
-    | '/docs/guides/custom-adapters'
-    | '/docs/guides/deployment'
-    | '/docs/guides/testing'
-    | '/docs/use-cases/membership-management'
-    | '/docs/use-cases/organization-management'
-    | '/docs/use-cases/overview'
-    | '/docs/use-cases/user-management'
-  id:
-    | '__root__'
-    | '/'
-    | '/privacy'
-    | '/docs'
-    | '/docs/_layout'
-    | '/docs/_layout/'
-    | '/docs/_layout/adapters/authentication'
-    | '/docs/_layout/adapters/overview'
-    | '/docs/_layout/adapters/persistence'
-    | '/docs/_layout/adapters/transport'
-    | '/docs/_layout/architecture/domain'
-    | '/docs/_layout/architecture/external-id'
-    | '/docs/_layout/architecture/overview'
-    | '/docs/_layout/architecture/ports-adapters'
-    | '/docs/_layout/architecture/username'
-    | '/docs/_layout/configuration/custom-fields'
-    | '/docs/_layout/configuration/hooks'
-    | '/docs/_layout/configuration/overview'
-    | '/docs/_layout/endpoints/membership-endpoints'
-    | '/docs/_layout/endpoints/organization-endpoints'
-    | '/docs/_layout/endpoints/overview'
-    | '/docs/_layout/endpoints/user-endpoints'
-    | '/docs/_layout/examples/advanced-setup'
-    | '/docs/_layout/examples/basic-setup'
-    | '/docs/_layout/examples/real-world'
-    | '/docs/_layout/getting-started/installation'
-    | '/docs/_layout/getting-started/introduction'
-    | '/docs/_layout/getting-started/quick-start'
-    | '/docs/_layout/guides/custom-adapters'
-    | '/docs/_layout/guides/deployment'
-    | '/docs/_layout/guides/testing'
-    | '/docs/_layout/use-cases/membership-management'
-    | '/docs/_layout/use-cases/organization-management'
-    | '/docs/_layout/use-cases/overview'
-    | '/docs/_layout/use-cases/user-management'
-  fileRoutesById: FileRoutesById
+    fileRoutesByFullPath: FileRoutesByFullPath;
+    fullPaths:
+        | '/'
+        | '/privacy'
+        | '/blog'
+        | '/docs'
+        | '/blog/introducing-multitenantkit'
+        | '/blog/'
+        | '/docs/'
+        | '/docs/adapters/authentication'
+        | '/docs/adapters/overview'
+        | '/docs/adapters/persistence'
+        | '/docs/adapters/transport'
+        | '/docs/architecture/domain'
+        | '/docs/architecture/external-id'
+        | '/docs/architecture/overview'
+        | '/docs/architecture/ports-adapters'
+        | '/docs/architecture/username'
+        | '/docs/configuration/custom-fields'
+        | '/docs/configuration/hooks'
+        | '/docs/configuration/overview'
+        | '/docs/endpoints/membership-endpoints'
+        | '/docs/endpoints/organization-endpoints'
+        | '/docs/endpoints/overview'
+        | '/docs/endpoints/user-endpoints'
+        | '/docs/examples/advanced-setup'
+        | '/docs/examples/basic-setup'
+        | '/docs/examples/real-world'
+        | '/docs/getting-started/installation'
+        | '/docs/getting-started/introduction'
+        | '/docs/getting-started/quick-start'
+        | '/docs/guides/custom-adapters'
+        | '/docs/guides/deployment'
+        | '/docs/guides/testing'
+        | '/docs/use-cases/membership-management'
+        | '/docs/use-cases/organization-management'
+        | '/docs/use-cases/overview'
+        | '/docs/use-cases/user-management';
+    fileRoutesByTo: FileRoutesByTo;
+    to:
+        | '/'
+        | '/privacy'
+        | '/blog'
+        | '/docs'
+        | '/blog/introducing-multitenantkit'
+        | '/docs/adapters/authentication'
+        | '/docs/adapters/overview'
+        | '/docs/adapters/persistence'
+        | '/docs/adapters/transport'
+        | '/docs/architecture/domain'
+        | '/docs/architecture/external-id'
+        | '/docs/architecture/overview'
+        | '/docs/architecture/ports-adapters'
+        | '/docs/architecture/username'
+        | '/docs/configuration/custom-fields'
+        | '/docs/configuration/hooks'
+        | '/docs/configuration/overview'
+        | '/docs/endpoints/membership-endpoints'
+        | '/docs/endpoints/organization-endpoints'
+        | '/docs/endpoints/overview'
+        | '/docs/endpoints/user-endpoints'
+        | '/docs/examples/advanced-setup'
+        | '/docs/examples/basic-setup'
+        | '/docs/examples/real-world'
+        | '/docs/getting-started/installation'
+        | '/docs/getting-started/introduction'
+        | '/docs/getting-started/quick-start'
+        | '/docs/guides/custom-adapters'
+        | '/docs/guides/deployment'
+        | '/docs/guides/testing'
+        | '/docs/use-cases/membership-management'
+        | '/docs/use-cases/organization-management'
+        | '/docs/use-cases/overview'
+        | '/docs/use-cases/user-management';
+    id:
+        | '__root__'
+        | '/'
+        | '/privacy'
+        | '/blog'
+        | '/blog/_layout'
+        | '/docs'
+        | '/docs/_layout'
+        | '/blog/_layout/introducing-multitenantkit'
+        | '/blog/_layout/'
+        | '/docs/_layout/'
+        | '/docs/_layout/adapters/authentication'
+        | '/docs/_layout/adapters/overview'
+        | '/docs/_layout/adapters/persistence'
+        | '/docs/_layout/adapters/transport'
+        | '/docs/_layout/architecture/domain'
+        | '/docs/_layout/architecture/external-id'
+        | '/docs/_layout/architecture/overview'
+        | '/docs/_layout/architecture/ports-adapters'
+        | '/docs/_layout/architecture/username'
+        | '/docs/_layout/configuration/custom-fields'
+        | '/docs/_layout/configuration/hooks'
+        | '/docs/_layout/configuration/overview'
+        | '/docs/_layout/endpoints/membership-endpoints'
+        | '/docs/_layout/endpoints/organization-endpoints'
+        | '/docs/_layout/endpoints/overview'
+        | '/docs/_layout/endpoints/user-endpoints'
+        | '/docs/_layout/examples/advanced-setup'
+        | '/docs/_layout/examples/basic-setup'
+        | '/docs/_layout/examples/real-world'
+        | '/docs/_layout/getting-started/installation'
+        | '/docs/_layout/getting-started/introduction'
+        | '/docs/_layout/getting-started/quick-start'
+        | '/docs/_layout/guides/custom-adapters'
+        | '/docs/_layout/guides/deployment'
+        | '/docs/_layout/guides/testing'
+        | '/docs/_layout/use-cases/membership-management'
+        | '/docs/_layout/use-cases/organization-management'
+        | '/docs/_layout/use-cases/overview'
+        | '/docs/_layout/use-cases/user-management';
+    fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  PrivacyRoute: typeof PrivacyRoute
-  DocsRoute: typeof DocsRouteWithChildren
+    IndexRoute: typeof IndexRoute;
+    PrivacyRoute: typeof PrivacyRoute;
+    BlogRoute: typeof BlogRouteWithChildren;
+    DocsRoute: typeof DocsRouteWithChildren;
 }
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsRouteImport
-      parentRoute: typeof rootRouteImport
+    interface FileRoutesByPath {
+        '/docs': {
+            id: '/docs';
+            path: '/docs';
+            fullPath: '/docs';
+            preLoaderRoute: typeof DocsRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        '/blog': {
+            id: '/blog';
+            path: '/blog';
+            fullPath: '/blog';
+            preLoaderRoute: typeof BlogRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        '/privacy': {
+            id: '/privacy';
+            path: '/privacy';
+            fullPath: '/privacy';
+            preLoaderRoute: typeof PrivacyRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        '/': {
+            id: '/';
+            path: '/';
+            fullPath: '/';
+            preLoaderRoute: typeof IndexRouteImport;
+            parentRoute: typeof rootRouteImport;
+        };
+        '/docs/_layout': {
+            id: '/docs/_layout';
+            path: '/docs';
+            fullPath: '/docs';
+            preLoaderRoute: typeof DocsLayoutRouteImport;
+            parentRoute: typeof DocsRoute;
+        };
+        '/blog/_layout': {
+            id: '/blog/_layout';
+            path: '/blog';
+            fullPath: '/blog';
+            preLoaderRoute: typeof BlogLayoutRouteImport;
+            parentRoute: typeof BlogRoute;
+        };
+        '/docs/_layout/': {
+            id: '/docs/_layout/';
+            path: '/';
+            fullPath: '/docs/';
+            preLoaderRoute: typeof DocsLayoutIndexRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/blog/_layout/': {
+            id: '/blog/_layout/';
+            path: '/';
+            fullPath: '/blog/';
+            preLoaderRoute: typeof BlogLayoutIndexRouteImport;
+            parentRoute: typeof BlogLayoutRoute;
+        };
+        '/blog/_layout/introducing-multitenantkit': {
+            id: '/blog/_layout/introducing-multitenantkit';
+            path: '/introducing-multitenantkit';
+            fullPath: '/blog/introducing-multitenantkit';
+            preLoaderRoute: typeof BlogLayoutIntroducingMultitenantkitRouteImport;
+            parentRoute: typeof BlogLayoutRoute;
+        };
+        '/docs/_layout/use-cases/user-management': {
+            id: '/docs/_layout/use-cases/user-management';
+            path: '/use-cases/user-management';
+            fullPath: '/docs/use-cases/user-management';
+            preLoaderRoute: typeof DocsLayoutUseCasesUserManagementRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/use-cases/overview': {
+            id: '/docs/_layout/use-cases/overview';
+            path: '/use-cases/overview';
+            fullPath: '/docs/use-cases/overview';
+            preLoaderRoute: typeof DocsLayoutUseCasesOverviewRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/use-cases/organization-management': {
+            id: '/docs/_layout/use-cases/organization-management';
+            path: '/use-cases/organization-management';
+            fullPath: '/docs/use-cases/organization-management';
+            preLoaderRoute: typeof DocsLayoutUseCasesOrganizationManagementRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/use-cases/membership-management': {
+            id: '/docs/_layout/use-cases/membership-management';
+            path: '/use-cases/membership-management';
+            fullPath: '/docs/use-cases/membership-management';
+            preLoaderRoute: typeof DocsLayoutUseCasesMembershipManagementRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/guides/testing': {
+            id: '/docs/_layout/guides/testing';
+            path: '/guides/testing';
+            fullPath: '/docs/guides/testing';
+            preLoaderRoute: typeof DocsLayoutGuidesTestingRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/guides/deployment': {
+            id: '/docs/_layout/guides/deployment';
+            path: '/guides/deployment';
+            fullPath: '/docs/guides/deployment';
+            preLoaderRoute: typeof DocsLayoutGuidesDeploymentRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/guides/custom-adapters': {
+            id: '/docs/_layout/guides/custom-adapters';
+            path: '/guides/custom-adapters';
+            fullPath: '/docs/guides/custom-adapters';
+            preLoaderRoute: typeof DocsLayoutGuidesCustomAdaptersRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/getting-started/quick-start': {
+            id: '/docs/_layout/getting-started/quick-start';
+            path: '/getting-started/quick-start';
+            fullPath: '/docs/getting-started/quick-start';
+            preLoaderRoute: typeof DocsLayoutGettingStartedQuickStartRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/getting-started/introduction': {
+            id: '/docs/_layout/getting-started/introduction';
+            path: '/getting-started/introduction';
+            fullPath: '/docs/getting-started/introduction';
+            preLoaderRoute: typeof DocsLayoutGettingStartedIntroductionRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/getting-started/installation': {
+            id: '/docs/_layout/getting-started/installation';
+            path: '/getting-started/installation';
+            fullPath: '/docs/getting-started/installation';
+            preLoaderRoute: typeof DocsLayoutGettingStartedInstallationRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/examples/real-world': {
+            id: '/docs/_layout/examples/real-world';
+            path: '/examples/real-world';
+            fullPath: '/docs/examples/real-world';
+            preLoaderRoute: typeof DocsLayoutExamplesRealWorldRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/examples/basic-setup': {
+            id: '/docs/_layout/examples/basic-setup';
+            path: '/examples/basic-setup';
+            fullPath: '/docs/examples/basic-setup';
+            preLoaderRoute: typeof DocsLayoutExamplesBasicSetupRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/examples/advanced-setup': {
+            id: '/docs/_layout/examples/advanced-setup';
+            path: '/examples/advanced-setup';
+            fullPath: '/docs/examples/advanced-setup';
+            preLoaderRoute: typeof DocsLayoutExamplesAdvancedSetupRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/endpoints/user-endpoints': {
+            id: '/docs/_layout/endpoints/user-endpoints';
+            path: '/endpoints/user-endpoints';
+            fullPath: '/docs/endpoints/user-endpoints';
+            preLoaderRoute: typeof DocsLayoutEndpointsUserEndpointsRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/endpoints/overview': {
+            id: '/docs/_layout/endpoints/overview';
+            path: '/endpoints/overview';
+            fullPath: '/docs/endpoints/overview';
+            preLoaderRoute: typeof DocsLayoutEndpointsOverviewRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/endpoints/organization-endpoints': {
+            id: '/docs/_layout/endpoints/organization-endpoints';
+            path: '/endpoints/organization-endpoints';
+            fullPath: '/docs/endpoints/organization-endpoints';
+            preLoaderRoute: typeof DocsLayoutEndpointsOrganizationEndpointsRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/endpoints/membership-endpoints': {
+            id: '/docs/_layout/endpoints/membership-endpoints';
+            path: '/endpoints/membership-endpoints';
+            fullPath: '/docs/endpoints/membership-endpoints';
+            preLoaderRoute: typeof DocsLayoutEndpointsMembershipEndpointsRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/configuration/overview': {
+            id: '/docs/_layout/configuration/overview';
+            path: '/configuration/overview';
+            fullPath: '/docs/configuration/overview';
+            preLoaderRoute: typeof DocsLayoutConfigurationOverviewRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/configuration/hooks': {
+            id: '/docs/_layout/configuration/hooks';
+            path: '/configuration/hooks';
+            fullPath: '/docs/configuration/hooks';
+            preLoaderRoute: typeof DocsLayoutConfigurationHooksRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/configuration/custom-fields': {
+            id: '/docs/_layout/configuration/custom-fields';
+            path: '/configuration/custom-fields';
+            fullPath: '/docs/configuration/custom-fields';
+            preLoaderRoute: typeof DocsLayoutConfigurationCustomFieldsRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/architecture/username': {
+            id: '/docs/_layout/architecture/username';
+            path: '/architecture/username';
+            fullPath: '/docs/architecture/username';
+            preLoaderRoute: typeof DocsLayoutArchitectureUsernameRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/architecture/ports-adapters': {
+            id: '/docs/_layout/architecture/ports-adapters';
+            path: '/architecture/ports-adapters';
+            fullPath: '/docs/architecture/ports-adapters';
+            preLoaderRoute: typeof DocsLayoutArchitecturePortsAdaptersRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/architecture/overview': {
+            id: '/docs/_layout/architecture/overview';
+            path: '/architecture/overview';
+            fullPath: '/docs/architecture/overview';
+            preLoaderRoute: typeof DocsLayoutArchitectureOverviewRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/architecture/external-id': {
+            id: '/docs/_layout/architecture/external-id';
+            path: '/architecture/external-id';
+            fullPath: '/docs/architecture/external-id';
+            preLoaderRoute: typeof DocsLayoutArchitectureExternalIdRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/architecture/domain': {
+            id: '/docs/_layout/architecture/domain';
+            path: '/architecture/domain';
+            fullPath: '/docs/architecture/domain';
+            preLoaderRoute: typeof DocsLayoutArchitectureDomainRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/adapters/transport': {
+            id: '/docs/_layout/adapters/transport';
+            path: '/adapters/transport';
+            fullPath: '/docs/adapters/transport';
+            preLoaderRoute: typeof DocsLayoutAdaptersTransportRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/adapters/persistence': {
+            id: '/docs/_layout/adapters/persistence';
+            path: '/adapters/persistence';
+            fullPath: '/docs/adapters/persistence';
+            preLoaderRoute: typeof DocsLayoutAdaptersPersistenceRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/adapters/overview': {
+            id: '/docs/_layout/adapters/overview';
+            path: '/adapters/overview';
+            fullPath: '/docs/adapters/overview';
+            preLoaderRoute: typeof DocsLayoutAdaptersOverviewRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
+        '/docs/_layout/adapters/authentication': {
+            id: '/docs/_layout/adapters/authentication';
+            path: '/adapters/authentication';
+            fullPath: '/docs/adapters/authentication';
+            preLoaderRoute: typeof DocsLayoutAdaptersAuthenticationRouteImport;
+            parentRoute: typeof DocsLayoutRoute;
+        };
     }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/_layout': {
-      id: '/docs/_layout'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsLayoutRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/_layout/': {
-      id: '/docs/_layout/'
-      path: '/'
-      fullPath: '/docs/'
-      preLoaderRoute: typeof DocsLayoutIndexRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/use-cases/user-management': {
-      id: '/docs/_layout/use-cases/user-management'
-      path: '/use-cases/user-management'
-      fullPath: '/docs/use-cases/user-management'
-      preLoaderRoute: typeof DocsLayoutUseCasesUserManagementRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/use-cases/overview': {
-      id: '/docs/_layout/use-cases/overview'
-      path: '/use-cases/overview'
-      fullPath: '/docs/use-cases/overview'
-      preLoaderRoute: typeof DocsLayoutUseCasesOverviewRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/use-cases/organization-management': {
-      id: '/docs/_layout/use-cases/organization-management'
-      path: '/use-cases/organization-management'
-      fullPath: '/docs/use-cases/organization-management'
-      preLoaderRoute: typeof DocsLayoutUseCasesOrganizationManagementRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/use-cases/membership-management': {
-      id: '/docs/_layout/use-cases/membership-management'
-      path: '/use-cases/membership-management'
-      fullPath: '/docs/use-cases/membership-management'
-      preLoaderRoute: typeof DocsLayoutUseCasesMembershipManagementRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/guides/testing': {
-      id: '/docs/_layout/guides/testing'
-      path: '/guides/testing'
-      fullPath: '/docs/guides/testing'
-      preLoaderRoute: typeof DocsLayoutGuidesTestingRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/guides/deployment': {
-      id: '/docs/_layout/guides/deployment'
-      path: '/guides/deployment'
-      fullPath: '/docs/guides/deployment'
-      preLoaderRoute: typeof DocsLayoutGuidesDeploymentRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/guides/custom-adapters': {
-      id: '/docs/_layout/guides/custom-adapters'
-      path: '/guides/custom-adapters'
-      fullPath: '/docs/guides/custom-adapters'
-      preLoaderRoute: typeof DocsLayoutGuidesCustomAdaptersRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/getting-started/quick-start': {
-      id: '/docs/_layout/getting-started/quick-start'
-      path: '/getting-started/quick-start'
-      fullPath: '/docs/getting-started/quick-start'
-      preLoaderRoute: typeof DocsLayoutGettingStartedQuickStartRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/getting-started/introduction': {
-      id: '/docs/_layout/getting-started/introduction'
-      path: '/getting-started/introduction'
-      fullPath: '/docs/getting-started/introduction'
-      preLoaderRoute: typeof DocsLayoutGettingStartedIntroductionRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/getting-started/installation': {
-      id: '/docs/_layout/getting-started/installation'
-      path: '/getting-started/installation'
-      fullPath: '/docs/getting-started/installation'
-      preLoaderRoute: typeof DocsLayoutGettingStartedInstallationRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/examples/real-world': {
-      id: '/docs/_layout/examples/real-world'
-      path: '/examples/real-world'
-      fullPath: '/docs/examples/real-world'
-      preLoaderRoute: typeof DocsLayoutExamplesRealWorldRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/examples/basic-setup': {
-      id: '/docs/_layout/examples/basic-setup'
-      path: '/examples/basic-setup'
-      fullPath: '/docs/examples/basic-setup'
-      preLoaderRoute: typeof DocsLayoutExamplesBasicSetupRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/examples/advanced-setup': {
-      id: '/docs/_layout/examples/advanced-setup'
-      path: '/examples/advanced-setup'
-      fullPath: '/docs/examples/advanced-setup'
-      preLoaderRoute: typeof DocsLayoutExamplesAdvancedSetupRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/endpoints/user-endpoints': {
-      id: '/docs/_layout/endpoints/user-endpoints'
-      path: '/endpoints/user-endpoints'
-      fullPath: '/docs/endpoints/user-endpoints'
-      preLoaderRoute: typeof DocsLayoutEndpointsUserEndpointsRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/endpoints/overview': {
-      id: '/docs/_layout/endpoints/overview'
-      path: '/endpoints/overview'
-      fullPath: '/docs/endpoints/overview'
-      preLoaderRoute: typeof DocsLayoutEndpointsOverviewRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/endpoints/organization-endpoints': {
-      id: '/docs/_layout/endpoints/organization-endpoints'
-      path: '/endpoints/organization-endpoints'
-      fullPath: '/docs/endpoints/organization-endpoints'
-      preLoaderRoute: typeof DocsLayoutEndpointsOrganizationEndpointsRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/endpoints/membership-endpoints': {
-      id: '/docs/_layout/endpoints/membership-endpoints'
-      path: '/endpoints/membership-endpoints'
-      fullPath: '/docs/endpoints/membership-endpoints'
-      preLoaderRoute: typeof DocsLayoutEndpointsMembershipEndpointsRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/configuration/overview': {
-      id: '/docs/_layout/configuration/overview'
-      path: '/configuration/overview'
-      fullPath: '/docs/configuration/overview'
-      preLoaderRoute: typeof DocsLayoutConfigurationOverviewRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/configuration/hooks': {
-      id: '/docs/_layout/configuration/hooks'
-      path: '/configuration/hooks'
-      fullPath: '/docs/configuration/hooks'
-      preLoaderRoute: typeof DocsLayoutConfigurationHooksRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/configuration/custom-fields': {
-      id: '/docs/_layout/configuration/custom-fields'
-      path: '/configuration/custom-fields'
-      fullPath: '/docs/configuration/custom-fields'
-      preLoaderRoute: typeof DocsLayoutConfigurationCustomFieldsRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/architecture/username': {
-      id: '/docs/_layout/architecture/username'
-      path: '/architecture/username'
-      fullPath: '/docs/architecture/username'
-      preLoaderRoute: typeof DocsLayoutArchitectureUsernameRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/architecture/ports-adapters': {
-      id: '/docs/_layout/architecture/ports-adapters'
-      path: '/architecture/ports-adapters'
-      fullPath: '/docs/architecture/ports-adapters'
-      preLoaderRoute: typeof DocsLayoutArchitecturePortsAdaptersRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/architecture/overview': {
-      id: '/docs/_layout/architecture/overview'
-      path: '/architecture/overview'
-      fullPath: '/docs/architecture/overview'
-      preLoaderRoute: typeof DocsLayoutArchitectureOverviewRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/architecture/external-id': {
-      id: '/docs/_layout/architecture/external-id'
-      path: '/architecture/external-id'
-      fullPath: '/docs/architecture/external-id'
-      preLoaderRoute: typeof DocsLayoutArchitectureExternalIdRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/architecture/domain': {
-      id: '/docs/_layout/architecture/domain'
-      path: '/architecture/domain'
-      fullPath: '/docs/architecture/domain'
-      preLoaderRoute: typeof DocsLayoutArchitectureDomainRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/adapters/transport': {
-      id: '/docs/_layout/adapters/transport'
-      path: '/adapters/transport'
-      fullPath: '/docs/adapters/transport'
-      preLoaderRoute: typeof DocsLayoutAdaptersTransportRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/adapters/persistence': {
-      id: '/docs/_layout/adapters/persistence'
-      path: '/adapters/persistence'
-      fullPath: '/docs/adapters/persistence'
-      preLoaderRoute: typeof DocsLayoutAdaptersPersistenceRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/adapters/overview': {
-      id: '/docs/_layout/adapters/overview'
-      path: '/adapters/overview'
-      fullPath: '/docs/adapters/overview'
-      preLoaderRoute: typeof DocsLayoutAdaptersOverviewRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-    '/docs/_layout/adapters/authentication': {
-      id: '/docs/_layout/adapters/authentication'
-      path: '/adapters/authentication'
-      fullPath: '/docs/adapters/authentication'
-      preLoaderRoute: typeof DocsLayoutAdaptersAuthenticationRouteImport
-      parentRoute: typeof DocsLayoutRoute
-    }
-  }
 }
 
+interface BlogLayoutRouteChildren {
+    BlogLayoutIntroducingMultitenantkitRoute: typeof BlogLayoutIntroducingMultitenantkitRoute;
+    BlogLayoutIndexRoute: typeof BlogLayoutIndexRoute;
+}
+
+const BlogLayoutRouteChildren: BlogLayoutRouteChildren = {
+    BlogLayoutIntroducingMultitenantkitRoute: BlogLayoutIntroducingMultitenantkitRoute,
+    BlogLayoutIndexRoute: BlogLayoutIndexRoute
+};
+
+const BlogLayoutRouteWithChildren = BlogLayoutRoute._addFileChildren(BlogLayoutRouteChildren);
+
+interface BlogRouteChildren {
+    BlogLayoutRoute: typeof BlogLayoutRouteWithChildren;
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+    BlogLayoutRoute: BlogLayoutRouteWithChildren
+};
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren);
+
 interface DocsLayoutRouteChildren {
-  DocsLayoutIndexRoute: typeof DocsLayoutIndexRoute
-  DocsLayoutAdaptersAuthenticationRoute: typeof DocsLayoutAdaptersAuthenticationRoute
-  DocsLayoutAdaptersOverviewRoute: typeof DocsLayoutAdaptersOverviewRoute
-  DocsLayoutAdaptersPersistenceRoute: typeof DocsLayoutAdaptersPersistenceRoute
-  DocsLayoutAdaptersTransportRoute: typeof DocsLayoutAdaptersTransportRoute
-  DocsLayoutArchitectureDomainRoute: typeof DocsLayoutArchitectureDomainRoute
-  DocsLayoutArchitectureExternalIdRoute: typeof DocsLayoutArchitectureExternalIdRoute
-  DocsLayoutArchitectureOverviewRoute: typeof DocsLayoutArchitectureOverviewRoute
-  DocsLayoutArchitecturePortsAdaptersRoute: typeof DocsLayoutArchitecturePortsAdaptersRoute
-  DocsLayoutArchitectureUsernameRoute: typeof DocsLayoutArchitectureUsernameRoute
-  DocsLayoutConfigurationCustomFieldsRoute: typeof DocsLayoutConfigurationCustomFieldsRoute
-  DocsLayoutConfigurationHooksRoute: typeof DocsLayoutConfigurationHooksRoute
-  DocsLayoutConfigurationOverviewRoute: typeof DocsLayoutConfigurationOverviewRoute
-  DocsLayoutEndpointsMembershipEndpointsRoute: typeof DocsLayoutEndpointsMembershipEndpointsRoute
-  DocsLayoutEndpointsOrganizationEndpointsRoute: typeof DocsLayoutEndpointsOrganizationEndpointsRoute
-  DocsLayoutEndpointsOverviewRoute: typeof DocsLayoutEndpointsOverviewRoute
-  DocsLayoutEndpointsUserEndpointsRoute: typeof DocsLayoutEndpointsUserEndpointsRoute
-  DocsLayoutExamplesAdvancedSetupRoute: typeof DocsLayoutExamplesAdvancedSetupRoute
-  DocsLayoutExamplesBasicSetupRoute: typeof DocsLayoutExamplesBasicSetupRoute
-  DocsLayoutExamplesRealWorldRoute: typeof DocsLayoutExamplesRealWorldRoute
-  DocsLayoutGettingStartedInstallationRoute: typeof DocsLayoutGettingStartedInstallationRoute
-  DocsLayoutGettingStartedIntroductionRoute: typeof DocsLayoutGettingStartedIntroductionRoute
-  DocsLayoutGettingStartedQuickStartRoute: typeof DocsLayoutGettingStartedQuickStartRoute
-  DocsLayoutGuidesCustomAdaptersRoute: typeof DocsLayoutGuidesCustomAdaptersRoute
-  DocsLayoutGuidesDeploymentRoute: typeof DocsLayoutGuidesDeploymentRoute
-  DocsLayoutGuidesTestingRoute: typeof DocsLayoutGuidesTestingRoute
-  DocsLayoutUseCasesMembershipManagementRoute: typeof DocsLayoutUseCasesMembershipManagementRoute
-  DocsLayoutUseCasesOrganizationManagementRoute: typeof DocsLayoutUseCasesOrganizationManagementRoute
-  DocsLayoutUseCasesOverviewRoute: typeof DocsLayoutUseCasesOverviewRoute
-  DocsLayoutUseCasesUserManagementRoute: typeof DocsLayoutUseCasesUserManagementRoute
+    DocsLayoutIndexRoute: typeof DocsLayoutIndexRoute;
+    DocsLayoutAdaptersAuthenticationRoute: typeof DocsLayoutAdaptersAuthenticationRoute;
+    DocsLayoutAdaptersOverviewRoute: typeof DocsLayoutAdaptersOverviewRoute;
+    DocsLayoutAdaptersPersistenceRoute: typeof DocsLayoutAdaptersPersistenceRoute;
+    DocsLayoutAdaptersTransportRoute: typeof DocsLayoutAdaptersTransportRoute;
+    DocsLayoutArchitectureDomainRoute: typeof DocsLayoutArchitectureDomainRoute;
+    DocsLayoutArchitectureExternalIdRoute: typeof DocsLayoutArchitectureExternalIdRoute;
+    DocsLayoutArchitectureOverviewRoute: typeof DocsLayoutArchitectureOverviewRoute;
+    DocsLayoutArchitecturePortsAdaptersRoute: typeof DocsLayoutArchitecturePortsAdaptersRoute;
+    DocsLayoutArchitectureUsernameRoute: typeof DocsLayoutArchitectureUsernameRoute;
+    DocsLayoutConfigurationCustomFieldsRoute: typeof DocsLayoutConfigurationCustomFieldsRoute;
+    DocsLayoutConfigurationHooksRoute: typeof DocsLayoutConfigurationHooksRoute;
+    DocsLayoutConfigurationOverviewRoute: typeof DocsLayoutConfigurationOverviewRoute;
+    DocsLayoutEndpointsMembershipEndpointsRoute: typeof DocsLayoutEndpointsMembershipEndpointsRoute;
+    DocsLayoutEndpointsOrganizationEndpointsRoute: typeof DocsLayoutEndpointsOrganizationEndpointsRoute;
+    DocsLayoutEndpointsOverviewRoute: typeof DocsLayoutEndpointsOverviewRoute;
+    DocsLayoutEndpointsUserEndpointsRoute: typeof DocsLayoutEndpointsUserEndpointsRoute;
+    DocsLayoutExamplesAdvancedSetupRoute: typeof DocsLayoutExamplesAdvancedSetupRoute;
+    DocsLayoutExamplesBasicSetupRoute: typeof DocsLayoutExamplesBasicSetupRoute;
+    DocsLayoutExamplesRealWorldRoute: typeof DocsLayoutExamplesRealWorldRoute;
+    DocsLayoutGettingStartedInstallationRoute: typeof DocsLayoutGettingStartedInstallationRoute;
+    DocsLayoutGettingStartedIntroductionRoute: typeof DocsLayoutGettingStartedIntroductionRoute;
+    DocsLayoutGettingStartedQuickStartRoute: typeof DocsLayoutGettingStartedQuickStartRoute;
+    DocsLayoutGuidesCustomAdaptersRoute: typeof DocsLayoutGuidesCustomAdaptersRoute;
+    DocsLayoutGuidesDeploymentRoute: typeof DocsLayoutGuidesDeploymentRoute;
+    DocsLayoutGuidesTestingRoute: typeof DocsLayoutGuidesTestingRoute;
+    DocsLayoutUseCasesMembershipManagementRoute: typeof DocsLayoutUseCasesMembershipManagementRoute;
+    DocsLayoutUseCasesOrganizationManagementRoute: typeof DocsLayoutUseCasesOrganizationManagementRoute;
+    DocsLayoutUseCasesOverviewRoute: typeof DocsLayoutUseCasesOverviewRoute;
+    DocsLayoutUseCasesUserManagementRoute: typeof DocsLayoutUseCasesUserManagementRoute;
 }
 
 const DocsLayoutRouteChildren: DocsLayoutRouteChildren = {
-  DocsLayoutIndexRoute: DocsLayoutIndexRoute,
-  DocsLayoutAdaptersAuthenticationRoute: DocsLayoutAdaptersAuthenticationRoute,
-  DocsLayoutAdaptersOverviewRoute: DocsLayoutAdaptersOverviewRoute,
-  DocsLayoutAdaptersPersistenceRoute: DocsLayoutAdaptersPersistenceRoute,
-  DocsLayoutAdaptersTransportRoute: DocsLayoutAdaptersTransportRoute,
-  DocsLayoutArchitectureDomainRoute: DocsLayoutArchitectureDomainRoute,
-  DocsLayoutArchitectureExternalIdRoute: DocsLayoutArchitectureExternalIdRoute,
-  DocsLayoutArchitectureOverviewRoute: DocsLayoutArchitectureOverviewRoute,
-  DocsLayoutArchitecturePortsAdaptersRoute:
-    DocsLayoutArchitecturePortsAdaptersRoute,
-  DocsLayoutArchitectureUsernameRoute: DocsLayoutArchitectureUsernameRoute,
-  DocsLayoutConfigurationCustomFieldsRoute:
-    DocsLayoutConfigurationCustomFieldsRoute,
-  DocsLayoutConfigurationHooksRoute: DocsLayoutConfigurationHooksRoute,
-  DocsLayoutConfigurationOverviewRoute: DocsLayoutConfigurationOverviewRoute,
-  DocsLayoutEndpointsMembershipEndpointsRoute:
-    DocsLayoutEndpointsMembershipEndpointsRoute,
-  DocsLayoutEndpointsOrganizationEndpointsRoute:
-    DocsLayoutEndpointsOrganizationEndpointsRoute,
-  DocsLayoutEndpointsOverviewRoute: DocsLayoutEndpointsOverviewRoute,
-  DocsLayoutEndpointsUserEndpointsRoute: DocsLayoutEndpointsUserEndpointsRoute,
-  DocsLayoutExamplesAdvancedSetupRoute: DocsLayoutExamplesAdvancedSetupRoute,
-  DocsLayoutExamplesBasicSetupRoute: DocsLayoutExamplesBasicSetupRoute,
-  DocsLayoutExamplesRealWorldRoute: DocsLayoutExamplesRealWorldRoute,
-  DocsLayoutGettingStartedInstallationRoute:
-    DocsLayoutGettingStartedInstallationRoute,
-  DocsLayoutGettingStartedIntroductionRoute:
-    DocsLayoutGettingStartedIntroductionRoute,
-  DocsLayoutGettingStartedQuickStartRoute:
-    DocsLayoutGettingStartedQuickStartRoute,
-  DocsLayoutGuidesCustomAdaptersRoute: DocsLayoutGuidesCustomAdaptersRoute,
-  DocsLayoutGuidesDeploymentRoute: DocsLayoutGuidesDeploymentRoute,
-  DocsLayoutGuidesTestingRoute: DocsLayoutGuidesTestingRoute,
-  DocsLayoutUseCasesMembershipManagementRoute:
-    DocsLayoutUseCasesMembershipManagementRoute,
-  DocsLayoutUseCasesOrganizationManagementRoute:
-    DocsLayoutUseCasesOrganizationManagementRoute,
-  DocsLayoutUseCasesOverviewRoute: DocsLayoutUseCasesOverviewRoute,
-  DocsLayoutUseCasesUserManagementRoute: DocsLayoutUseCasesUserManagementRoute,
-}
+    DocsLayoutIndexRoute: DocsLayoutIndexRoute,
+    DocsLayoutAdaptersAuthenticationRoute: DocsLayoutAdaptersAuthenticationRoute,
+    DocsLayoutAdaptersOverviewRoute: DocsLayoutAdaptersOverviewRoute,
+    DocsLayoutAdaptersPersistenceRoute: DocsLayoutAdaptersPersistenceRoute,
+    DocsLayoutAdaptersTransportRoute: DocsLayoutAdaptersTransportRoute,
+    DocsLayoutArchitectureDomainRoute: DocsLayoutArchitectureDomainRoute,
+    DocsLayoutArchitectureExternalIdRoute: DocsLayoutArchitectureExternalIdRoute,
+    DocsLayoutArchitectureOverviewRoute: DocsLayoutArchitectureOverviewRoute,
+    DocsLayoutArchitecturePortsAdaptersRoute: DocsLayoutArchitecturePortsAdaptersRoute,
+    DocsLayoutArchitectureUsernameRoute: DocsLayoutArchitectureUsernameRoute,
+    DocsLayoutConfigurationCustomFieldsRoute: DocsLayoutConfigurationCustomFieldsRoute,
+    DocsLayoutConfigurationHooksRoute: DocsLayoutConfigurationHooksRoute,
+    DocsLayoutConfigurationOverviewRoute: DocsLayoutConfigurationOverviewRoute,
+    DocsLayoutEndpointsMembershipEndpointsRoute: DocsLayoutEndpointsMembershipEndpointsRoute,
+    DocsLayoutEndpointsOrganizationEndpointsRoute: DocsLayoutEndpointsOrganizationEndpointsRoute,
+    DocsLayoutEndpointsOverviewRoute: DocsLayoutEndpointsOverviewRoute,
+    DocsLayoutEndpointsUserEndpointsRoute: DocsLayoutEndpointsUserEndpointsRoute,
+    DocsLayoutExamplesAdvancedSetupRoute: DocsLayoutExamplesAdvancedSetupRoute,
+    DocsLayoutExamplesBasicSetupRoute: DocsLayoutExamplesBasicSetupRoute,
+    DocsLayoutExamplesRealWorldRoute: DocsLayoutExamplesRealWorldRoute,
+    DocsLayoutGettingStartedInstallationRoute: DocsLayoutGettingStartedInstallationRoute,
+    DocsLayoutGettingStartedIntroductionRoute: DocsLayoutGettingStartedIntroductionRoute,
+    DocsLayoutGettingStartedQuickStartRoute: DocsLayoutGettingStartedQuickStartRoute,
+    DocsLayoutGuidesCustomAdaptersRoute: DocsLayoutGuidesCustomAdaptersRoute,
+    DocsLayoutGuidesDeploymentRoute: DocsLayoutGuidesDeploymentRoute,
+    DocsLayoutGuidesTestingRoute: DocsLayoutGuidesTestingRoute,
+    DocsLayoutUseCasesMembershipManagementRoute: DocsLayoutUseCasesMembershipManagementRoute,
+    DocsLayoutUseCasesOrganizationManagementRoute: DocsLayoutUseCasesOrganizationManagementRoute,
+    DocsLayoutUseCasesOverviewRoute: DocsLayoutUseCasesOverviewRoute,
+    DocsLayoutUseCasesUserManagementRoute: DocsLayoutUseCasesUserManagementRoute
+};
 
-const DocsLayoutRouteWithChildren = DocsLayoutRoute._addFileChildren(
-  DocsLayoutRouteChildren,
-)
+const DocsLayoutRouteWithChildren = DocsLayoutRoute._addFileChildren(DocsLayoutRouteChildren);
 
 interface DocsRouteChildren {
-  DocsLayoutRoute: typeof DocsLayoutRouteWithChildren
+    DocsLayoutRoute: typeof DocsLayoutRouteWithChildren;
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
-  DocsLayoutRoute: DocsLayoutRouteWithChildren,
-}
+    DocsLayoutRoute: DocsLayoutRouteWithChildren
+};
 
-const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
+const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  PrivacyRoute: PrivacyRoute,
-  DocsRoute: DocsRouteWithChildren,
-}
+    IndexRoute: IndexRoute,
+    PrivacyRoute: PrivacyRoute,
+    BlogRoute: BlogRouteWithChildren,
+    DocsRoute: DocsRouteWithChildren
+};
 export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+    ._addFileChildren(rootRouteChildren)
+    ._addFileTypes<FileRouteTypes>();

@@ -60,6 +60,12 @@ export function Header() {
                         >
                             Docs
                         </Link>
+                        <a
+                            href="/blog"
+                            className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors"
+                        >
+                            Blog
+                        </a>
                     </div>
 
                     {/* Actions */}
@@ -135,6 +141,12 @@ export function Header() {
                             >
                                 Docs
                             </Link>
+                            <a
+                                href="/blog"
+                                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors self-center"
+                            >
+                                Blog
+                            </a>
                             <button
                                 type="button"
                                 onClick={() => setIsMobileMenuOpen(false)}

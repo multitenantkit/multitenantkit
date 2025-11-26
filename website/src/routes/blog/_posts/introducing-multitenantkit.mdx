@@ -1,0 +1,116 @@
+---
+title: "Introducing MultiTenantKit: The Open-Source Multi-Tenant Toolkit for TypeScript"
+description: "Today we're excited to announce MultiTenantKit — a production-ready, headless TypeScript toolkit that provides the business logic for managing Users, Organizations, and Memberships in B2B SaaS applications."
+date: "2025-11-26"
+author: "MultiTenantKit Team"
+coverImage: "/blog/introducing-multitenantkit-cover.svg"
+tags: ["announcement", "open-source", "typescript", "saas"]
+featured: true
+---
+
+We're thrilled to announce the public release of **MultiTenantKit** — a production-ready, open-source TypeScript toolkit designed to accelerate the development of multi-tenant B2B SaaS applications.
+
+## The Problem We're Solving
+
+Every B2B SaaS application needs the same foundational features:
+
+- **User management** — Create, update, and manage user profiles
+- **Organization/Team management** — Multi-tenant containers for companies
+- **Membership management** — Role-based access control within organizations
+
+Yet, developers spend weeks (or months) rebuilding this same infrastructure for every new project. The alternatives aren't great either:
+
+- **SaaS platforms** lock your data in their infrastructure
+- **Auth providers** only handle authentication, not multi-tenancy
+- **Existing libraries** are often tightly coupled to specific frameworks
+
+## Enter MultiTenantKit
+
+MultiTenantKit takes a different approach. It's a **library that runs in your codebase**, giving you:
+
+- 🎯 **18 Production-Ready Use Cases** — User CRUD, organization management, membership workflows
+- 🏗️ **Hexagonal Architecture** — Swap databases, frameworks, or auth providers without changing business logic
+- 🔧 **Full Extensibility** — Add custom fields with type-safe Zod schemas
+- 🪝 **Powerful Hooks** — Inject custom logic at any point in the use case lifecycle
+
+## Quick Start
+
+Get a complete API running in 3 lines of code:
+
+```typescript
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+
+const app = createSupabaseExpressApp();
+
+app.listen(3000);
+```
+
+**That's it.** You now have 18 endpoints for managing users, organizations, and memberships.
+
+> 📋 **Note:** Before running, you'll need to set up your database tables. Check out the [Installation Guide](/docs/getting-started/installation) for the complete setup instructions.
+
+## Make It Yours
+
+Need to store additional data? Add custom fields with type-safe Zod schemas:
+
+```typescript
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+import { z } from 'zod';
+
+const app = createSupabaseExpressApp({
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        avatar: z.string().url().optional(),
+      }),
+    },
+  },
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        industry: z.string().optional(),
+        size: z.enum(['startup', 'small', 'medium', 'enterprise']).optional(),
+      }),
+    },
+  },
+});
+
+app.listen(3000);
+```
+
+Want to send a welcome email when a user is created? Use hooks:
+
+```typescript
+const app = createSupabaseExpressApp({
+  useCaseHooks: {
+    CreateUser: {
+      afterExecution: async ({ stepResults }) => {
+        await sendWelcomeEmail(stepResults.output.email);
+      },
+    },
+  },
+});
+```
+
+## What's Next?
+
+We're just getting started. On our roadmap:
+
+- 🔄 **Webhooks & Events** — React to changes in real-time
+- 📧 **Email Invitations** — Complete invitation flow
+- 🔐 **More Auth Adapters** — Auth0, Firebase, custom JWT
+- 📊 **Audit Logs** — Track all operations
+- 💳 **Billing Integration** — Connect organizations with subscription plans
+
+## Get Involved
+
+MultiTenantKit is open source and we'd love your contributions:
+
+- ⭐ [Star us on GitHub](https://github.com/multitenantkit/multitenantkit)
+- 📖 [Read the Documentation](/docs)
+- 🐛 [Report Issues](https://github.com/multitenantkit/multitenantkit/issues)
+- 💡 [Suggest Features](https://github.com/multitenantkit/multitenantkit/issues)
+
+We're excited to see what you build with MultiTenantKit!

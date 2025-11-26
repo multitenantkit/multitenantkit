@@ -27,11 +27,10 @@ export function ComparisonSection() {
 // 🐛 Easy to introduce bugs`;
 
     const withCode = `// ✅ With MultiTenantKit
-import { createExpressApp } from '@multitenantkit/sdk';
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
-const app = createExpressApp();
+const app = createSupabaseExpressApp();
 app.listen(3000);
-// Works with Express, Lambda, Hono, Fastify...
 
 // ⚡ 30 seconds
 // ✨ 18 production endpoints

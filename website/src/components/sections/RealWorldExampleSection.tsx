@@ -81,29 +81,28 @@ describe('Organizations', () => {
 
     const withCode = `// ✅ The MultiTenantKit way
 
-import { createExpressApp } from '@multitenantkit/sdk';
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
 // 1. Define your custom fields (if needed)
-const app = createExpressApp({
-  namingStrategy: 'snake_case',
-  organizations: {
-    customFields: {
-      customSchema: z.object({
-        plan: z.enum(['free', 'pro', 'enterprise']),
-        maxMembers: z.number().default(5),
-        billingEmail: z.string().email()
-      })
-    }
-  },
+const app = createSupabaseExpressApp({
   users: {
     customFields: {
       customSchema: z.object({
-        department: z.string(),
-        role: z.string()
-      })
-    }
-  }
+        firstName: z.string(),
+        lastName: z.string(),
+        avatar: z.string().url().optional(),
+      }),
+    },
+  },
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        industry: z.string().optional(),
+        size: z.enum(['startup', 'small', 'medium', 'enterprise']).optional(),
+      }),
+    },
+  },
 });
 
 // 2. That's it. Start your server.

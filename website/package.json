@@ -4,8 +4,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "dev": "npm run docs:generate && vite",
-        "build": "npm run docs:generate && tsc && vite build",
+        "dev": "npm run docs:generate && npm run blog:generate && vite",
+        "build": "npm run docs:generate && npm run blog:generate && tsc && vite build",
         "preview": "vite preview",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
@@ -15,6 +15,7 @@
         "sst:dev": "sst dev",
         "sst:shell": "sst shell",
         "docs:generate": "tsx scripts/generate-docs-routes.ts && npm run fix:safe",
+        "blog:generate": "tsx scripts/generate-blog-routes.ts && npm run fix:safe",
         "fix:safe": "biome check --write ."
     },
     "dependencies": {

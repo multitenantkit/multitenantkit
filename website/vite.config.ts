@@ -34,8 +34,8 @@ export default defineConfig({
         TanStackRouterVite({
             routesDirectory: './src/routes',
             generatedRouteTree: './src/routeTree.gen.ts',
-            // Ignore component and utility files
-            routeFileIgnorePattern: '(_components|_lib)'
+            // Ignore component, utility, content and style files
+            routeFileIgnorePattern: '(_components|_lib|_posts|_styles)'
         })
     ],
     resolve: {

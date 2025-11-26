@@ -10,9 +10,10 @@ export const Route = createRootRoute({
 function RootComponent() {
     const matches = useMatches();
     const isDocsRoute = matches.some((match) => match.pathname.startsWith('/docs'));
+    const isBlogRoute = matches.some((match) => match.pathname.startsWith('/blog'));
 
-    // Don't render header/footer in docs (DocsLayout has its own layout)
-    if (isDocsRoute) {
+    // Don't render header/footer in docs or blog (they have their own layouts)
+    if (isDocsRoute || isBlogRoute) {
         return (
             <>
                 <ScrollToTop />
