@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/sdk",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Complete SDK for building multi-tenant SaaS applications - includes all adapters and options",
     "keywords": [
         "multitenantkit",

@@ -1,5 +1,11 @@
 # @multitenantkit/sdk
 
+## 0.1.3
+
+### Patch Changes
+
+- simplify Supabase SDK by removing custom interfaces and using standard ToolkitOptions
+
 ## 0.1.2
 
 ### Patch Changes
