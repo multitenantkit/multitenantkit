@@ -11,7 +11,7 @@ export const blogPosts: BlogPostMeta[] = [
             "Today we're excited to announce MultiTenantKit — a production-ready, headless TypeScript toolkit that provides the business logic for managing Users, Organizations, and Memberships in B2B SaaS applications.",
         date: '2025-11-26',
         author: 'MultiTenantKit Team',
-        coverImage: '/blog/introducing-multitenantkit-cover.svg',
+        coverImage: '/blog-images/introducing-multitenantkit-cover.svg',
         tags: ['announcement', 'open-source', 'typescript', 'saas'],
         featured: true
     }

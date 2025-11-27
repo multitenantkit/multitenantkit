@@ -97,16 +97,9 @@ Create `src/index.ts`:
 
 ```typescript
 import 'dotenv/config';
-import { createExpressApp } from '@multitenantkit/sdk';
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
-const app = createExpressApp({
-  users: {
-    database: {
-      schema: 'auth',
-      table: 'users'
-    }
-  }
-});
+const app = createSupabaseExpressApp();
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

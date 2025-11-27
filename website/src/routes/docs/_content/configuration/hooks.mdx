@@ -46,9 +46,9 @@ Hook execute in this order during use case execution:
 Configure hooks in your toolkit options when creating your Express app:
 
 ```typescript
-import { createExpressApp } from '@multitenantkit/sdk';
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
-const app = createExpressApp({
+const app = createSupabaseExpressApp({
   useCaseHooks: {
     // Hooks for GetUser use case
     GetUser: {

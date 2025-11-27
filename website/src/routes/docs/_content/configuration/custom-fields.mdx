@@ -57,7 +57,55 @@ CREATE TABLE organization_memberships (
 
 Define custom fields using Zod schemas and configure how they map to your database.
 
-### Example Setup
+### With Supabase (Recommended)
+
+If you're using Supabase, `createSupabaseExpressApp` handles all the configuration automatically. You only need to provide your custom field schemas:
+
+```typescript
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+import { z } from 'zod';
+
+const app = createSupabaseExpressApp({
+  users: {
+    customFields: {
+      customSchema: z.object({
+        firstName: z.string().min(1).max(100),
+        lastName: z.string().min(1).max(100),
+      }),
+    },
+  },
+  organizations: {
+    customFields: {
+      customSchema: z.object({
+        name: z.string().min(1).max(100),
+        industry: z.string().optional(),
+      }),
+    },
+  },
+  organizationMemberships: {
+    customFields: {
+      customSchema: z.object({
+        department: z.string().optional(),
+        jobTitle: z.string().optional(),
+      }),
+    },
+  },
+});
+
+app.listen(3000);
+```
+
+<Callout type="info">
+**What `createSupabaseExpressApp` configures automatically:**
+- Uses `auth.users` table with `raw_user_meta_data` for custom fields
+- Maps `externalId` → `id` and `username` → `email`
+- Uses `public.organizations` and `public.organization_memberships` tables
+- Sets `namingStrategy: 'snake_case'`
+</Callout>
+
+### Full Control with `createExpressApp`
+
+For non-Supabase setups or when you need full control over field mapping, use `createExpressApp`:
 
 ```typescript
 import { createExpressApp } from '@multitenantkit/sdk';
@@ -145,10 +193,7 @@ const toolkitOptions = {
 // Create Express app with custom fields configured
 const app = createExpressApp(toolkitOptions);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
-});
+app.listen(3000);
 ```
 
 ## Using Custom Fields
@@ -386,15 +431,13 @@ CREATE TABLE users (
 
 ## Complete Example
 
-Here's a real-world example combining all features:
+Here's a real-world example combining custom fields with nested objects and custom mappers:
 
 ```typescript
-import { createUseCases } from '@multitenantkit/composition';
-import { createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+import { createExpressApp } from '@multitenantkit/sdk';
 import { z } from 'zod';
 
-const toolkitOptions = {
-  // Global naming strategy
+const app = createExpressApp({
   namingStrategy: 'snake_case',
 
   users: {
@@ -442,7 +485,6 @@ const toolkitOptions = {
         employeeCount: z.number().int().positive().optional()
       })
     }
-    // Uses global snake_case strategy
   },
 
   organizationMemberships: {
@@ -453,36 +495,16 @@ const toolkitOptions = {
       })
     }
   }
-};
+});
 
-// Initialize
-const persistenceAdapters = createPostgresAdapters(undefined, toolkitOptions);
-const systemAdapters = createSystemAdapters();
-const useCases = createUseCases(
-  {
-    persistence: persistenceAdapters,
-    system: systemAdapters
-  },
-  toolkitOptions
-);
-
-// Use with custom fields
-const result = await useCases.users.createUser.execute(
-  {
-    externalId: 'supabase-user-123',
-    username: 'john@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    phoneNumber: '+1234567890',
-    preferences: {
-      theme: 'dark',
-      notifications: true
-    }
-    requestId: crypto.randomUUID(),
-    actorUserId: 'supabase-user-123'
-  }
-);
+app.listen(3000, () => {
+  console.log('🚀 Server running on http://localhost:3000');
+});
 ```
+
+<Callout type="tip">
+**Using Supabase?** You can simplify this significantly with `createSupabaseExpressApp` — see the [Basic Configuration](#with-supabase-recommended) section above.
+</Callout>
 
 ## Best Practices
 

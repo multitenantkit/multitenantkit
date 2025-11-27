@@ -25,13 +25,9 @@ MultiTenantKit provides two ways to set up your API:
 Create a complete Express application with all MultiTenantKit endpoints:
 
 ```typescript
-import { createExpressApp } from '@multitenantkit/sdk';
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
-const app = createExpressApp({
-  users: {
-    database: { schema: 'auth', table: 'users' }
-  }
-});
+const app = createSupabaseExpressApp();
 
 app.listen(3000);
 ```

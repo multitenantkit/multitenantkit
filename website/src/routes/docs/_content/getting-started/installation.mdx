@@ -127,37 +127,39 @@ DB_POOL_SIZE=10
 
 ## Verify Installation
 
-Create a simple test file to verify your setup:
+Create a simple Express server to verify your setup:
 
-```typescript title="test.ts"
-import { createUseCases, createPostgresAdapters, createSystemAdapters } from '@multitenantkit/composition';
+```typescript title="index.ts"
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
-const toolkitOptions = {
-  namingStrategy: 'snake_case' as const
-};
+const app = createSupabaseExpressApp();
 
-const persistenceAdapters = createPostgresAdapters(undefined, toolkitOptions);
-const systemAdapters = createSystemAdapters();
-
-const useCases = createUseCases(
-  {
-    persistence: persistenceAdapters,
-    system: systemAdapters
-  },
-  toolkitOptions
-);
-
-console.log('✅ MultiTenantKit initialized successfully!');
-console.log('Available use cases:', Object.keys(useCases));
+app.listen(3000, () => {
+  console.log('✅ MultiTenantKit server running on http://localhost:3000');
+  console.log('');
+  console.log('Available endpoints:');
+  console.log('  GET    /users/me');
+  console.log('  PATCH  /users/me');
+  console.log('  POST   /organizations');
+  console.log('  GET    /organizations/:id');
+  console.log('  ...and 14 more!');
+});
 ```
 
-Run the test:
+Run the server:
 
 ```bash
-npx tsx test.ts
+npx tsx index.ts
 ```
 
 If you see the success message, you're all set! 🎉
+
+Test it with curl (you'll need a valid Supabase JWT token):
+
+```bash
+curl http://localhost:3000/users/me \
+  -H "Authorization: Bearer YOUR_SUPABASE_JWT_TOKEN"
+```
 
 ## Next Steps
 
