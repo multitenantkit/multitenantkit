@@ -1,5 +1,14 @@
 # @multitenantkit/sdk
 
+## 0.1.4
+
+### Patch Changes
+
+- rename `afterExecution` hook to `onSuccess` and prevent its errors from failing the use case
+- Updated dependencies
+  - @multitenantkit/domain-contracts@0.1.2
+  - @multitenantkit/domain@0.1.3
+
 ## 0.1.3
 
 ### Patch Changes
