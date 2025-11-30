@@ -86,7 +86,7 @@ Want to send a welcome email when a user is created? Use hooks:
 const app = createSupabaseExpressApp({
   useCaseHooks: {
     CreateUser: {
-      afterExecution: async ({ stepResults }) => {
+      onSuccess: async ({ stepResults }) => {
         await sendWelcomeEmail(stepResults.output.email);
       },
     },

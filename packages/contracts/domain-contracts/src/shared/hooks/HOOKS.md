@@ -26,7 +26,7 @@ Hooks execute in the following order during a use case execution:
                           ↓
 3. beforeExecution      → After authorization, before business logic
                           ↓
-4. afterExecution       → After successful business logic
+4. onSuccess       → After successful business logic
                           ↓
 5. onError              → If an error occurs (alternative path)
    OR
@@ -83,7 +83,7 @@ Results from previous pipeline steps. Available results depend on which hook is 
 | `onStart`         | none                                       |
 | `afterValidation` | `validatedInput`                           |
 | `beforeExecution` | `validatedInput`, `authorized`             |
-| `afterExecution`  | `validatedInput`, `authorized`, `output`   |
+| `onSuccess`  | `validatedInput`, `authorized`, `output`   |
 | `onError`         | varies (depends on where error occurred)   |
 | `onAbort`         | varies (depends on where abort was called) |
 | `onFinally`       | all available                              |
@@ -94,7 +94,7 @@ afterValidation: ({ stepResults }) => {
     console.log('Validated input:', validated);
 };
 
-afterExecution: ({ stepResults }) => {
+onSuccess: ({ stepResults }) => {
     const output = stepResults.output!;
     console.log('Business logic output:', output);
 };
@@ -338,9 +338,9 @@ beforeExecution: async ({ stepResults, context, adapters, shared, abort }) => {
 
 ---
 
-### 4. afterExecution
+### 4. onSuccess
 
-**Executes**: After business logic executes successfully
+**Executes**: After business logic executes successfully and output is validated
 **Available in context**: `input`, `stepResults.validatedInput`, `stepResults.output`, `adapters`, `shared`, `context`, `abort()`
 
 **Use cases**:
@@ -351,12 +351,12 @@ beforeExecution: async ({ stepResults, context, adapters, shared, abort }) => {
 - Triggering dependent workflows
 - Updating caches
 
-**Important**: If this hook throws an error, execution is aborted and `onError` is triggered. To prevent abortion on side effect failures, wrap in try/catch.
+**Important**: Errors thrown in this hook are **caught and logged** but do **NOT fail the business operation**. The use case will still return success. However, the `onError` hook is optionally triggered for tracking purposes. This behavior ensures that side effect failures don't prevent the core business operation from succeeding.
 
 **Example**:
 
 ```typescript
-afterExecution: async ({ stepResults, adapters, shared, context }) => {
+onSuccess: async ({ stepResults, adapters, shared, context }) => {
     const output = stepResults.output!;
 
     // Side effect: send welcome email (don't abort on failure)
@@ -389,7 +389,7 @@ afterExecution: async ({ stepResults, adapters, shared, context }) => {
     await adapters.observability?.logHookExecution({
         requestId: context.requestId,
         useCaseName: 'CreateUser',
-        hookName: 'afterExecution',
+        hookName: 'onSuccess',
         executionId: context.requestId,
         timestamp: new Date(),
         params: { userId: output.id, success: true }
@@ -622,7 +622,7 @@ const config: ToolkitOptions = {
                 console.log(input.externalId); // ✅ Correct
                 console.log(input.invalidField); // ❌ TypeScript error
             },
-            afterExecution: ({ stepResults }) => {
+            onSuccess: ({ stepResults }) => {
                 // TypeScript knows: output is CreateUserOutput
                 const output = stepResults.output!;
                 console.log(output.id); // ✅ Correct
@@ -687,7 +687,7 @@ DeleteUser: {
 
 ```typescript
 CreateOrganization: {
-    afterExecution: async ({ stepResults, shared }) => {
+    onSuccess: async ({ stepResults, shared }) => {
         const output = stepResults.output!;
 
         // Send email (don't abort on failure)
@@ -787,7 +787,7 @@ Side effects should not abort execution on failure:
 
 ```typescript
 ✅ Good: Catching side effect errors
-afterExecution: async ({ stepResults, shared }) => {
+onSuccess: async ({ stepResults, shared }) => {
   try {
     await emailService.send(stepResults.output);
     shared.emailSent = true;
@@ -798,7 +798,7 @@ afterExecution: async ({ stepResults, shared }) => {
 }
 
 ❌ Bad: Letting side effect errors propagate
-afterExecution: async ({ stepResults }) => {
+onSuccess: async ({ stepResults }) => {
   await emailService.send(stepResults.output); // Will abort if fails
 }
 ```
@@ -873,7 +873,7 @@ Choose the right hook for your use case:
 - **onStart**: Setup, rate limiting, feature flags
 - **afterValidation**: Custom validations, resource checks
 - **beforeExecution**: Audit logging, final checks
-- **afterExecution**: Side effects, notifications
+- **onSuccess**: Side effects, notifications
 - **onError**: Error logging, alerts
 - **onAbort**: Abort logging, abort-specific handling
 - **onFinally**: Metrics, cleanup, always-run operations
@@ -1031,9 +1031,9 @@ useCaseHooks: {
 
 **A**: Use the `shared` object: `shared.myData = value`.
 
-### Q: What if my side effect fails in `afterExecution`?
+### Q: What if my side effect fails in `onSuccess`?
 
-**A**: Wrap side effects in try/catch to prevent aborting the execution on side effect failures.
+**A**: Side effect errors in `onSuccess` are automatically caught and logged. The business operation will still return success. You can optionally wrap them in try/catch for custom error handling, but it's no longer required to prevent execution abortion.
 
 ---
 

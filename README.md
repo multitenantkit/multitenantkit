@@ -207,7 +207,7 @@ Want to send welcome emails? Track analytics? Rate limit? Add custom validation?
 const config = {
   useCaseHooks: {
     CreateUser: {
-      afterExecution: async ({ output }) => {
+      onSuccess: async ({ output }) => {
         // Send welcome email after user is created
         await emailService.sendWelcome(output.email);
       }
@@ -346,7 +346,7 @@ MultiTenantKit is designed to adapt to **your** database and requirements:
 | **Column Mapping** | Rename base fields to match your existing DB (`externalId` → `auth_id`) |
 | **Naming Strategies** | Auto-convert field names (`camelCase` ↔ `snake_case`, `kebab-case`, `PascalCase`) |
 | **Custom Mappers** | Complex transformations for denormalized or legacy schemas |
-| **Use Case Hooks** | Inject logic at 7 lifecycle points + abort mechanism (onStart, afterValidation, beforeExecution, afterExecution, onError, onAbort, onFinally) |
+| **Use Case Hooks** | Inject logic at 7 lifecycle points + abort mechanism (onStart, afterValidation, beforeExecution, onSuccess, onError, onAbort, onFinally) |
 | **Response Transformers** | Modify HTTP responses without touching domain logic |
 | **Database Schemas** | Configure schema names, table names per entity |
 

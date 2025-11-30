@@ -59,7 +59,7 @@ import type { UseCaseHooks } from './UseCaseHooks';
  *             // input is type-safe: CreateUserInput
  *             console.log(input.externalId); // ✅ TypeScript knows this exists
  *         },
- *         afterExecution: ({ output }) => {
+ *         onSuccess: ({ output }) => {
  *             // output is type-safe: CreateUserOutput
  *             console.log(output.id); // ✅ Correct
  *         }

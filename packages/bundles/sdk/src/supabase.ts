@@ -173,7 +173,7 @@ function applySupabaseDefaults<
  *   },
  *   useCaseHooks: {
  *     CreateUser: {
- *       afterExecution: async ({ stepResults }) => {
+ *       onSuccess: async ({ stepResults }) => {
  *         await sendWelcomeEmail(stepResults.output.email);
  *       }
  *     }

@@ -240,7 +240,7 @@ export interface ToolkitOptions<
      * Allows executing custom logic at specific points during use case execution:
      * - onStart: Before input validation
      * - afterValidation: After successful input validation
-     * - afterExecution: After successful business logic execution
+     * - onSuccess: After successful business logic execution
      * - onError: When an error occurs
      * - onFinally: Always executes at the end
      *

@@ -32,7 +32,7 @@ Hook execute in this order during use case execution:
                       ↓
 3. beforeExecution  → After authorization, before business logic
                       ↓
-4. afterExecution   → After successful business logic
+4. onSuccess   → After successful business logic
                       ↓
 5. onError          → If an error occurs (alternative path)
    OR
@@ -122,7 +122,7 @@ Available results depend on which hook is executing:
 | `onStart`         | none                                     |
 | `afterValidation` | `validatedInput`                         |
 | `beforeExecution` | `validatedInput`, `authorized`           |
-| `afterExecution`  | `validatedInput`, `authorized`, `output` |
+| `onSuccess`  | `validatedInput`, `authorized`, `output` |
 | `onError`         | varies (depends on where error occurred) |
 | `onAbort`         | varies (depends on where abort called)   |
 | `onFinally`       | all available                            |
@@ -333,9 +333,9 @@ DeleteOrganization: {
 }
 ```
 
-### 4. afterExecution
+### 4. onSuccess
 
-**Executes**: After business logic succeeds
+**Executes**: After business logic succeeds and output is validated
 
 **Use cases**:
 - Side effects (emails, notifications, webhooks)
@@ -343,13 +343,13 @@ DeleteOrganization: {
 - Updating caches
 - Triggering workflows
 
-**Important**: Wrap side effects in try/catch to prevent aborting on failures.
+**Important**: Errors in this hook are **caught and logged** but do **NOT fail the operation**. The business logic succeeded, so the use case returns success. However, `onError` is optionally triggered for tracking. This ensures side effect failures don't break your core business operations.
 
 **Example**:
 
 ```typescript
 CreateOrganization: {
-  afterExecution: async ({ stepResults, shared, context }) => {
+  onSuccess: async ({ stepResults, shared, context }) => {
     const output = stepResults.output!;
 
     // Send welcome email (don't abort on failure)
@@ -570,7 +570,7 @@ afterValidation: () => {
 ✅ **Good**: Catching side effect errors
 
 ```typescript
-afterExecution: async ({ stepResults, shared }) => {
+onSuccess: async ({ stepResults, shared }) => {
   try {
     await emailService.send(stepResults.output);
     shared.emailSent = true;
@@ -584,7 +584,7 @@ afterExecution: async ({ stepResults, shared }) => {
 ❌ **Bad**: Letting side effect errors propagate
 
 ```typescript
-afterExecution: async ({ stepResults }) => {
+onSuccess: async ({ stepResults }) => {
   await emailService.send(stepResults.output); // Will abort if fails
 }
 ```
@@ -641,7 +641,7 @@ afterValidation: ({ abort }) => {
 - **onStart**: Setup, rate limiting, feature flags
 - **afterValidation**: Custom validations, resource checks
 - **beforeExecution**: Audit logging, final checks
-- **afterExecution**: Side effects, notifications
+- **onSuccess**: Side effects, notifications
 - **onError**: Error logging, alerts
 - **onAbort**: Abort logging, abort-specific handling
 - **onFinally**: Cleanup, always-run operations
@@ -658,7 +658,7 @@ useCaseHooks: {
       console.log(input.userId); // ✅ Correct
       console.log(input.invalidField); // ❌ TypeScript error
     },
-    afterExecution: ({ stepResults }) => {
+    onSuccess: ({ stepResults }) => {
       // TypeScript knows: output is GetUserOutput
       const output = stepResults.output!;
       console.log(output.email); // ✅ Correct

@@ -9,7 +9,7 @@ import type { HookContext } from './HookContext';
  * 1. onStart (before validation)
  * 2. afterValidation (after input validation succeeds)
  * 3. beforeExecution (after authorization succeeds, before business logic)
- * 4. afterExecution (after business logic succeeds)
+ * 4. onSuccess (after business logic succeeds)
  * 5. onError (if any error occurs)
  * 6. onAbort (if abort() is called)
  * 7. onFinally (always executes)
@@ -197,7 +197,7 @@ export interface UseCaseHooks<
      *
      * @example
      * ```typescript
-     * afterExecution: async ({ stepResults, adapters, shared }) => {
+     * onSuccess: async ({ stepResults, adapters, shared }) => {
      *     const output = stepResults.output!;
      *
      *     // Side effect that should NOT abort on failure
@@ -218,7 +218,7 @@ export interface UseCaseHooks<
      * }
      * ```
      */
-    afterExecution?: (
+    onSuccess?: (
         ctx: HookContext<
             TInput,
             TOutput,

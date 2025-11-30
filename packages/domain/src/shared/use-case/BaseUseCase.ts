@@ -318,10 +318,10 @@ export abstract class BaseUseCase<
      * 3. Validate input with schema
      * 4. afterValidation hook
      * 5. Authorize (optional)
-     * 6. beforeExecution hook (renamed from afterAuthorization)
+     * 6. beforeExecution hook
      * 7. Execute business logic
-     * 8. afterExecution hook
-     * 9. Parse output with schema
+     * 8. Parse output with schema
+     * 9. onSuccess hook (errors don't fail the operation)
      * 10. onError hook (if error occurs)
      * 11. onAbort hook (if abort requested)
      * 12. onFinally hook (always executes)
@@ -392,11 +392,45 @@ export abstract class BaseUseCase<
                 return businessResult;
             }
 
-            // Store business output in step results
-            this.stepResults.output = businessResult.getValue();
+            // 4. Parse output FIRST - validate before declaring success
+            // This ensures onSuccess hook only runs if output is valid
+            const parsedResult = this.parseOutput(businessResult.getValue());
+            if (parsedResult.isFailure) {
+                // Output validation failed - this is a bug in the use case
+                // Don't execute onSuccess, go straight to onError path
+                return parsedResult;
+            }
 
-            // HOOK 4: afterExecution - after successful business logic
-            await this.executeHook(hooks?.afterExecution, hookCtx, 'afterExecution');
+            // Store parsed output in step results
+            this.stepResults.output = parsedResult.getValue();
+
+            // HOOK 4: onSuccess - after validating output is correct
+            // Errors in this hook are logged but don't fail the operation
+            // The business logic succeeded, so we return success regardless
+            try {
+                await this.executeHook(hooks?.onSuccess, hookCtx, 'onSuccess');
+            } catch (onSuccessError) {
+                // Log error but don't fail the result - business operation succeeded
+                console.error(`Error in onSuccess hook for ${this.useCaseName}:`, onSuccessError);
+
+                // Optional: notify via onError that side effect failed
+                // This allows error tracking without failing the operation
+                try {
+                    if (hooks?.onError) {
+                        this.logMetrics('onError', hookCtx);
+                        await hooks.onError({
+                            ...hookCtx,
+                            error: new InfrastructureError('Side effect failed in onSuccess hook', {
+                                originalError: onSuccessError
+                            })
+                        } as any);
+                    }
+                } catch {
+                    // Silent fail - onError failed, but don't cascade
+                }
+            }
+
+            // Check if hook requested abort
             if (this.checkAborted()) {
                 return Result.fail(new AbortedError(this.abortReason)) as unknown as Result<
                     TOutput,
@@ -404,8 +438,8 @@ export abstract class BaseUseCase<
                 >;
             }
 
-            // 4. Parse and return output
-            return this.parseOutput(businessResult.getValue());
+            // Return successful result with parsed output
+            return parsedResult;
         });
 
         // If result is AbortedError, execute onAbort hook

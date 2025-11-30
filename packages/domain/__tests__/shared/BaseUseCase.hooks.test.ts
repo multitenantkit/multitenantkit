@@ -83,8 +83,8 @@ describe('BaseUseCase - Hooks System', () => {
                 beforeExecution: () => {
                     executionOrder.push('beforeExecution');
                 },
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onFinally: () => {
                     executionOrder.push('onFinally');
@@ -105,7 +105,7 @@ describe('BaseUseCase - Hooks System', () => {
                 'onStart',
                 'afterValidation',
                 'beforeExecution',
-                'afterExecution',
+                'onSuccess',
                 'onFinally'
             ]);
         });
@@ -123,8 +123,8 @@ describe('BaseUseCase - Hooks System', () => {
                 beforeExecution: () => {
                     executionOrder.push('beforeExecution');
                 },
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onError: () => {
                     executionOrder.push('onError');
@@ -153,12 +153,12 @@ describe('BaseUseCase - Hooks System', () => {
             ]);
         });
 
-        it('should not execute afterExecution when business logic fails', async () => {
+        it('should not execute onSuccess when business logic fails', async () => {
             const executionOrder: string[] = [];
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onError: () => {
                     executionOrder.push('onError');
@@ -190,7 +190,7 @@ describe('BaseUseCase - Hooks System', () => {
                     expect(shared.userId).toBe('user-123');
                     shared.validated = true;
                 },
-                afterExecution: ({ shared }) => {
+                onSuccess: ({ shared }) => {
                     expect(shared.startTime).toBe(1000);
                     expect(shared.userId).toBe('user-123');
                     expect(shared.validated).toBe(true);
@@ -242,14 +242,14 @@ describe('BaseUseCase - Hooks System', () => {
 
         it('should provide stepResults with validatedInput and output', async () => {
             let validationStepResults: any = null;
-            let executionStepResults: any = null;
+            let successStepResults: any = null;
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
                 afterValidation: ({ stepResults }) => {
                     validationStepResults = { ...stepResults };
                 },
-                afterExecution: ({ stepResults }) => {
-                    executionStepResults = { ...stepResults };
+                onSuccess: ({ stepResults }) => {
+                    successStepResults = { ...stepResults };
                 }
             };
 
@@ -263,9 +263,9 @@ describe('BaseUseCase - Hooks System', () => {
             await useCase.execute({ value: 'hello' }, context);
 
             expect(validationStepResults.validatedInput).toEqual({ value: 'hello' });
-            expect(executionStepResults.validatedInput).toEqual({ value: 'hello' });
-            expect(executionStepResults.output).toEqual({ result: 'HELLO' });
-            expect(executionStepResults.authorized).toBe(true);
+            expect(successStepResults.validatedInput).toEqual({ value: 'hello' });
+            expect(successStepResults.output).toEqual({ result: 'HELLO' });
+            expect(successStepResults.authorized).toBe(true);
         });
     });
 
@@ -289,8 +289,8 @@ describe('BaseUseCase - Hooks System', () => {
                         context: ctx.context
                     };
                 },
-                afterExecution: (ctx) => {
-                    hookParams.afterExecution = {
+                onSuccess: (ctx) => {
+                    hookParams.onSuccess = {
                         input: ctx.input,
                         output: ctx.stepResults.output,
                         context: ctx.context
@@ -327,10 +327,10 @@ describe('BaseUseCase - Hooks System', () => {
             expect(hookParams.afterValidation.validatedInput).toEqual({ value: 'test' });
             expect(hookParams.afterValidation.context).toBe(context);
 
-            // afterExecution should have input, output and context
-            expect(hookParams.afterExecution.input).toEqual({ value: 'test' });
-            expect(hookParams.afterExecution.output).toEqual({ result: 'TEST' });
-            expect(hookParams.afterExecution.context).toBe(context);
+            // onSuccess should have input, output and context
+            expect(hookParams.onSuccess.input).toEqual({ value: 'test' });
+            expect(hookParams.onSuccess.output).toEqual({ result: 'TEST' });
+            expect(hookParams.onSuccess.context).toBe(context);
 
             // onFinally should have input, result and context
             expect(hookParams.onFinally.input).toEqual({ value: 'test' });
@@ -376,8 +376,8 @@ describe('BaseUseCase - Hooks System', () => {
                 beforeExecution: () => {
                     executionOrder.push('beforeExecution');
                 },
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onError: () => {
                     executionOrder.push('onError');
@@ -414,8 +414,8 @@ describe('BaseUseCase - Hooks System', () => {
                 beforeExecution: () => {
                     executionOrder.push('beforeExecution');
                 },
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onError: () => {
                     executionOrder.push('onError');
@@ -438,12 +438,13 @@ describe('BaseUseCase - Hooks System', () => {
             expect(executionOrder).toEqual(['onStart', 'afterValidation', 'onError', 'onFinally']);
         });
 
-        it('should continue when afterExecution throws error (side effect)', async () => {
+        it('should continue when onSuccess throws error (side effect)', async () => {
             const executionOrder: string[] = [];
+            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                     throw new Error('Email service failed');
                 },
                 onError: () => {
@@ -463,8 +464,11 @@ describe('BaseUseCase - Hooks System', () => {
             const useCase = new TestUseCase(adapters, config);
             const result = await useCase.execute({ value: 'test' }, context);
 
-            expect(result.isFailure).toBe(true);
-            expect(executionOrder).toEqual(['afterExecution', 'onError', 'onFinally']);
+            // NEW BEHAVIOR: onSuccess errors don't fail the operation
+            expect(result.isSuccess).toBe(true);
+            expect(executionOrder).toEqual(['onSuccess', 'onError', 'onFinally']);
+
+            consoleErrorSpy.mockRestore();
         });
 
         it('should abort gracefully when abort() is called', async () => {
@@ -481,8 +485,8 @@ describe('BaseUseCase - Hooks System', () => {
                 beforeExecution: () => {
                     executionOrder.push('beforeExecution');
                 },
-                afterExecution: () => {
-                    executionOrder.push('afterExecution');
+                onSuccess: () => {
+                    executionOrder.push('onSuccess');
                 },
                 onError: () => {
                     executionOrder.push('onError');
@@ -673,9 +677,9 @@ describe('BaseUseCase - Hooks System', () => {
                     executionOrder.push('afterValidation');
                     expect(shared.asyncStart).toBe(true);
                 },
-                afterExecution: async () => {
+                onSuccess: async () => {
                     await delay(10);
-                    executionOrder.push('afterExecution');
+                    executionOrder.push('onSuccess');
                 },
                 onFinally: async () => {
                     await delay(10);
@@ -696,7 +700,7 @@ describe('BaseUseCase - Hooks System', () => {
             expect(executionOrder).toEqual([
                 'onStart',
                 'afterValidation',
-                'afterExecution',
+                'onSuccess',
                 'onFinally'
             ]);
         });
@@ -780,7 +784,7 @@ describe('BaseUseCase - Hooks System', () => {
             const emailErrors: string[] = [];
 
             const hooks: UseCaseHooks<{ value: string }, { result: string }, any> = {
-                afterExecution: async ({ stepResults }) => {
+                onSuccess: async ({ stepResults }) => {
                     const output = stepResults.output;
                     // Side effect - send email (wrapped in try/catch to not abort)
                     try {

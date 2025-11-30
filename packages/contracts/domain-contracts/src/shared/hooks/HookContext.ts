@@ -75,7 +75,7 @@ export interface HookContext<
      * - onStart: none
      * - afterValidation: validatedInput
      * - beforeExecution: validatedInput, authorized
-     * - afterExecution: validatedInput, authorized, output
+     * - onSuccess: validatedInput, authorized, output
      * - onError: varies depending on where error occurred
      * - onFinally: all available
      *

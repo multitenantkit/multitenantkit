@@ -7,7 +7,7 @@
  * - Graceful abort mechanism via ctx.abort(reason)
  * - Immutable input and stepResults (readonly)
  * - Shared mutable state between hooks
- * - Full lifecycle hooks: onStart, afterValidation, beforeExecution, afterExecution, onError, onAbort, onFinally
+ * - Full lifecycle hooks: onStart, afterValidation, beforeExecution, onSuccess, onError, onAbort, onFinally
  *
  * @example
  * ```typescript
