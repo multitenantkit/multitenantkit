@@ -112,6 +112,12 @@ export const docsStructure: DocsSection[] = [
                 description: 'Extend use case behavior',
                 url: '/docs/configuration/hooks',
                 slug: ['configuration', 'hooks']
+            },
+            {
+                title: 'Response Transformers',
+                description: 'Modify HTTP responses without changing business logic',
+                url: '/docs/configuration/response-transformers',
+                slug: ['configuration', 'response-transformers']
             }
         ]
     },
