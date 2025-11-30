@@ -1,4 +1,4 @@
 {
     "title": "Configuration",
-    "pages": ["overview", "custom-fields", "hooks"]
+    "pages": ["overview", "custom-fields", "hooks", "response-transformers"]
 }

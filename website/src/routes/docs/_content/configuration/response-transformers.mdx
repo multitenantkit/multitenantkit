@@ -1,0 +1,558 @@
+---
+title: Response Transformers
+description: Modify HTTP responses without changing business logic. Add computed fields, remove sensitive data, or customize formats per client.
+lastUpdated: '2025-11-30'
+---
+
+<Callout type="info">
+**Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+</Callout>
+
+## Overview
+
+Response Transformers allow you to modify HTTP responses before they reach the client, without touching your core business logic. They're perfect for adding computed fields, removing sensitive data, transforming field names, or customizing responses per tenant.
+
+### Key Features
+
+- ✅ **Non-invasive**: Modify responses without changing use case logic
+- ✅ **Type-safe**: Full TypeScript support with generics
+- ✅ **Fail-safe**: If transformer errors, original response is returned
+- ✅ **Context-rich**: Access to request, response, and use case result
+- ✅ **Per-endpoint**: Configure transformers for specific handlers
+
+## When to Use Response Transformers
+
+| Use Case | Response Transformer | Use Case Hook |
+|----------|---------------------|---------------|
+| Remove sensitive fields | ✅ Perfect | ❌ Not recommended |
+| Add computed fields | ✅ Perfect | ⚠️ Possible but not ideal |
+| Transform field names | ✅ Perfect | ❌ Not recommended |
+| Send emails/webhooks | ❌ Not designed for this | ✅ Use `onSuccess` hook |
+| Logging/metrics | ❌ Not designed for this | ✅ Use `onFinally` hook |
+| Custom validation | ❌ Not designed for this | ✅ Use `afterValidation` hook |
+
+> **Rule of thumb**: Use Response Transformers for **response formatting**. Use Hooks for **side effects and business logic**.
+
+## How It Works
+
+```
+1. Handler executes use case → Gets domain entity
+                               ↓
+2. Handler builds base response → Standard API format
+                               ↓
+3. Transformer runs (if configured) → Modifies response
+                               ↓
+4. Response sent to client → Transformed or original
+```
+
+## Basic Configuration
+
+Configure transformers in your toolkit options:
+
+```typescript
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+
+const app = createSupabaseExpressApp({
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response }) => {
+        const user = response.body.data;
+        
+        // Remove sensitive field
+        const { internalId, ...publicData } = user;
+        
+        return {
+          ...response,
+          body: {
+            ...response.body,
+            data: publicData
+          }
+        };
+      }
+    }
+  }
+});
+
+app.listen(3000);
+```
+
+## Available Context
+
+Every transformer receives rich context:
+
+```typescript
+interface ResponseTransformerContext<TInput, TOutput> {
+  request: {
+    input: TInput;              // Validated request input
+    principal?: Principal;      // Authenticated user
+    requestId: string;          // Request ID for tracing
+  };
+  response: {
+    status: number;             // HTTP status code (200, 201, etc.)
+    body: any;                  // Response body (ApiResponse<T>)
+    headers?: Record<string, string>; // HTTP headers
+  };
+  useCaseResult: IResult<TOutput, IDomainError>; // Original use case result
+}
+```
+
+### Example: Using Context
+
+```typescript
+GetUser: async ({ response, request }) => {
+  const user = response.body.data;
+  const isOwnProfile = request.principal?.userId === user.id;
+  
+  return {
+    ...response,
+    body: {
+      ...response.body,
+      data: {
+        ...user,
+        // Only show email if viewing own profile
+        email: isOwnProfile ? user.email : undefined
+      }
+    }
+  };
+}
+```
+
+## Common Use Cases
+
+### 1. Remove Sensitive Fields
+
+```typescript
+const config = {
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response }) => {
+        const { internalId, systemMetadata, ...publicData } = response.body.data;
+        
+        return {
+          ...response,
+          body: { ...response.body, data: publicData }
+        };
+      }
+    }
+  }
+};
+```
+
+### 2. Add Computed Fields
+
+```typescript
+const config = {
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response }) => {
+        const user = response.body.data;
+        
+        return {
+          ...response,
+          body: {
+            ...response.body,
+            data: {
+              ...user,
+              fullName: `${user.firstName} ${user.lastName}`,
+              initials: `${user.firstName[0]}${user.lastName[0]}`.toUpperCase(),
+              avatarUrl: `https://avatars.example.com/${user.id}.jpg`
+            }
+          }
+        };
+      }
+    }
+  }
+};
+```
+
+### 3. Transform Field Names
+
+```typescript
+const toSnakeCase = (str: string) =>
+  str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
+const config = {
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response }) => {
+        const user = response.body.data;
+        
+        // Convert all keys to snake_case
+        const snakeCaseUser = Object.keys(user).reduce((acc, key) => {
+          acc[toSnakeCase(key)] = user[key];
+          return acc;
+        }, {} as any);
+        
+        return {
+          ...response,
+          body: { ...response.body, data: snakeCaseUser }
+        };
+      }
+    }
+  }
+};
+```
+
+### 4. Add Custom Headers
+
+```typescript
+const config = {
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response }) => {
+        return {
+          ...response,
+          headers: {
+            ...response.headers,
+            'Cache-Control': 'public, max-age=300',
+            'ETag': `"${response.body.data.updatedAt}"`
+          }
+        };
+      }
+    }
+  }
+};
+```
+
+### 5. Multi-tenant Customization
+
+```typescript
+const config = {
+  responseTransformers: {
+    organizations: {
+      GetOrganization: async ({ response, request }) => {
+        const org = response.body.data;
+        const tenantId = request.principal?.organizationId;
+        
+        // Load tenant-specific configuration
+        const tenantConfig = await getTenantConfig(tenantId);
+        
+        if (tenantConfig.showInternalData) {
+          return response; // Return full data
+        } else {
+          // Remove internal fields for this tenant
+          const { internalId, budget, ...publicData } = org;
+          return {
+            ...response,
+            body: { ...response.body, data: publicData }
+          };
+        }
+      }
+    }
+  }
+};
+```
+
+## Configuration for All Endpoints
+
+You can configure transformers for any endpoint:
+
+```typescript
+const config = {
+  responseTransformers: {
+    // User endpoints
+    users: {
+      GetUser: myUserTransformer,
+      CreateUser: myCreateUserTransformer,
+      UpdateUser: myUpdateUserTransformer,
+      DeleteUser: myDeleteUserTransformer,
+      ListUserOrganizations: myListOrganizationsTransformer,
+    },
+    
+    // Organization endpoints
+    organizations: {
+      GetOrganization: myOrgTransformer,
+      CreateOrganization: myCreateOrgTransformer,
+      UpdateOrganization: myUpdateOrgTransformer,
+      DeleteOrganization: myDeleteOrgTransformer,
+      ArchiveOrganization: myArchiveOrgTransformer,
+      RestoreOrganization: myRestoreOrgTransformer,
+      TransferOrganizationOwnership: myTransferOwnershipTransformer,
+      ListOrganizationMembers: myListMembersTransformer,
+    },
+    
+    // Membership endpoints
+    organizationMemberships: {
+      AddOrganizationMember: myAddMemberTransformer,
+      RemoveOrganizationMember: myRemoveMemberTransformer,
+      UpdateOrganizationMember: myUpdateMemberTransformer,
+      LeaveOrganization: myLeaveOrgTransformer,
+    },
+  }
+};
+```
+
+## Reusable Transformers
+
+Create factory functions for reusable transformers:
+
+```typescript
+// Factory function to remove specified fields
+function createFieldRemover<T extends Record<string, any>>(
+  fieldsToRemove: string[]
+) {
+  return async ({ response }: any) => {
+    const data = response.body.data;
+    
+    const cleanedData = Object.keys(data).reduce((acc, key) => {
+      if (!fieldsToRemove.includes(key)) {
+        acc[key] = data[key];
+      }
+      return acc;
+    }, {} as T);
+    
+    return {
+      ...response,
+      body: { ...response.body, data: cleanedData }
+    };
+  };
+}
+
+// Usage
+const config = {
+  responseTransformers: {
+    users: {
+      GetUser: createFieldRemover(['internalId', 'systemMetadata']),
+      CreateUser: createFieldRemover(['internalId']),
+    },
+    organizations: {
+      GetOrganization: createFieldRemover(['internalId', 'budget']),
+    }
+  }
+};
+```
+
+## Best Practices
+
+### 1. Keep Transformers Simple
+
+```typescript
+// ✅ Good: Single responsibility
+const removeInternalId = async ({ response }) => {
+  const { internalId, ...data } = response.body.data;
+  return { ...response, body: { ...response.body, data } };
+};
+
+// ❌ Bad: Too many responsibilities
+const doEverything = async ({ response }) => {
+  // Removing fields, adding fields, fetching data, logging...
+  // Split this into multiple transformers or move to use case
+};
+```
+
+### 2. Handle Errors Gracefully
+
+Always wrap transformers in try/catch:
+
+```typescript
+const safeTransformer = async (context) => {
+  try {
+    const { response } = context;
+    // Transformation logic
+    return transformedResponse;
+  } catch (error) {
+    console.error('Transformer failed:', error);
+    return context.response; // Return original on error
+  }
+};
+```
+
+### 3. Avoid Heavy Operations
+
+```typescript
+// ❌ Bad: Database queries in transformer
+const badTransformer = async ({ response }) => {
+  const additionalData = await db.query(...); // Slow!
+  // ...
+};
+
+// ✅ Good: Simple data transformation
+const goodTransformer = async ({ response }) => {
+  const data = response.body.data;
+  return {
+    ...response,
+    body: {
+      ...response.body,
+      data: { ...data, computed: data.a + data.b }
+    }
+  };
+};
+```
+
+<Callout type="warning">
+**Performance Tip**: Transformers run on every request. Keep them fast and avoid database queries or external API calls.
+</Callout>
+
+### 4. Use Type Guards
+
+```typescript
+const typeSafeTransformer = async ({ response }) => {
+  const data = response.body.data;
+  
+  // Type guard
+  if (!data || typeof data !== 'object') {
+    return response;
+  }
+  
+  // Now safe to access properties
+  const transformed = {
+    ...data,
+    fullName: `${data.firstName} ${data.lastName}`
+  };
+  
+  return {
+    ...response,
+    body: { ...response.body, data: transformed }
+  };
+};
+```
+
+## Complete Example
+
+Here's a real-world example combining multiple transformations:
+
+```typescript
+import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+
+const app = createSupabaseExpressApp({
+  responseTransformers: {
+    users: {
+      GetUser: async ({ response, request }) => {
+        try {
+          const user = response.body.data;
+          const isOwnProfile = request.principal?.userId === user.id;
+          
+          // Remove sensitive fields
+          const { internalId, systemMetadata, ...userData } = user;
+          
+          // Add computed fields
+          const enhanced = {
+            ...userData,
+            fullName: `${user.firstName} ${user.lastName}`,
+            initials: `${user.firstName[0]}${user.lastName[0]}`.toUpperCase(),
+            // Only show email for own profile
+            email: isOwnProfile ? user.email : undefined
+          };
+          
+          return {
+            status: response.status,
+            body: {
+              ...response.body,
+              data: enhanced
+            },
+            headers: {
+              ...response.headers,
+              'X-User-Profile': isOwnProfile ? 'own' : 'other'
+            }
+          };
+        } catch (error) {
+          console.error('User transformer failed:', error);
+          return response;
+        }
+      }
+    },
+    
+    organizations: {
+      GetOrganization: async ({ response }) => {
+        try {
+          const org = response.body.data;
+          
+          return {
+            ...response,
+            body: {
+              ...response.body,
+              data: {
+                ...org,
+                // Add custom fields
+                displayName: org.name.toUpperCase(),
+                memberCount: org.members?.length || 0
+              }
+            }
+          };
+        } catch (error) {
+          console.error('Organization transformer failed:', error);
+          return response;
+        }
+      }
+    }
+  }
+});
+
+app.listen(3000, () => {
+  console.log('🚀 Server running with response transformers');
+});
+```
+
+## Limitations
+
+### Current Limitations
+
+1. **Success Responses Only**: Transformers only run for successful responses (status 2xx)
+2. **No Async Data Fetching**: Avoid database queries or external API calls
+3. **No Request Modification**: Can only modify responses, not requests
+4. **One Transformer Per Handler**: Cannot chain multiple transformers
+
+### Workarounds
+
+**Need multiple transformations?** Compose them in a single transformer:
+
+```typescript
+const combinedTransformer = async (context) => {
+  let result = context.response;
+  
+  // Apply transformations in sequence
+  result = await removeFieldsTransform(result);
+  result = await addFieldsTransform(result);
+  result = await formatTransform(result);
+  
+  return result;
+};
+```
+
+## Response Transformers vs Hooks
+
+Here's when to use each:
+
+| Scenario | Best Choice | Reason |
+|----------|-------------|--------|
+| Remove sensitive fields from response | Response Transformer | Designed for response modification |
+| Add computed fields to response | Response Transformer | Clean separation of concerns |
+| Send welcome email after user creation | `onSuccess` Hook | Side effect, not response modification |
+| Log metrics after operation | `onFinally` Hook | Observability concern |
+| Custom validation logic | `afterValidation` Hook | Business logic concern |
+| Rate limiting | `onStart` Hook | Request preprocessing |
+| Transform field names for API compatibility | Response Transformer | Response formatting |
+
+<Callout type="tip">
+**Use Hooks for logic, Transformers for format**. Hooks modify *behavior*, Transformers modify *presentation*.
+</Callout>
+
+## Type Safety
+
+TypeScript provides full type safety:
+
+```typescript
+import { ResponseTransformer } from '@multitenantkit/domain-contracts';
+
+// Typed transformer
+const myTransformer: ResponseTransformer<GetUserInput, User> = async ({
+  response,
+  request
+}) => {
+  const user = response.body.data; // Type: User
+  
+  return {
+    status: 200,
+    body: {
+      data: user, // TypeScript validates this
+      requestId: request.requestId
+    }
+  };
+};
+```
+
+## Next Steps
+
+- [Hooks](/docs/configuration/hooks) - Learn about use case lifecycle hooks
+- [Custom Fields](/docs/configuration/custom-fields) - Extend entities with your own data
+- [Examples](/docs/examples) - See complete working examples
