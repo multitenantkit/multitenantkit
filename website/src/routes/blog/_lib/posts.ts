@@ -5,6 +5,18 @@ import type { BlogPostMeta } from './types';
 
 export const blogPosts: BlogPostMeta[] = [
     {
+        slug: 'architecture-deep-dive',
+        title: "Architecture Deep Dive: Inside MultiTenantKit's Hexagonal Design",
+        description:
+            "A comprehensive exploration of the architectural patterns, design decisions, and engineering principles that power MultiTenantKit's flexible multi-tenant framework.",
+        date: '2025-12-01',
+        author: 'MultiTenantKit Team',
+        coverImage:
+            'https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?w=1200&auto=format&fit=crop&q=80',
+        tags: ['architecture', 'hexagonal-architecture', 'typescript', 'design-patterns'],
+        featured: true
+    },
+    {
         slug: 'introducing-multitenantkit',
         title: 'Introducing MultiTenantKit: The Open-Source Multi-Tenant Toolkit for TypeScript',
         description:
