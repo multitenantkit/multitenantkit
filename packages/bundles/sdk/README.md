@@ -114,14 +114,16 @@ For more control, use the individual functions:
 
 ```typescript
 import {
-  compose,
+  createUseCases,
+  createAdapters,
   buildHandlers,
   AdapterAuthSupabase,
   AdapterTransportExpress
 } from '@multitenantkit/sdk';
 
-// 1. Compose use cases
-const { useCases } = compose(envOverrides, toolkitOptions);
+// 1. Create adapters and use cases
+const adapters = createAdapters(envOverrides);
+const useCases = createUseCases(adapters, toolkitOptions);
 
 // 2. Build handlers
 const handlers = buildHandlers(useCases, toolkitOptions);
