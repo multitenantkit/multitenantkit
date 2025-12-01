@@ -1,4 +1,10 @@
-{
-    "title": "Blog",
-    "description": "Latest news, updates, and tutorials from the MultiTenantKit team"
-}
+[
+    {
+        "slug": "introducing-multitenantkit",
+        "title": "Introducing MultiTenantKit: Simplifying Multi-Tenancy for Node.js"
+    },
+    {
+        "slug": "architecture-deep-dive",
+        "title": "Architecture Deep Dive: Inside MultiTenantKit's Hexagonal Design"
+    }
+]

@@ -95,11 +95,10 @@ packages/
 │   └── system/             # System utilities
 │       ├── crypto-uuid     # UUID generation
 │       └── system-clock    # Time operations
-├── api/                    # Delivery layer
+├── api/                    # Transport layer
 │   └── handlers            # HTTP request handlers
 ├── composition/            # Dependency injection & bootstrapping
 └── bundles/                # Distribution packages
-    ├── express-starter     # Production-ready Express bundle
     └── sdk                 # Complete SDK with all adapters
 ```
 
@@ -179,9 +178,9 @@ export class MysqlUserRepository<TCustomFields> implements UserRepository<TCusto
             'SELECT * FROM users WHERE id = ?',
             [id]
         );
-        
+
         if (!row) return null;
-        
+
         return this.mapToEntity(row);
     }
 
@@ -297,7 +296,7 @@ export function buildFastifyApp(
     // Register handlers
     for (const pkg of handlerPackages) {
         const method = pkg.route.method.toLowerCase();
-        
+
         app[method](pkg.route.path, async (request, reply) => {
             // Extract auth
             const principal = pkg.route.requiresAuth
@@ -463,11 +462,11 @@ Example:
 ```typescript
 /**
  * Creates a new user in the system.
- * 
+ *
  * @param input - User creation input data
  * @param context - Operation context with actor information
  * @returns Result containing the created user or error
- * 
+ *
  * @example
  * ```typescript
  * const result = await createUser.execute({

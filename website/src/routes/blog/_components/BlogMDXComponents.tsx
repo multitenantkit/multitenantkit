@@ -1,5 +1,6 @@
 import { Callout } from '@/routes/docs/_components/Callout';
 import { CopyButton } from '@/routes/docs/_components/CopyButton';
+import { Mermaid } from './Mermaid';
 
 function extractTextFromChildren(children: React.ReactNode): string {
     if (typeof children === 'string') {
@@ -14,10 +15,28 @@ function extractTextFromChildren(children: React.ReactNode): string {
     return '';
 }
 
+const randomUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+};
+
 export const BlogMDXComponents = {
     Callout,
     pre: ({ children, ...props }: React.HTMLProps<HTMLPreElement>) => {
         const textContent = extractTextFromChildren(children);
+
+        // Check if this is a mermaid code block
+        const isMermaid =
+            children &&
+            typeof children === 'object' &&
+            'props' in children &&
+            children.props?.['data-language'] === 'mermaid';
+        if (isMermaid) {
+            return <Mermaid source={textContent} id={props.id ?? `mermaid-${randomUUID()}`} />;
+        }
 
         return (
             <div className="relative group my-6">
@@ -41,7 +60,7 @@ export const BlogMDXComponents = {
         if (isInline) {
             return (
                 <code
-                    className="rounded bg-zinc-800 dark:bg-zinc-800 px-1.5 py-0.5 text-sm text-zinc-800 dark:text-zinc-100 [&::before]:hidden [&::after]:hidden font-mono"
+                    className="rounded bg-zinc-900 dark:bg-zinc-800 px-1.5 py-0.5 text-sm text-zinc-100 dark:text-zinc-100 [&::before]:hidden [&::after]:hidden font-mono"
                     {...props}
                 >
                     {children}
