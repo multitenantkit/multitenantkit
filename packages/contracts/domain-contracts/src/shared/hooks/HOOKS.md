@@ -107,7 +107,7 @@ Operation context for audit logging. Contains information about who is performin
 ```typescript
 interface OperationContext {
     requestId: string; // Unique request identifier
-    actorUserId: string; // ID of the user performing the operation
+    externalId: string; // ID of the user performing the operation
     organizationId?: string; // Organization context (optional)
     metadata?: AuditMetadata; // Additional metadata (IP, user agent, etc.)
     auditAction?: string; // Specific business action
@@ -118,7 +118,7 @@ interface OperationContext {
 beforeExecution: ({ context }) => {
     auditLog.record({
         requestId: context.requestId,
-        userId: context.actorUserId,
+        externalId: context.externalId,
         action: 'authorized'
     });
 };
@@ -231,7 +231,7 @@ onStart: async ({ input, shared, adapters, abort, context }) => {
     console.log(`[${context.requestId}] Starting use case`, input);
 
     // Rate limiting
-    const attempts = await rateLimiter.getAttempts(context.actorUserId);
+    const attempts = await rateLimiter.getAttempts(context.externalId);
     if (attempts > 10) {
         abort('Rate limit exceeded');
     }
@@ -313,13 +313,13 @@ beforeExecution: async ({ stepResults, context, adapters, shared, abort }) => {
     // Log authorization success for audit
     await auditLog.record({
         requestId: context.requestId,
-        userId: context.actorUserId,
+        externalId: context.externalId,
         action: 'authorized',
         resource: validated.organizationId
     });
 
     // Check user quota before execution
-    const userQuota = await quotaService.getQuota(context.actorUserId);
+    const userQuota = await quotaService.getQuota(context.externalId);
     if (userQuota.exceeded) {
         shared.quotaExceeded = true;
         abort('User quota exceeded');
@@ -504,7 +504,7 @@ onAbort: async ({ reason, shared, context, adapters, stepResults }) => {
 
     // For rate limit aborts, record in rate limit metrics
     if (reason.includes('Rate limit')) {
-        rateLimitMetrics.recordAbort(context.actorUserId);
+        rateLimitMetrics.recordAbort(context.externalId);
     }
 
     // No alerts for aborts (they're expected conditions)
@@ -642,7 +642,7 @@ const config: ToolkitOptions = {
 ```typescript
 CreateUser: {
     onStart: async ({ context, adapters, abort }) => {
-        const attempts = await rateLimiter.getAttempts(context.actorUserId);
+        const attempts = await rateLimiter.getAttempts(context.externalId);
         if (attempts > 5) {
             abort('Rate limit exceeded');
         }
@@ -674,7 +674,7 @@ DeleteUser: {
     beforeExecution: async ({ stepResults, context, adapters }) => {
         await auditLog.record({
             requestId: context.requestId,
-            userId: context.actorUserId,
+            externalId: context.externalId,
             action: 'DELETE_USER',
             targetUserId: stepResults.validatedInput.userId,
             timestamp: adapters.system.clock.now()
@@ -722,7 +722,7 @@ GetUser: {
       useCaseName: 'GetUser',
       duration,
       success: result.isSuccess,
-      userId: context.actorUserId
+      externalId: context.externalId
     });
   }
 }

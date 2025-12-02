@@ -104,7 +104,7 @@ describe('GetOrganization Handler', () => {
                     principalExternalId
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'GET_ORGANIZATION',
                     organizationId
                 })
@@ -531,7 +531,7 @@ describe('GetOrganization Handler', () => {
                     principalExternalId
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'GET_ORGANIZATION',
                     organizationId
                 })

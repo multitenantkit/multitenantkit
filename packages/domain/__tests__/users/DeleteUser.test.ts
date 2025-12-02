@@ -34,7 +34,7 @@ describe('DeleteUser use case', () => {
             // userId in DTO is actually externalId (auth provider ID)
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -61,7 +61,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -77,7 +77,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -112,7 +112,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -156,7 +156,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -226,7 +226,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.externalId }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -291,7 +291,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: member.externalId },
-                { requestId: 'test-request-id', actorUserId: member.externalId }
+                { requestId: 'test-request-id', externalId: member.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -312,7 +312,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -329,7 +329,7 @@ describe('DeleteUser use case', () => {
                 { principalExternalId: nonExistentExternalId }, // userId is actually externalId
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -348,7 +348,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -362,7 +362,7 @@ describe('DeleteUser use case', () => {
             const result = await useCase.execute(
                 { principalExternalId: 'not-a-valid-uuid' } as any,
                 {
-                    actorUserId: '00000000-0000-4000-8000-000000000000',
+                    externalId: '00000000-0000-4000-8000-000000000000',
                     requestId: 'test-request-id'
                 }
             );
@@ -383,7 +383,7 @@ describe('DeleteUser use case', () => {
             const useCase = new DeleteUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isFailure).toBe(true);

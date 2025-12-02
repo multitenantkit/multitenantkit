@@ -17,7 +17,7 @@ export interface OperationContext {
     /**
      * ID of the user performing the operation
      */
-    actorUserId: UuidString;
+    externalId: string;
 
     /**
      * ID of the organization context for the operation (optional)

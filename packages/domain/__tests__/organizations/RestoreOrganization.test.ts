@@ -44,7 +44,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -82,7 +82,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -110,7 +110,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -191,7 +191,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -235,7 +235,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -250,7 +250,7 @@ describe('RestoreOrganization use case', () => {
                 { organizationId: '11111111-1111-4111-8111-111111111111' },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -275,7 +275,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -302,7 +302,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -334,7 +334,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: otherUser.id }
+                { requestId: 'test-request-id', externalId: otherUser.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -360,7 +360,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: deletedOwner.id }
+                { requestId: 'test-request-id', externalId: deletedOwner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -372,7 +372,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute({ organizationId: 'not-a-valid-uuid' } as any, {
                 requestId: 'test-request-id',
-                actorUserId: '00000000-0000-4000-8000-000000000000'
+                externalId: '00000000-0000-4000-8000-000000000000'
             });
 
             expect(result.isFailure).toBe(true);
@@ -402,7 +402,7 @@ describe('RestoreOrganization use case', () => {
             const useCase = new RestoreOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isFailure).toBe(true);

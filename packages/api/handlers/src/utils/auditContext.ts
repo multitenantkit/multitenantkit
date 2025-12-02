@@ -12,11 +12,11 @@ export function buildOperationContext(
     organizationId?: string
 ): OperationContext {
     // Use the authenticated user's ID, or 'system' for unauthenticated operations
-    const actorUserId = principal?.authProviderId || '00000000-0000-0000-0000-000000000000';
+    const externalId = principal?.authProviderId || '00000000-0000-0000-0000-000000000000';
 
     return {
         requestId,
-        actorUserId,
+        externalId,
         organizationId,
         auditAction,
         metadata: {
@@ -44,11 +44,11 @@ export function buildOperationContextWithMetadata(
         deviceInfo?: string;
     }
 ): OperationContext {
-    const actorUserId = principal?.authProviderId || '00000000-0000-0000-0000-000000000000';
+    const externalId = principal?.authProviderId || '00000000-0000-0000-0000-000000000000';
 
     return {
         requestId,
-        actorUserId,
+        externalId,
         organizationId,
         auditAction,
         metadata: {

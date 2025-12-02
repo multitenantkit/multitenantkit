@@ -92,7 +92,7 @@ describe('ListUserOrganizations use case', () => {
             // userId in input is actually externalId (auth provider ID)
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -145,7 +145,7 @@ describe('ListUserOrganizations use case', () => {
             );
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -225,7 +225,7 @@ describe('ListUserOrganizations use case', () => {
             );
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -254,7 +254,7 @@ describe('ListUserOrganizations use case', () => {
             const useCase = new ListUserOrganizations(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -271,7 +271,7 @@ describe('ListUserOrganizations use case', () => {
                 { principalExternalId: nonExistentExternalId }, // userId is actually externalId
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -301,7 +301,7 @@ describe('ListUserOrganizations use case', () => {
             const useCase = new ListUserOrganizations(adapters);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isFailure).toBe(true);

@@ -54,7 +54,7 @@ export interface UseCaseHooks<
      *     console.log(`Starting ${context.useCaseName}`, input);
      *
      *     // Rate limiting check
-     *     const attempts = await rateLimiter.getAttempts(context.actorUserId);
+     *     const attempts = await rateLimiter.getAttempts(context.externalId);
      *     if (attempts > 5) {
      *         abort('Rate limit exceeded: too many requests');
      *     }
@@ -154,11 +154,11 @@ export interface UseCaseHooks<
      *         hookName: 'beforeExecution',
      *         executionId: context.executionId,
      *         timestamp: new Date(),
-     *         params: { userId: context.actorUserId, action: 'authorized' }
+     *         params: { userId: context.externalId, action: 'authorized' }
      *     });
      *
      *     // Check quota before execution
-     *     const userQuota = await quotaService.getQuota(context.actorUserId);
+     *     const userQuota = await quotaService.getQuota(context.externalId);
      *     if (userQuota.exceeded) {
      *         abort('User quota exceeded');
      *     }

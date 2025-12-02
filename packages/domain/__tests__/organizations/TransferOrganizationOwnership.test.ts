@@ -79,7 +79,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -146,7 +146,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             // Verify old owner membership changed to member
@@ -210,7 +210,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             // Verify new owner membership changed to owner
@@ -275,7 +275,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -346,7 +346,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -365,7 +365,7 @@ describe('TransferOrganizationOwnership use case', () => {
                 },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -393,7 +393,7 @@ describe('TransferOrganizationOwnership use case', () => {
                     organizationId: organization.id,
                     newOwnerId: '22222222-2222-4222-8222-222222222222'
                 },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -422,7 +422,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: otherUser.id },
-                { requestId: 'test-request-id', actorUserId: otherUser.id } // Not the owner!
+                { requestId: 'test-request-id', externalId: otherUser.id } // Not the owner!
             );
 
             expect(result.isFailure).toBe(true);
@@ -446,7 +446,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: owner.id }, // Same as current owner!
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -473,7 +473,7 @@ describe('TransferOrganizationOwnership use case', () => {
                     organizationId: organization.id,
                     newOwnerId: '22222222-2222-4222-8222-222222222222'
                 },
-                { requestId: 'test-request-id', actorUserId: deletedOwner.id }
+                { requestId: 'test-request-id', externalId: deletedOwner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -500,7 +500,7 @@ describe('TransferOrganizationOwnership use case', () => {
                     organizationId: organization.id,
                     newOwnerId: '99999999-9999-4999-8999-999999999999'
                 },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -529,7 +529,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: deletedNewOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -561,7 +561,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -610,7 +610,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -671,7 +671,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -732,7 +732,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -751,7 +751,7 @@ describe('TransferOrganizationOwnership use case', () => {
                 } as any,
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -768,7 +768,7 @@ describe('TransferOrganizationOwnership use case', () => {
                 } as any,
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -832,7 +832,7 @@ describe('TransferOrganizationOwnership use case', () => {
             const useCase = new TransferOrganizationOwnership(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, newOwnerId: newOwner.id },
-                { requestId: 'test-request-id', actorUserId: currentOwner.id }
+                { requestId: 'test-request-id', externalId: currentOwner.externalId }
             );
 
             expect(result.isFailure).toBe(true);

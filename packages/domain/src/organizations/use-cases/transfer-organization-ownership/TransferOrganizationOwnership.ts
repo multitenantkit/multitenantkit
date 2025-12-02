@@ -133,24 +133,7 @@ export class TransferOrganizationOwnership<
             );
         }
 
-        // 4. Authorize: Only the current owner can transfer ownership
-        if (existingOrganization.ownerUserId !== context.actorUserId) {
-            return Result.fail(
-                new ValidationError(
-                    'Only the current organization owner can transfer ownership',
-                    'actorUserId'
-                )
-            );
-        }
-
-        // 5. Validate: New owner must be different from current owner
-        if (input.newOwnerId === existingOrganization.ownerUserId) {
-            return Result.fail(
-                new ValidationError('New owner must be different from current owner', 'newOwnerId')
-            );
-        }
-
-        // 6. Verify the current owner is an active user (not soft-deleted)
+        // 4. Verify the current owner is an active user (not soft-deleted)
         const currentOwnerResult = await UseCaseHelpers.findByIdOrFail(
             this.adapters.persistence.userRepository,
             existingOrganization.ownerUserId,
@@ -166,6 +149,23 @@ export class TransferOrganizationOwnership<
         const currentOwner = currentOwnerResult.getValue();
         if (currentOwner.deletedAt) {
             return Result.fail(new ValidationError('Current owner user is deleted', 'ownerUserId'));
+        }
+
+        // 5. Authorize: Only the current owner can transfer ownership
+        if (currentOwner.externalId !== context.externalId) {
+            return Result.fail(
+                new ValidationError(
+                    'Only the current organization owner can transfer ownership',
+                    'externalId'
+                )
+            );
+        }
+
+        // 6. Validate: New owner must be different from current owner
+        if (input.newOwnerId === existingOrganization.ownerUserId) {
+            return Result.fail(
+                new ValidationError('New owner must be different from current owner', 'newOwnerId')
+            );
         }
 
         // 7. Verify the new owner is an active user (not soft-deleted)

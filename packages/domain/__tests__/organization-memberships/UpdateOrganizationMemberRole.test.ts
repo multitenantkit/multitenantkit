@@ -123,7 +123,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -164,7 +164,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -184,7 +184,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -201,7 +201,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -257,7 +257,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -274,7 +274,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -311,7 +311,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             // Based on current logic: admin can assign 'member' role
@@ -330,7 +330,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -349,7 +349,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -383,7 +383,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -414,7 +414,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -446,7 +446,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: ownerId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -517,7 +517,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalRegularMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalRegularMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -546,7 +546,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: nonMemberId }
+                { requestId: 'test-request-id', externalId: nonMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -578,7 +578,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -610,7 +610,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -642,7 +642,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -680,7 +680,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -704,7 +704,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -740,7 +740,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member' // Same as current
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -773,7 +773,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -791,7 +791,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -810,7 +810,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
             expect(result1.isSuccess).toBe(true);
             expect(result1.getValue().roleCode).toBe('admin');
@@ -823,7 +823,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
             expect(result2.isSuccess).toBe(true);
             expect(result2.getValue().roleCode).toBe('member');
@@ -836,7 +836,7 @@ describe('UpdateOrganizationMemberRole use case', () => {
                     targetUserId: targetMemberId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
             expect(result3.isSuccess).toBe(true);
             expect(result3.getValue().roleCode).toBe('admin');

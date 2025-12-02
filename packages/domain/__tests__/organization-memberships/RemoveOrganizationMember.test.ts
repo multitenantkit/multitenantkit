@@ -105,7 +105,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -141,7 +141,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -192,7 +192,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
             expect(result1.isSuccess).toBe(true);
 
@@ -203,7 +203,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: member2Id
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
             expect(result2.isSuccess).toBe(true);
 
@@ -262,7 +262,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: adminId }
+                { requestId: 'test-request-id', externalId: adminId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -298,7 +298,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: adminId }
+                { requestId: 'test-request-id', externalId: adminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -316,7 +316,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId: '00000000-0000-4000-8000-999999999999', // Non-existent organization
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -334,7 +334,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -366,7 +366,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -397,7 +397,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -428,7 +428,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: ownerId // Trying to remove owner
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -497,7 +497,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalRegularMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalRegularMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -525,7 +525,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalNonMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalNonMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -556,7 +556,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -587,7 +587,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -618,7 +618,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -655,7 +655,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -679,7 +679,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -712,7 +712,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -763,7 +763,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: anotherUserId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -795,7 +795,7 @@ describe('RemoveOrganizationMember use case', () => {
                     organizationId,
                     targetUser: targetMemberId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);

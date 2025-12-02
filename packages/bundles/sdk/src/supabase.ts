@@ -382,7 +382,7 @@ export function createSupabaseExpressRouter<
  * const result = await useCases.users.getUser.execute({
  *   userId: 'user-123',
  *   requestId: crypto.randomUUID(),
- *   actorUserId: 'system'
+ *   externalId: 'system'
  * });
  * ```
  */

@@ -68,7 +68,7 @@ const result = await useCases.users.getUser.execute(
   { principalExternalId: 'auth-provider-user-id' },
   {
     requestId: crypto.randomUUID(),
-    actorUserId: 'auth-provider-user-id'
+    externalId: 'auth-provider-user-id'
   }
 );
 ```
@@ -137,7 +137,7 @@ const result = await useCases.organizations.createOrganization.execute(
   },
   {
     requestId: crypto.randomUUID(),
-    actorUserId: 'auth-provider-user-id'
+    externalId: 'auth-provider-user-id'
   }
 );
 ```
@@ -153,7 +153,7 @@ All use cases require an `OperationContext` parameter when calling the `execute(
 ```typescript
 interface OperationContext {
   requestId: string;        // Unique ID for tracing this request
-  actorUserId: string;      // externalId from auth provider (e.g., Supabase user ID)
+  externalId: string;      // externalId from auth provider (e.g., Supabase user ID)
   organizationId?: string;  // Optional: Organization context
   auditAction?: string;     // Optional: Specific action being performed
   metadata?: {              // Optional: Additional audit metadata
@@ -169,7 +169,7 @@ interface OperationContext {
 ### Required Fields
 
 - **requestId**: A unique identifier for the request (typically a UUID). Used for tracing and correlating logs across the system.
-- **actorUserId**: The `externalId` from your authentication provider (e.g., Supabase user ID, Auth0 user ID). This is NOT the internal database ID.
+- **externalId**: The `externalId` from your authentication provider (e.g., Supabase user ID, Auth0 user ID). This is NOT the internal database ID.
 
 ### Optional Fields
 
@@ -182,7 +182,7 @@ interface OperationContext {
 ```typescript
 const context: OperationContext = {
   requestId: '550e8400-e29b-41d4-a716-446655440000',
-  actorUserId: 'user-123',
+  externalId: 'user-123',
   organizationId: 'org-456',  // Optional
   metadata: {
     ipAddress: '192.168.1.1',
@@ -201,7 +201,7 @@ const result = await useCases.users.getUser.execute(
 
 When calling use cases through REST endpoints, the `OperationContext` is **automatically built** by the handler from the HTTP request. You don't need to provide it manually. The handler extracts:
 - `requestId` from the request headers or generates one
-- `actorUserId` from the authenticated user's JWT token (the `externalId`)
+- `externalId` from the authenticated user's JWT token
 - `metadata` from the HTTP request (IP, user agent, etc.)
 
 

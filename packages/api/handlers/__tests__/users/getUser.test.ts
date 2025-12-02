@@ -86,7 +86,7 @@ describe('GetUser Handler', () => {
             expect(mockGetUserExecute).toHaveBeenCalledWith(
                 { principalExternalId: authProviderId }, // userId in DTO is actually externalId
                 expect.objectContaining({
-                    actorUserId: authProviderId
+                    externalId: authProviderId
                 })
             );
         });
@@ -387,7 +387,7 @@ describe('GetUser Handler', () => {
             expect(mockGetUserExecute).toHaveBeenCalledWith(
                 { principalExternalId: authProviderId }, // userId in DTO is actually externalId
                 expect.objectContaining({
-                    actorUserId: authProviderId, // actorUserId uses authProviderId for audit
+                    externalId: authProviderId, // externalId uses authProviderId for audit
                     auditAction: 'GET_USER'
                 })
             );

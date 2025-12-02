@@ -118,7 +118,7 @@ describe('AddOrganizationMember Handler', () => {
                     roleCode: 'member'
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'ADD_ORGANIZATION_MEMBER',
                     organizationId,
                     requestId: 'req-123',
@@ -721,7 +721,7 @@ describe('AddOrganizationMember Handler', () => {
                     roleCode: 'member'
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'ADD_ORGANIZATION_MEMBER',
                     organizationId,
                     requestId: 'req-audit',

@@ -104,7 +104,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalMemberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -134,7 +134,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalMemberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -153,7 +153,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -189,7 +189,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalAdminId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -207,7 +207,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId: '00000000-0000-4000-8000-999999999999' // Non-existent organization
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -224,7 +224,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -255,7 +255,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -271,7 +271,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -303,7 +303,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalOwnerId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -341,7 +341,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -374,7 +374,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -407,7 +407,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -439,7 +439,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId } // Different actor
+                { requestId: 'test-request-id', externalId: ownerId } // Different actor
             );
 
             expect(result.isSuccess).toBe(true);
@@ -503,7 +503,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMemberId,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalMemberId }
             );
 
             expect(result1.isSuccess).toBe(true);
@@ -514,7 +514,7 @@ describe('LeaveOrganization use case', () => {
                     principalExternalId: principalExternalMember2Id,
                     organizationId
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalMember2Id }
+                { requestId: 'test-request-id', externalId: principalExternalMember2Id }
             );
 
             expect(result2.isSuccess).toBe(true);

@@ -166,7 +166,7 @@ export interface HookContext<
      *
      * Available properties:
      * - requestId: Unique identifier for the request
-     * - actorUserId: ID of the user performing the operation
+     * - externalId: ID of the user performing the operation
      * - organizationId: ID of the organization context (optional)
      * - metadata: Additional metadata (deviceInfo, ipAddress, userAgent, source)
      * - auditAction: Specific business action being performed (optional)

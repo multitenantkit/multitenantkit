@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-persistence-postgres",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "type": "module",
     "description": "PostgreSQL persistence adapter for MultiTenantKit (production-ready)",
     "keywords": [
@@ -56,7 +56,7 @@
         "check-db-health": "tsx scripts/check-db-health.ts"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.1",
+        "@multitenantkit/domain-contracts": "^0.2.0",
         "postgres": "^3.4.0",
         "zod": "^3.22.4"
     },

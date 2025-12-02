@@ -162,7 +162,7 @@ describe('CreateUser Handler', () => {
                 }),
                 expect.objectContaining({
                     auditAction: 'CREATE_USER'
-                    // Note: actorUserId will be set to a default UUID by buildOperationContext
+                    // Note: externalId will be set to a default UUID by buildOperationContext
                 })
             );
         });
@@ -520,7 +520,7 @@ describe('CreateUser Handler', () => {
             expect(mockCreateUserExecute).toHaveBeenCalledWith(
                 expect.any(Object),
                 expect.objectContaining({
-                    actorUserId: authProviderId // Audit uses authProviderId as actorUserId
+                    externalId: authProviderId // Audit uses authProviderId as externalId
                 })
             );
         });
@@ -560,7 +560,7 @@ describe('CreateUser Handler', () => {
                 }),
                 expect.objectContaining({
                     auditAction: 'CREATE_USER'
-                    // Note: actorUserId will be set to a default UUID by buildOperationContext
+                    // Note: externalId will be set to a default UUID by buildOperationContext
                 })
             );
         });

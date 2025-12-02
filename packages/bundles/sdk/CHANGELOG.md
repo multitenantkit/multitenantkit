@@ -1,5 +1,26 @@
 # @multitenantkit/sdk
 
+## 0.2.0
+
+### Minor Changes
+
+- rename actorUserId to externalId
+
+### Patch Changes
+
+- Updated dependencies
+  - @multitenantkit/domain-contracts@0.2.0
+  - @multitenantkit/api-handlers@0.2.0
+  - @multitenantkit/domain@0.2.0
+  - @multitenantkit/adapter-auth-supabase@0.2.0
+  - @multitenantkit/adapter-persistence-json@0.2.0
+  - @multitenantkit/adapter-persistence-postgres@0.2.0
+  - @multitenantkit/adapter-system-crypto-uuid@0.2.0
+  - @multitenantkit/adapter-system-system-clock@0.2.0
+  - @multitenantkit/adapter-transport-express@0.2.0
+  - @multitenantkit/composition@0.2.0
+  - @multitenantkit/api-contracts@0.2.0
+
 ## 0.1.4
 
 ### Patch Changes

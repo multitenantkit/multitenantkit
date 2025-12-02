@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-system-system-clock",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "System Clock adapter using real system time",
     "keywords": [
         "multitenantkit",
@@ -39,7 +39,7 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.1"
+        "@multitenantkit/domain-contracts": "^0.2.0"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",

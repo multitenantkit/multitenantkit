@@ -76,7 +76,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -107,7 +107,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalOwnerId,
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -127,7 +127,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalOwnerId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -183,7 +183,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId, // Add the target user
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -201,7 +201,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId, // Try to add target as admin
                     roleCode: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -240,7 +240,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -261,7 +261,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'admin' // Different role than before
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -279,7 +279,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member' // Same role as before
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -298,7 +298,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -315,7 +315,7 @@ describe('AddOrganizationMember use case', () => {
                     username: 'nonexistent@example.com', // Non-existent user (email invitation)
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             // Should succeed and create membership with undefined userId (invitation)
@@ -353,7 +353,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -390,7 +390,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalNonMemberId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: nonMemberId }
+                { requestId: 'test-request-id', externalId: nonMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -435,7 +435,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalFormerAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalFormerAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -480,7 +480,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalDeletedAdminId }
+                { requestId: 'test-request-id', externalId: principalExternalDeletedAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -525,7 +525,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: invitedAdminId }
+                { requestId: 'test-request-id', externalId: invitedAdminId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -545,7 +545,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -593,7 +593,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalMemberId }
+                { requestId: 'test-request-id', externalId: principalExternalMemberId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -625,7 +625,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             // Should create NEW membership since existing one is deleted
@@ -661,7 +661,7 @@ describe('AddOrganizationMember use case', () => {
                     username: principalExternalTargetUserId,
                     roleCode: 'member'
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             // Should create NEW membership since existing one is deleted

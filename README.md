@@ -215,7 +215,7 @@ const config = {
     GetOrganization: {
       onStart: async ({ context }) => {
         // Rate limiting
-        await rateLimiter.check(context.actorUserId);
+        await rateLimiter.check(context.externalId);
       }
     },
     AddOrganizationMember: {

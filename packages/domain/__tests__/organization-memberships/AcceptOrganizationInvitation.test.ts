@@ -78,7 +78,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username
                 },
-                { requestId: 'test-request-id', actorUserId: userId }
+                { requestId: 'test-request-id', externalId: principalExternalUserId }
             );
 
             // Assert
@@ -130,7 +130,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username: newUsername
                 },
-                { requestId: 'test', actorUserId: newUserId }
+                { requestId: 'test', externalId: newUserExternalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -149,7 +149,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username: 'nonexistent@example.com'
                 },
-                { requestId: 'test', actorUserId: 'fake-id' }
+                { requestId: 'test', externalId: 'non-existent-external-id' }
             );
 
             expect(result.isFailure).toBe(true);
@@ -181,7 +181,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username: otherUsername // Trying to accept someone else's invitation
                 },
-                { requestId: 'test', actorUserId: userId }
+                { requestId: 'test', externalId: principalExternalUserId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -197,7 +197,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username
                 },
-                { requestId: 'test', actorUserId: userId }
+                { requestId: 'test', externalId: principalExternalUserId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -227,7 +227,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username
                 },
-                { requestId: 'test', actorUserId: userId }
+                { requestId: 'test', externalId: principalExternalUserId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -258,7 +258,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username
                 },
-                { requestId: 'test', actorUserId: userId }
+                { requestId: 'test', externalId: principalExternalUserId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -289,7 +289,7 @@ describe('AcceptOrganizationInvitation use case', () => {
                     organizationId,
                     username
                 },
-                { requestId: 'test', actorUserId: userId }
+                { requestId: 'test', externalId: principalExternalUserId }
             );
 
             expect(result.isFailure).toBe(true);

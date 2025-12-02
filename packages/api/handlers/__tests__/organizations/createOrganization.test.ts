@@ -96,7 +96,7 @@ describe('CreateOrganization Handler', () => {
             expect(mockCreateOrganizationExecute).toHaveBeenCalledWith(
                 { principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'CREATE_ORGANIZATION'
                 })
             );
@@ -497,7 +497,7 @@ describe('CreateOrganization Handler', () => {
             expect(mockCreateOrganizationExecute).toHaveBeenCalledWith(
                 { principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'CREATE_ORGANIZATION'
                 })
             );

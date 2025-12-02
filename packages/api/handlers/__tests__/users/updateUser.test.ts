@@ -105,7 +105,7 @@ describe('UpdateUser Handler', () => {
                     email: 'updated@example.com'
                 },
                 expect.objectContaining({
-                    actorUserId: userId,
+                    externalId: userId,
                     auditAction: 'UPDATE_USER_PROFILE'
                 })
             );
@@ -509,7 +509,7 @@ describe('UpdateUser Handler', () => {
                     email: 'audit@example.com'
                 }),
                 expect.objectContaining({
-                    actorUserId: userId,
+                    externalId: userId,
                     auditAction: 'UPDATE_USER_PROFILE'
                 })
             );

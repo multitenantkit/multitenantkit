@@ -112,7 +112,7 @@ describe('ListUserOrganizations Handler', () => {
             expect(mockListUserOrganizationsExecute).toHaveBeenCalledWith(
                 { principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LIST_USER_ORGANIZATIONS'
                 })
             );
@@ -510,7 +510,7 @@ describe('ListUserOrganizations Handler', () => {
             expect(mockListUserOrganizationsExecute).toHaveBeenCalledWith(
                 { principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LIST_USER_ORGANIZATIONS'
                 })
             );

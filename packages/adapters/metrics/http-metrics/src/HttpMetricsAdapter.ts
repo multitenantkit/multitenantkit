@@ -124,7 +124,7 @@ export class HttpMetricsAdapter implements MetricsPort {
             // Context info (UUIDs only - no PII)
             context: context
                 ? {
-                      actorUserId: context.actorUserId,
+                      externalId: context.externalId,
                       organizationId: context.organizationId,
                       auditAction: context.auditAction
                       // Exclude: metadata (may contain PII like IP, userAgent)

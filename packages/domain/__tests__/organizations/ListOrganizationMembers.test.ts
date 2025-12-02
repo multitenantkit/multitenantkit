@@ -107,7 +107,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -168,7 +168,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -252,7 +252,7 @@ describe('ListOrganizationMembers use case', () => {
                         pageSize: 20
                     }
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -273,7 +273,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: userId }
+                { requestId: 'test-request-id', externalId: userId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -307,7 +307,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -346,7 +346,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -449,7 +449,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -540,7 +540,7 @@ describe('ListOrganizationMembers use case', () => {
                     principalExternalId,
                     options: { page: 1, pageSize: 20 }
                 },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);

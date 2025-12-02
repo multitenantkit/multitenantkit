@@ -34,7 +34,7 @@ describe('GetUser use case', () => {
             // userId in DTO is actually externalId (auth provider ID)
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -60,7 +60,7 @@ describe('GetUser use case', () => {
             const useCase = new GetUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 { principalExternalId: user.externalId },
-                { requestId: 'test-request-id', actorUserId: user.externalId }
+                { requestId: 'test-request-id', externalId: user.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -77,7 +77,7 @@ describe('GetUser use case', () => {
                 { principalExternalId: nonExistentExternalId }, // userId is actually externalId
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 

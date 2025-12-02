@@ -49,7 +49,7 @@ describe('UpdateUser use case', () => {
                     principalExternalId: existing.externalId,
                     role: 'admin'
                 },
-                { requestId: 'test-request-id', actorUserId: existing.externalId }
+                { requestId: 'test-request-id', externalId: existing.externalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -67,7 +67,7 @@ describe('UpdateUser use case', () => {
                 { principalExternalId: nonExistentExternalId }, // userId is externalId
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -101,7 +101,7 @@ describe('UpdateUser use case', () => {
             const useCase = new UpdateUser<Custom>(adapters as any, toolkitOptions);
             const result = await useCase.execute(
                 { userId: existing.externalId, email: 'valid@example.com', role: 'member' } as any,
-                { requestId: 'test-request-id', actorUserId: existing.externalId }
+                { requestId: 'test-request-id', externalId: existing.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -131,7 +131,7 @@ describe('UpdateUser use case', () => {
                 { userId: existing.externalId, role: 'member' } as any,
                 {
                     requestId: 'test-request-id',
-                    actorUserId: existing.externalId
+                    externalId: existing.externalId
                 }
             );
 
@@ -154,7 +154,7 @@ describe('UpdateUser use case', () => {
             const useCase = new UpdateUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: badUser.externalId },
-                { requestId: 'test-request-id', actorUserId: badUser.externalId }
+                { requestId: 'test-request-id', externalId: badUser.externalId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -173,7 +173,7 @@ describe('UpdateUser use case', () => {
             const useCase = new UpdateUser(adapters);
             const result = await useCase.execute(
                 { principalExternalId: existing.externalId },
-                { requestId: 'test-request-id', actorUserId: existing.externalId }
+                { requestId: 'test-request-id', externalId: existing.externalId }
             );
 
             expect(result.isFailure).toBe(true);

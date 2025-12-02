@@ -165,7 +165,7 @@ describe('ListOrganizationMembers Handler', () => {
                     options: expect.objectContaining({ page: 1, pageSize: 20 })
                 }),
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LIST_ORGANIZATION_MEMBERS',
                     organizationId
                 })
@@ -774,7 +774,7 @@ describe('ListOrganizationMembers Handler', () => {
                     options: expect.objectContaining({ page: 1, pageSize: 20 })
                 }),
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LIST_ORGANIZATION_MEMBERS',
                     organizationId
                 })

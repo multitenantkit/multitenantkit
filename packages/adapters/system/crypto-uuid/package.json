@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-system-crypto-uuid",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Crypto UUID adapter using Node.js crypto module",
     "keywords": [
         "multitenantkit",
@@ -39,7 +39,7 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.1"
+        "@multitenantkit/domain-contracts": "^0.2.0"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",

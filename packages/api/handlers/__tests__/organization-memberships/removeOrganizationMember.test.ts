@@ -93,7 +93,7 @@ describe('RemoveOrganizationMember Handler', () => {
                     removeByUsername: false
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'REMOVE_ORGANIZATION_MEMBER',
                     organizationId,
                     requestId: 'req-123',
@@ -543,7 +543,7 @@ describe('RemoveOrganizationMember Handler', () => {
                     removeByUsername: false
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'REMOVE_ORGANIZATION_MEMBER',
                     organizationId,
                     requestId: 'req-audit',

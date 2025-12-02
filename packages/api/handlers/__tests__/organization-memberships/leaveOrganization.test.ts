@@ -106,7 +106,7 @@ describe('LeaveOrganization Handler', () => {
                     principalExternalId
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LEAVE_ORGANIZATION',
                     organizationId
                 })
@@ -590,7 +590,7 @@ describe('LeaveOrganization Handler', () => {
                     principalExternalId
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'LEAVE_ORGANIZATION',
                     organizationId
                 })

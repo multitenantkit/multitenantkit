@@ -130,17 +130,7 @@ export class RestoreOrganization<
             );
         }
 
-        // 4. Authorize: Only the owner can restore the organization
-        if (existingOrganization.ownerUserId !== context.actorUserId) {
-            return Result.fail(
-                new ValidationError(
-                    'Only the organization owner can restore the organization',
-                    'actorUserId'
-                )
-            );
-        }
-
-        // 5. Verify the owner is an active user (not soft-deleted)
+        // 4. Verify the owner is an active user (not soft-deleted)
         const ownerResult = await UseCaseHelpers.findByIdOrFail(
             this.adapters.persistence.userRepository,
             existingOrganization.ownerUserId,
@@ -159,6 +149,16 @@ export class RestoreOrganization<
                 new ValidationError(
                     'Cannot restore organization: owner user is deleted',
                     'ownerUserId'
+                )
+            );
+        }
+
+        // 5. Authorize: Only the owner can restore the organization
+        if (owner.externalId !== context.externalId) {
+            return Result.fail(
+                new ValidationError(
+                    'Only the organization owner can restore the organization',
+                    'externalId'
                 )
             );
         }

@@ -104,7 +104,7 @@ describe('UpdateOrganization use case', () => {
                     principalExternalId: principalExternalOwnerId,
                     category: 'owner-update'
                 } as any,
-                { requestId: 'test-request-id', actorUserId: principalExternalOwnerId }
+                { requestId: 'test-request-id', externalId: principalExternalOwnerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -134,7 +134,7 @@ describe('UpdateOrganization use case', () => {
                     principalExternalId: principalExternalAdminId,
                     category: 'admin-update'
                 } as any,
-                { requestId: 'test-request-id', actorUserId: adminId }
+                { requestId: 'test-request-id', externalId: adminId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -164,7 +164,7 @@ describe('UpdateOrganization use case', () => {
                     principalExternalId: principalExternalOwnerId,
                     category: 'platform'
                 } as any,
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -198,7 +198,7 @@ describe('UpdateOrganization use case', () => {
                     category: 'x',
                     principalExternalId: principalExternalOwnerId
                 } as any,
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -221,7 +221,7 @@ describe('UpdateOrganization use case', () => {
             const result = await useCase.execute(
                 { organizationId: organizationId, userId: ownerId } as any,
                 {
-                    actorUserId: ownerId,
+                    externalId: ownerId,
                     requestId: 'test-request-id'
                 }
             );
@@ -261,7 +261,7 @@ describe('UpdateOrganization use case', () => {
             // Provide a valid update field so we hit the merged validation on entity
             const result = await useCase.execute(
                 { organizationId: badOrganization.id, userId: ownerId, category: 'x' } as any,
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -304,7 +304,7 @@ describe('UpdateOrganization use case', () => {
                     principalExternalId: outsiderId,
                     category: 'try'
                 } as any,
-                { requestId: 'test-request-id', actorUserId: outsiderId }
+                { requestId: 'test-request-id', externalId: outsiderId }
             );
 
             expect(result.isFailure).toBe(true);

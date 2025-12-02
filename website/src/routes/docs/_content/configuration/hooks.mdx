@@ -139,7 +139,7 @@ afterValidation: ({ stepResults }) => {
 ```typescript
 interface OperationContext {
   requestId: string;       // Unique request identifier
-  actorUserId: string;     // User performing the operation
+  externalId: string;     // User performing the operation
   organizationId?: string; // Organization context (optional)
   metadata?: AuditMetadata;
   auditAction?: string;
@@ -227,7 +227,7 @@ GetUser: {
     console.log(`[${context.requestId}] Getting user:`, input.userId);
 
     // Rate limiting
-    const attempts = await rateLimiter.getAttempts(context.actorUserId);
+    const attempts = await rateLimiter.getAttempts(context.externalId);
     if (attempts > 10) {
       abort('Rate limit exceeded');
       return;
@@ -314,7 +314,7 @@ DeleteOrganization: {
     // Log authorization success for audit
     await auditLog.record({
       requestId: context.requestId,
-      userId: context.actorUserId,
+      externalId: context.externalId,
       action: 'DELETE_ORGANIZATION',
       organizationId: validated.organizationId,
       timestamp: adapters.system.clock.now()
@@ -371,7 +371,7 @@ CreateOrganization: {
       .trigger('organization.created', {
         organizationId: output.id,
         name: output.name,
-        ownerId: context.actorUserId
+        externalId: context.externalId
       })
       .catch((err) => console.error('Webhook failed:', err));
 
@@ -449,7 +449,7 @@ GetUser: {
     // Send notification for specific abort reasons
     if (reason.includes('quota exceeded')) {
       await notificationService.send({
-        userId: context.actorUserId,
+        externalId: context.externalId,
         type: 'quota_warning',
         message: 'You have reached your usage quota'
       });
@@ -495,7 +495,7 @@ UpdateUser: {
 ```typescript
 CreateUser: {
   onStart: async ({ context, abort }) => {
-    const attempts = await rateLimiter.getAttempts(context.actorUserId);
+    const attempts = await rateLimiter.getAttempts(context.externalId);
     if (attempts > 5) {
       abort('Rate limit exceeded');
       return;
@@ -530,7 +530,7 @@ RemoveOrganizationMember: {
   beforeExecution: async ({ stepResults, context, adapters }) => {
     await auditLog.record({
       requestId: context.requestId,
-      userId: context.actorUserId,
+      externalId: context.externalId,
       action: 'REMOVE_MEMBER',
       targetUserId: stepResults.validatedInput.userId,
       organizationId: stepResults.validatedInput.organizationId,

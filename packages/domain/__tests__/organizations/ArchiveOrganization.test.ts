@@ -43,7 +43,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -92,7 +92,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: admin.externalId },
-                { requestId: 'test-request-id', actorUserId: admin.id }
+                { requestId: 'test-request-id', externalId: admin.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -122,7 +122,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -149,7 +149,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -210,7 +210,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -274,7 +274,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: member.externalId },
-                { requestId: 'test-request-id', actorUserId: member.id }
+                { requestId: 'test-request-id', externalId: member.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -307,7 +307,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: nonMember.externalId },
-                { requestId: 'test-request-id', actorUserId: nonMember.id }
+                { requestId: 'test-request-id', externalId: nonMember.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -326,7 +326,7 @@ describe('ArchiveOrganization use case', () => {
                     organizationId: '11111111-1111-4111-8111-111111111111',
                     principalExternalId: user.externalId
                 },
-                { requestId: 'test-request-id', actorUserId: user.id }
+                { requestId: 'test-request-id', externalId: user.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -351,7 +351,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -377,7 +377,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -392,7 +392,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: 'not-a-valid-uuid', principalExternalId: user.externalId } as any,
-                { requestId: 'test-request-id', actorUserId: user.id }
+                { requestId: 'test-request-id', externalId: user.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -419,7 +419,7 @@ describe('ArchiveOrganization use case', () => {
                     organizationId: organization.id,
                     principalExternalId: 'non-existent-external-id'
                 },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -448,7 +448,7 @@ describe('ArchiveOrganization use case', () => {
             const useCase = new ArchiveOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);

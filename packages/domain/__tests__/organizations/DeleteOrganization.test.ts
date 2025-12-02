@@ -42,7 +42,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -78,7 +78,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -104,7 +104,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -165,7 +165,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -203,7 +203,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -221,7 +221,7 @@ describe('DeleteOrganization use case', () => {
                 },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -246,7 +246,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -260,7 +260,7 @@ describe('DeleteOrganization use case', () => {
                 { organizationId: 'not-a-valid-uuid', principalExternalId: 'ext-test' } as any,
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -289,7 +289,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: owner.externalId },
-                { requestId: 'test-request-id', actorUserId: owner.id }
+                { requestId: 'test-request-id', externalId: owner.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -338,7 +338,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: admin.externalId },
-                { requestId: 'test-request-id', actorUserId: admin.id }
+                { requestId: 'test-request-id', externalId: admin.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -386,7 +386,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: member.externalId },
-                { requestId: 'test-request-id', actorUserId: member.id }
+                { requestId: 'test-request-id', externalId: member.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -419,7 +419,7 @@ describe('DeleteOrganization use case', () => {
             const useCase = new DeleteOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId: nonMember.externalId },
-                { requestId: 'test-request-id', actorUserId: nonMember.id }
+                { requestId: 'test-request-id', externalId: nonMember.id }
             );
 
             expect(result.isFailure).toBe(true);
@@ -444,7 +444,7 @@ describe('DeleteOrganization use case', () => {
                 { organizationId: organization.id, principalExternalId: 'nonexistent-external-id' },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000099999'
+                    externalId: '00000000-0000-4000-8000-000000099999'
                 }
             );
 

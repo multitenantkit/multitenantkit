@@ -32,7 +32,7 @@ describe('CreateUser use case', () => {
                 { externalId: 'New@Example.com', username: 'New@Example.com' },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -69,7 +69,7 @@ describe('CreateUser use case', () => {
                 },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -90,7 +90,7 @@ describe('CreateUser use case', () => {
                 { externalId: '00000001-0000-4000-8000-000000010001', username: 'username' },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 
@@ -114,7 +114,7 @@ describe('CreateUser use case', () => {
             // We intentionally omit role in input; input schema allows partial, but output validation requires it
             const result = await useCase.execute({ email: 'missingrole@example.com' } as any, {
                 requestId: 'test-request-id',
-                actorUserId: '00000000-0000-4000-8000-000000000000'
+                externalId: '00000000-0000-4000-8000-000000000000'
             });
 
             expect(result.isFailure).toBe(true);
@@ -133,7 +133,7 @@ describe('CreateUser use case', () => {
                 { externalId: 'txerror@example.com', username: 'username' },
                 {
                     requestId: 'test-request-id',
-                    actorUserId: '00000000-0000-4000-8000-000000000000'
+                    externalId: '00000000-0000-4000-8000-000000000000'
                 }
             );
 

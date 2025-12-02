@@ -98,7 +98,7 @@ describe('UpdateOrganization Handler', () => {
             expect(mockUpdateOrganizationExecute).toHaveBeenCalledWith(
                 { organizationId, principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'UPDATE_ORGANIZATION',
                     organizationId
                 })
@@ -628,7 +628,7 @@ describe('UpdateOrganization Handler', () => {
             expect(mockUpdateOrganizationExecute).toHaveBeenCalledWith(
                 { organizationId, principalExternalId: principalExternalId },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'UPDATE_ORGANIZATION',
                     organizationId
                 })

@@ -49,7 +49,7 @@ describe('CreateOrganization use case', () => {
             const useCase = new CreateOrganization(adapters);
             const result = await useCase.execute(
                 { principalExternalId },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -88,7 +88,7 @@ describe('CreateOrganization use case', () => {
                 toolkitOptions
             );
             const result = await useCase.execute({ principalExternalId, category: 'eng' } as any, {
-                actorUserId: principalExternalId,
+                externalId: principalExternalId,
                 requestId: 'test-request-id'
             });
 
@@ -107,7 +107,7 @@ describe('CreateOrganization use case', () => {
             const useCase = new CreateOrganization(adapters);
             const result = await useCase.execute(
                 { principalExternalId },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isFailure).toBe(true);

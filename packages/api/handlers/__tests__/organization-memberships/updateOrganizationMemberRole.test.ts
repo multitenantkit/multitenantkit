@@ -119,7 +119,7 @@ describe('UpdateOrganizationMemberRole Handler', () => {
                     roleCode: 'admin'
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'UPDATE_ORGANIZATION_MEMBER_ROLE',
                     organizationId
                 })
@@ -834,7 +834,7 @@ describe('UpdateOrganizationMemberRole Handler', () => {
                     roleCode: 'admin'
                 },
                 expect.objectContaining({
-                    actorUserId: principalExternalId,
+                    externalId: principalExternalId,
                     auditAction: 'UPDATE_ORGANIZATION_MEMBER_ROLE',
                     organizationId
                 })

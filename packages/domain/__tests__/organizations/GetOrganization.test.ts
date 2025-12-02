@@ -63,7 +63,7 @@ describe('GetOrganization use case', () => {
             const useCase = new GetOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId },
-                { requestId: 'test-request-id', actorUserId: principalExternalId }
+                { requestId: 'test-request-id', externalId: principalExternalId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -103,7 +103,7 @@ describe('GetOrganization use case', () => {
             const useCase = new GetOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId },
-                { requestId: 'test-request-id', actorUserId: memberId }
+                { requestId: 'test-request-id', externalId: memberId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -146,7 +146,7 @@ describe('GetOrganization use case', () => {
             );
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId },
-                { requestId: 'test-request-id', actorUserId: ownerId }
+                { requestId: 'test-request-id', externalId: ownerId }
             );
 
             expect(result.isSuccess).toBe(true);
@@ -161,7 +161,7 @@ describe('GetOrganization use case', () => {
             const useCase = new GetOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: '70000000-0000-4000-8000-000000009999', principalExternalId },
-                { requestId: 'test-request-id', actorUserId: userId }
+                { requestId: 'test-request-id', externalId: userId }
             );
 
             expect(result.isFailure).toBe(true);
@@ -190,7 +190,7 @@ describe('GetOrganization use case', () => {
             const useCase = new GetOrganization(adapters);
             const result = await useCase.execute(
                 { organizationId: organization.id, principalExternalId },
-                { requestId: 'test-request-id', actorUserId: outsiderId }
+                { requestId: 'test-request-id', externalId: outsiderId }
             );
 
             expect(result.isFailure).toBe(true);

@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/api-contracts",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "type": "module",
     "description": "API contracts and schemas for MultiTenantKit HTTP API",
     "keywords": [
@@ -45,7 +45,7 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/domain-contracts": "^0.1.1",
+        "@multitenantkit/domain-contracts": "^0.2.0",
         "zod": "^3.22.4"
     },
     "devDependencies": {
