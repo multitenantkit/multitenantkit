@@ -1,8 +1,8 @@
 /**
- * Use Case Factory for Supabase
+ * Use Case Factory for Supabase SDK
  *
  * Creates all use cases with Supabase adapters.
- * This is a copy of the composition package's factory to avoid Node.js dependencies.
+ * Deno compatible - no Node.js dependencies.
  */
 
 // Memberships use cases
@@ -205,7 +205,7 @@ function createMembershipUseCases<
  *
  * @example
  * ```typescript
- * import { createSupabaseAdapters, createUseCases } from '@multitenantkit/adapter-persistence-supabase';
+ * import { createSupabaseAdapters, createUseCases } from '@multitenantkit/sdk-supabase';
  *
  * const adapters = createSupabaseAdapters({ client });
  * const useCases = createUseCases(adapters);

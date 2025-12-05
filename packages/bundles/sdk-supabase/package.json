@@ -1,0 +1,58 @@
+{
+    "name": "@multitenantkit/sdk-supabase",
+    "version": "0.2.0",
+    "type": "module",
+    "description": "MultiTenantKit SDK for Supabase Edge Functions (Deno compatible)",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "supabase",
+        "deno",
+        "edge-functions",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/bundles/sdk-supabase"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "dev": "tsc --build --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@multitenantkit/domain": "^0.2.0",
+        "@multitenantkit/domain-contracts": "^0.2.0",
+        "@multitenantkit/adapter-persistence-supabase": "^0.2.0",
+        "@multitenantkit/adapter-system-web-crypto": "^0.2.0",
+        "@supabase/supabase-js": "^2.39.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    }
+}

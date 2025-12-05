@@ -1,0 +1,48 @@
+{
+    "name": "@multitenantkit/adapter-system-web-crypto",
+    "version": "0.2.0",
+    "description": "Crypto UUID adapter",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "adapter",
+        "uuid",
+        "crypto",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/system/crypto-uuid"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@multitenantkit/domain-contracts": "^0.2.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0"
+    }
+}
