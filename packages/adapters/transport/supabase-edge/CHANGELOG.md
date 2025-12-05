@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.5
+
+### Patch Changes
+
+- fix: use npm package path instead of relative monorepo path
+
 ## 0.2.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.5
+
+### Patch Changes
+
+- fix: use npm package path instead of relative monorepo path
+- Updated dependencies
+  - @multitenantkit/domain@0.2.2
+
 ## 0.2.4
 
 ### Patch Changes
