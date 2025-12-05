@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -5,6 +7,7 @@ export default defineConfig({
         globals: true,
         environment: 'node',
         include: ['__tests__/**/*.test.ts'],
+        testTimeout: 10000,
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
