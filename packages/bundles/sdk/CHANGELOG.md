@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.4
+
+### Patch Changes
+
+- deno supabase sdk
+- Updated dependencies
+  - @multitenantkit/domain@0.2.1
+
 ## 0.2.3
 
 ### Patch Changes

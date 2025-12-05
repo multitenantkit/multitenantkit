@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/sdk",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Complete SDK for building multi-tenant SaaS applications - includes all adapters and options",
     "keywords": [
         "multitenantkit",
@@ -64,7 +64,7 @@
         "@multitenantkit/api-handlers": "^0.2.0",
         "@multitenantkit/api-contracts": "^0.2.0",
         "@multitenantkit/domain-contracts": "^0.2.0",
-        "@multitenantkit/domain": "^0.2.0",
+        "@multitenantkit/domain": "^0.2.1",
         "@multitenantkit/composition": "^0.2.0"
     },
     "devDependencies": {

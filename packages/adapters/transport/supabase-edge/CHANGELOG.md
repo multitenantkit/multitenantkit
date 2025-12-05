@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.4
+
+### Patch Changes
+
+- deno supabase sdk
+
 ## 0.2.3
 
 ### Patch Changes
