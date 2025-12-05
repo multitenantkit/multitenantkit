@@ -54,7 +54,7 @@ describe('CreateOrganization use case', () => {
 
             expect(result.isSuccess).toBe(true);
             const organization = result.getValue();
-            expect(organization.id).toBe('00000000-0000-4000-8000-000000000001');
+            expect(organization.id).toBe('00000000-0000-4000-8000-000000000002'); // First UUID is used for executionId
             expect(organization.ownerUserId).toBe(ownerId);
             expect(organization.createdAt).toBeInstanceOf(Date);
             expect(organization.updatedAt).toBeInstanceOf(Date);

@@ -81,7 +81,7 @@ describe('AddOrganizationMember use case', () => {
 
             expect(result.isSuccess).toBe(true);
             const membership = result.getValue();
-            expect(membership.id).toBe('00000000-0000-4000-8000-000000000001');
+            expect(membership.id).toBe('00000000-0000-4000-8000-000000000002'); // First UUID is used for executionId
             expect(membership.userId).toBe(targetUserId);
             expect(membership.organizationId).toBe(organizationId);
             expect(membership.roleCode).toBe('member');
@@ -631,7 +631,7 @@ describe('AddOrganizationMember use case', () => {
             // Should create NEW membership since existing one is deleted
             expect(result.isSuccess).toBe(true);
             const membership = result.getValue();
-            expect(membership.id).toBe('00000000-0000-4000-8000-000000000001'); // New ID
+            expect(membership.id).toBe('00000000-0000-4000-8000-000000000002'); // New ID (first UUID is used for executionId)
             expect(membership.deletedAt).toBeUndefined();
             expect(membership.leftAt).toBeUndefined();
         });
@@ -667,7 +667,7 @@ describe('AddOrganizationMember use case', () => {
             // Should create NEW membership since existing one is deleted
             expect(result.isSuccess).toBe(true);
             const membership = result.getValue();
-            expect(membership.id).toBe('00000000-0000-4000-8000-000000000001'); // New ID
+            expect(membership.id).toBe('00000000-0000-4000-8000-000000000002'); // New ID (first UUID is used for executionId)
             expect(membership.deletedAt).toBeUndefined();
         });
     });
