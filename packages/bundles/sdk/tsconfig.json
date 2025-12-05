@@ -17,6 +17,7 @@
         { "path": "../../adapters/persistence/postgres" },
         { "path": "../../adapters/auth/supabase" },
         { "path": "../../adapters/transport/express" },
+        { "path": "../../adapters/transport/supabase-edge" },
         { "path": "../../adapters/system/crypto-uuid" },
         { "path": "../../adapters/system/system-clock" },
         { "path": "../../composition" }

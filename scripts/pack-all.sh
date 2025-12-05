@@ -26,11 +26,11 @@ mkdir -p "$OUTPUT_DIR_ABS"
 pack_package() {
     local package_path=$1
     local package_name=$2
-    
+
     if [ -f "$package_path/package.json" ]; then
         echo "📦 Packing $package_name..."
         cd "$package_path"
-        
+
         # Build if build script exists
         if grep -q '"build":' package.json; then
             echo "   🔨 Building..."
@@ -40,7 +40,7 @@ pack_package() {
                 echo "   ⚠️  Build failed, continuing anyway..."
             fi
         fi
-        
+
         # Pack the package
         echo "   📦 Creating tarball..."
         if npm pack --pack-destination="$OUTPUT_DIR_ABS"; then
@@ -48,7 +48,7 @@ pack_package() {
         else
             echo "❌ Failed to pack $package_name"
         fi
-        
+
         cd - > /dev/null
         echo ""
     fi
@@ -69,6 +69,7 @@ pack_package "$PACKAGES_ROOT/adapters/persistence/postgres" "multitenantkit/adap
 pack_package "$PACKAGES_ROOT/adapters/system/crypto-uuid" "multitenantkit/adapter-system-crypto-uuid"
 pack_package "$PACKAGES_ROOT/adapters/system/system-clock" "multitenantkit/adapter-system-system-clock"
 pack_package "$PACKAGES_ROOT/adapters/transport/express" "multitenantkit/adapter-transport-express"
+pack_package "$PACKAGES_ROOT/adapters/transport/supabase-edge" "multitenantkit/adapter-transport-supabase-edge"
 pack_package "$PACKAGES_ROOT/api/handlers" "multitenantkit/api-handlers"
 pack_package "$PACKAGES_ROOT/adapters/metrics/http-metrics" "multitenantkit/adapter-metrics-http-metrics"
 

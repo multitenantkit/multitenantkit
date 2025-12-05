@@ -1,0 +1,63 @@
+{
+    "name": "@multitenantkit/adapter-transport-supabase-edge",
+    "version": "0.2.1",
+    "type": "module",
+    "description": "Supabase Edge Functions transport adapter for MultiTenantKit HTTP API",
+    "keywords": [
+        "multitenantkit",
+        "saas",
+        "multi-tenant",
+        "multitenancy",
+        "adapter",
+        "supabase",
+        "edge-functions",
+        "deno",
+        "rest-api",
+        "api-server",
+        "http",
+        "serverless",
+        "organizations",
+        "teams",
+        "users",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/multitenantkit/multitenantkit.git",
+        "directory": "packages/adapters/transport/supabase-edge"
+    },
+    "bugs": {
+        "url": "https://github.com/multitenantkit/multitenantkit/issues"
+    },
+    "homepage": "https://github.com/multitenantkit/multitenantkit#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
+    },
+    "dependencies": {
+        "@multitenantkit/api-contracts": "^0.2.0",
+        "@multitenantkit/domain-contracts": "^0.2.0",
+        "@multitenantkit/api-handlers": "^0.2.0",
+        "zod": "^3.22.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0",
+        "vitest": "^1.0.0"
+    }
+}

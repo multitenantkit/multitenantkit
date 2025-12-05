@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.1
+
+### Patch Changes
+
+- new transport adapter - supabase
+- Updated dependencies
+  - @multitenantkit/adapter-transport-supabase-edge@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
