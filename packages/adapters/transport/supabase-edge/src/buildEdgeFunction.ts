@@ -4,12 +4,12 @@ import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
 import type { HandlerPackage } from '@multitenantkit/api-handlers';
 import { ANONYMOUS_PRINCIPAL } from '@multitenantkit/domain-contracts/shared/auth';
 
-import { authenticateRequest } from './middleware/auth';
-import { buildCorsHeaders, handleCorsPreflightRequest } from './middleware/cors';
-import { getRequestId } from './middleware/requestId';
-import { validateRequest } from './middleware/validation';
-import { EdgeRouter } from './router';
-import type { CorsOptions, EdgeFunctionOptions } from './types';
+import { authenticateRequest } from './middleware/auth.js';
+import { buildCorsHeaders, handleCorsPreflightRequest } from './middleware/cors.js';
+import { getRequestId } from './middleware/requestId.js';
+import { validateRequest } from './middleware/validation.js';
+import { EdgeRouter } from './router.js';
+import type { CorsOptions, EdgeFunctionOptions } from './types.js';
 
 /**
  * Default CORS configuration

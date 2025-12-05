@@ -24,14 +24,14 @@
  */
 
 // Main builder
-export { buildEdgeFunction } from './buildEdgeFunction';
+export { buildEdgeFunction } from './buildEdgeFunction.js';
 // Middleware utilities (for custom implementations)
-export { authenticateRequest } from './middleware/auth';
-export { buildCorsHeaders, handleCorsPreflightRequest } from './middleware/cors';
-export { getRequestId } from './middleware/requestId';
-export { validateRequest } from './middleware/validation';
+export { authenticateRequest } from './middleware/auth.js';
+export { buildCorsHeaders, handleCorsPreflightRequest } from './middleware/cors.js';
+export { getRequestId } from './middleware/requestId.js';
+export { validateRequest } from './middleware/validation.js';
 // Router (for advanced use cases)
-export { EdgeRouter } from './router';
+export { EdgeRouter } from './router.js';
 
 // Types
-export type { CorsOptions, EdgeContext, EdgeFunctionOptions, RouteMatch } from './types';
+export type { CorsOptions, EdgeContext, EdgeFunctionOptions, RouteMatch } from './types.js';

@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.2
+
+### Patch Changes
+
+- fix: add .js extension to imports for Deno compatibility
+- Updated dependencies
+  - @multitenantkit/adapter-transport-supabase-edge@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

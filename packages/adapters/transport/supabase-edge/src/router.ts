@@ -8,7 +8,7 @@
  */
 
 import type { HandlerPackage } from '@multitenantkit/api-handlers';
-import type { RouteMatch } from './types';
+import type { RouteMatch } from './types.js';
 
 /**
  * Internal route entry in the routing table
