@@ -3,7 +3,7 @@
  * @module
  */
 
-import type { Principal } from '@multitenantkit/domain-contracts/shared/auth';
+import type { Principal } from '@multitenantkit/domain-contracts';
 
 /**
  * Context passed through the Edge Function pipeline.

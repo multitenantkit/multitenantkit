@@ -1,6 +1,6 @@
 // CORS Handler for Supabase Edge Functions
 
-import type { CorsOptions } from '../types';
+import type { CorsOptions } from '../types.js';
 
 /**
  * Default CORS configuration

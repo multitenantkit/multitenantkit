@@ -1,8 +1,8 @@
 // Main builder for Supabase Edge Functions handler
 
-import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
+import type { AuthService } from '@multitenantkit/api-contracts';
 import type { HandlerPackage } from '@multitenantkit/api-handlers';
-import { ANONYMOUS_PRINCIPAL } from '@multitenantkit/domain-contracts/shared/auth';
+import { ANONYMOUS_PRINCIPAL } from '@multitenantkit/domain-contracts';
 
 import { authenticateRequest } from './middleware/auth.js';
 import { buildCorsHeaders, handleCorsPreflightRequest } from './middleware/cors.js';

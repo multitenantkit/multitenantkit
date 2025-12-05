@@ -1,7 +1,7 @@
 // Authentication middleware for Supabase Edge Functions
 
-import type { AuthService } from '@multitenantkit/api-contracts/shared/ports';
-import { ANONYMOUS_PRINCIPAL, type Principal } from '@multitenantkit/domain-contracts/shared/auth';
+import type { AuthService } from '@multitenantkit/api-contracts';
+import { ANONYMOUS_PRINCIPAL, type Principal } from '@multitenantkit/domain-contracts';
 
 /**
  * Authenticate a request using the provided AuthService
