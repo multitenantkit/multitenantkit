@@ -1,10 +1,17 @@
-// Edge Function Router - Converts HandlerPackages to routing table
+/**
+ * Edge Function Router
+ *
+ * Provides Express-style routing for Supabase Edge Functions.
+ * Converts HandlerPackages to a routing table with regex-based path matching.
+ *
+ * @module
+ */
 
 import type { HandlerPackage } from '@multitenantkit/api-handlers';
 import type { RouteMatch } from './types';
 
 /**
- * Route entry in the routing table
+ * Internal route entry in the routing table
  */
 interface RouteEntry {
     method: string;
@@ -14,8 +21,24 @@ interface RouteEntry {
 }
 
 /**
- * Route matcher for Edge Functions
- * Converts HandlerPackage routes to a routing table
+ * Route matcher for Supabase Edge Functions.
+ *
+ * Converts Express-style paths (e.g., `/users/:id`) to regex patterns
+ * and matches incoming requests to the appropriate handlers.
+ *
+ * @example
+ * ```typescript
+ * import { EdgeRouter } from '@multitenantkit/adapter-transport-supabase-edge';
+ *
+ * const router = new EdgeRouter('/api', handlers);
+ *
+ * // Match a request
+ * const match = router.match('GET', '/api/organizations/123');
+ * if (match) {
+ *     console.log(match.params); // { id: '123' }
+ *     // Call match.handler...
+ * }
+ * ```
  */
 export class EdgeRouter {
     private routes: RouteEntry[] = [];
@@ -66,7 +89,11 @@ export class EdgeRouter {
     }
 
     /**
-     * Match a request to a handler
+     * Match an incoming request to a registered handler.
+     *
+     * @param method - HTTP method (GET, POST, PUT, DELETE, PATCH)
+     * @param pathname - Full pathname including base path (e.g., '/api/users/123')
+     * @returns RouteMatch with handler and extracted params, or null if no match
      */
     match(method: string, pathname: string): RouteMatch | null {
         for (const route of this.routes) {
