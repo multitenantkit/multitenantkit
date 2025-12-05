@@ -13,7 +13,6 @@ export * as AdapterSystemCryptoUuid from '@multitenantkit/adapter-system-crypto-
 export * as AdapterSystemSystemClock from '@multitenantkit/adapter-system-system-clock';
 // Transport Adapters - Export as namespace
 export * as AdapterTransportExpress from '@multitenantkit/adapter-transport-express';
-export * as AdapterTransportSupabaseEdge from '@multitenantkit/adapter-transport-supabase-edge';
 export * from '@multitenantkit/api-contracts';
 // API Handlers - Direct exports
 export * from '@multitenantkit/api-handlers';
