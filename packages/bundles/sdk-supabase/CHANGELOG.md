@@ -1,5 +1,15 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.3
+
+### Patch Changes
+
+- feat: add automatic Supabase defaults to adapter factory
+- Updated dependencies
+  - @multitenantkit/adapter-system-web-crypto@0.2.3
+  - @multitenantkit/adapter-persistence-supabase@0.2.3
+  - @multitenantkit/domain@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes

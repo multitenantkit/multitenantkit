@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.6
+
+### Patch Changes
+
+- feat: add automatic Supabase defaults to adapter factory
+- Updated dependencies
+  - @multitenantkit/domain@0.2.3
+
 ## 0.2.5
 
 ### Patch Changes

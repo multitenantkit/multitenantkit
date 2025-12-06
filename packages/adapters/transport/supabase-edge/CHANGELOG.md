@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.6
+
+### Patch Changes
+
+- feat: add automatic Supabase defaults to adapter factory
+
 ## 0.2.5
 
 ### Patch Changes

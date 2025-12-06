@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-system-web-crypto
 
+## 0.2.3
+
+### Patch Changes
+
+- feat: add automatic Supabase defaults to adapter factory
+
 ## 0.2.2
 
 ### Patch Changes
