@@ -1,5 +1,15 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.7
+
+### Patch Changes
+
+- feat: implement proper joins and data mapping in OrganizationMembershipRepository
+- Updated dependencies
+  - @multitenantkit/adapter-system-web-crypto@0.2.7
+  - @multitenantkit/adapter-persistence-supabase@0.2.7
+  - @multitenantkit/domain@0.2.7
+
 ## 0.2.6
 
 ### Patch Changes

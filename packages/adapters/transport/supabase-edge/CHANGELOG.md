@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.10
+
+### Patch Changes
+
+- feat: implement proper joins and data mapping in OrganizationMembershipRepository
+
 ## 0.2.9
 
 ### Patch Changes

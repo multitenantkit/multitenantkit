@@ -21,12 +21,12 @@ import {
 /**
  * Supabase implementation of OrganizationMembershipRepository
  */
-// biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default
 export class SupabaseOrganizationMembershipRepository<
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default for optional custom fields
     TUserCustomFields = {},
-    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default for optional custom fields
     TOrganizationCustomFields = {},
-    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default
+    // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default for optional custom fields
     TOrganizationMembershipCustomFields = {}
 > implements
         OrganizationMembershipRepository<
@@ -39,7 +39,7 @@ export class SupabaseOrganizationMembershipRepository<
     private readonly schemaName?: string;
     private readonly tableName: string;
     private readonly usersTableName: string;
-    private readonly usersSchemaName?: string;
+    private readonly organizationsTableName: string;
 
     constructor(
         private readonly client: SupabaseClient,
@@ -54,8 +54,9 @@ export class SupabaseOrganizationMembershipRepository<
         this.tableName =
             toolkitOptions?.organizationMemberships?.database?.table || 'organization_memberships';
 
-        this.usersSchemaName = toolkitOptions?.users?.database?.schema;
         this.usersTableName = toolkitOptions?.users?.database?.table || 'users';
+        this.organizationsTableName =
+            toolkitOptions?.organizations?.database?.table || 'organizations';
 
         const databaseNamingStrategy =
             toolkitOptions?.organizationMemberships?.database?.namingStrategy;
@@ -224,8 +225,18 @@ export class SupabaseOrganizationMembershipRepository<
             >
         >
     > {
+        // Build select with joins to users and organizations tables
+        // Supabase uses PostgREST syntax for joins via foreign key relationships
+        // Format: related_table!foreign_key(columns)
+        // Note: This requires foreign key relationships to be set up in Supabase
+        const selectWithJoins = `
+            *,
+            user:${this.usersTableName}!${this.configHelper.getColumnName('userId')}(*),
+            organization:${this.organizationsTableName}!${this.configHelper.getColumnName('organizationId')}(*)
+        `;
+
         let query = this.getTable()
-            .select(this.getSelectColumns(), { count: 'exact' })
+            .select(selectWithJoins, { count: 'exact' })
             .eq(this.configHelper.getColumnName('organizationId'), organizationId);
 
         // Build filter conditions based on options
@@ -257,33 +268,101 @@ export class SupabaseOrganizationMembershipRepository<
         const { data, error, count } = await query;
 
         if (error || !data) {
+            console.error('[SupabaseOrganizationMembershipRepository] Query error:', error);
             const total = 0;
             return { items: [], total, page, pageSize, totalPages: 0 };
         }
 
-        const memberships = (data as unknown as OrganizationMembershipDbRow[]).map((row) =>
-            this.mapToDomain(row)
-        );
-
         const total = count ?? 0;
         const totalPages = Math.ceil(total / pageSize);
 
+        // Transform data to OrganizationMemberWithUserInfo format
+        // The joined data comes as nested objects: { ...membership, user: {...}, organization: {...} }
+        const items = data.map((row: any) => {
+            // Extract and map membership fields
+            const membershipFields = this.mapToDomain(row as OrganizationMembershipDbRow);
+
+            // Extract joined user (may be null if no user found)
+            const userRow = row.user;
+            const user = userRow
+                ? {
+                      id: userRow.id,
+                      externalId: userRow.external_id,
+                      username: userRow.username,
+                      createdAt: new Date(userRow.created_at),
+                      updatedAt: new Date(userRow.updated_at),
+                      deletedAt: userRow.deleted_at ? new Date(userRow.deleted_at) : undefined,
+                      // Include custom user fields (everything else in the row)
+                      ...this.extractCustomFields(userRow, [
+                          'id',
+                          'external_id',
+                          'username',
+                          'created_at',
+                          'updated_at',
+                          'deleted_at'
+                      ])
+                  }
+                : null;
+
+            // Extract joined organization
+            // Base fields from OrganizationSchema: id, ownerUserId, createdAt, updatedAt, archivedAt, deletedAt
+            const orgRow = row.organization;
+            const organization = orgRow
+                ? {
+                      id: orgRow.id,
+                      ownerUserId: orgRow.owner_user_id,
+                      createdAt: new Date(orgRow.created_at),
+                      updatedAt: new Date(orgRow.updated_at),
+                      archivedAt: orgRow.archived_at ? new Date(orgRow.archived_at) : undefined,
+                      deletedAt: orgRow.deleted_at ? new Date(orgRow.deleted_at) : undefined,
+                      // Include custom organization fields (everything not in base fields)
+                      ...this.extractCustomFields(orgRow, [
+                          'id',
+                          'owner_user_id',
+                          'created_at',
+                          'updated_at',
+                          'archived_at',
+                          'deleted_at'
+                      ])
+                  }
+                : null;
+
+            return {
+                ...membershipFields,
+                user,
+                organization
+            };
+        }) as OrganizationMemberWithUserInfo<
+            TUserCustomFields,
+            TOrganizationCustomFields,
+            TOrganizationMembershipCustomFields
+        >[];
+
         return {
-            items: memberships.map((m) => ({
-                ...m,
-                membership: m,
-                user: null as any,
-                organization: null as any
-            })) as unknown as OrganizationMemberWithUserInfo<
-                TUserCustomFields,
-                TOrganizationCustomFields,
-                TOrganizationMembershipCustomFields
-            >[],
+            items,
             total,
             page,
             pageSize,
             totalPages
         };
+    }
+
+    /**
+     * Extract custom fields from a database row by excluding known base fields
+     */
+    private extractCustomFields(
+        row: Record<string, any>,
+        baseFieldNames: string[]
+    ): Record<string, any> {
+        const result: Record<string, any> = {};
+        for (const key of Object.keys(row)) {
+            if (!baseFieldNames.includes(key)) {
+                // Transform snake_case to camelCase for domain
+                const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+                result[camelKey] = row[key];
+            }
+        }
+        return result;
     }
 
     async findByUser(
