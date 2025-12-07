@@ -227,12 +227,13 @@ export class SupabaseOrganizationMembershipRepository<
     > {
         // Build select with joins to users and organizations tables
         // Supabase uses PostgREST syntax for joins via foreign key relationships
-        // Format: related_table!foreign_key(columns)
+        // - Use !left for LEFT JOIN (pending invitations may not have userId yet)
+        // - Use !inner for INNER JOIN (organization must exist)
         // Note: This requires foreign key relationships to be set up in Supabase
         const selectWithJoins = `
             *,
-            user:${this.usersTableName}!${this.configHelper.getColumnName('userId')}(*),
-            organization:${this.organizationsTableName}!${this.configHelper.getColumnName('organizationId')}(*)
+            user:${this.usersTableName}!left(*),
+            organization:${this.organizationsTableName}!inner(*)
         `;
 
         let query = this.getTable()
@@ -240,23 +241,47 @@ export class SupabaseOrganizationMembershipRepository<
             .eq(this.configHelper.getColumnName('organizationId'), organizationId);
 
         // Build filter conditions based on options
-        if (options?.includeActive) {
+        // Match PostgreSQL behavior: combine filters with OR when multiple are specified
+        const includeActive = options?.includeActive ?? false;
+        const includePending = options?.includePending ?? false;
+        const includeRemoved = options?.includeRemoved ?? false;
+
+        // If no filters specified, default to active only
+        if (!includeActive && !includePending && !includeRemoved) {
+            // Default: active members only
             query = query
                 .not(this.configHelper.getColumnName('joinedAt'), 'is', null)
-                .is(this.configHelper.getColumnName('leftAt'), null)
-                .is(this.configHelper.getColumnName('deletedAt'), null);
-        } else if (options?.includePending) {
-            query = query
-                .not(this.configHelper.getColumnName('invitedAt'), 'is', null)
-                .is(this.configHelper.getColumnName('joinedAt'), null)
                 .is(this.configHelper.getColumnName('leftAt'), null)
                 .is(this.configHelper.getColumnName('deletedAt'), null);
         } else {
-            // Default to active only
-            query = query
-                .not(this.configHelper.getColumnName('joinedAt'), 'is', null)
-                .is(this.configHelper.getColumnName('leftAt'), null)
-                .is(this.configHelper.getColumnName('deletedAt'), null);
+            // Build OR conditions for status filtering
+            // PostgREST supports .or() for combining conditions
+            const orConditions: string[] = [];
+
+            if (includeActive) {
+                // Active: joinedAt NOT NULL, leftAt NULL, deletedAt NULL
+                orConditions.push(
+                    `and(${this.configHelper.getColumnName('joinedAt')}.not.is.null,${this.configHelper.getColumnName('leftAt')}.is.null,${this.configHelper.getColumnName('deletedAt')}.is.null)`
+                );
+            }
+
+            if (includePending) {
+                // Pending: invitedAt NOT NULL, joinedAt NULL, leftAt NULL, deletedAt NULL
+                orConditions.push(
+                    `and(${this.configHelper.getColumnName('invitedAt')}.not.is.null,${this.configHelper.getColumnName('joinedAt')}.is.null,${this.configHelper.getColumnName('leftAt')}.is.null,${this.configHelper.getColumnName('deletedAt')}.is.null)`
+                );
+            }
+
+            if (includeRemoved) {
+                // Removed: leftAt NOT NULL OR deletedAt NOT NULL
+                orConditions.push(
+                    `or(${this.configHelper.getColumnName('leftAt')}.not.is.null,${this.configHelper.getColumnName('deletedAt')}.not.is.null)`
+                );
+            }
+
+            if (orConditions.length > 0) {
+                query = query.or(orConditions.join(','));
+            }
         }
 
         // Apply pagination using page and pageSize

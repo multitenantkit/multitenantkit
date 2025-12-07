@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.11
+
+### Patch Changes
+
+- refactor: improve organization membership filtering with proper OR logic and LEFT JOIN for pending invitations
+- Updated dependencies
+  - @multitenantkit/domain@0.2.8
+
 ## 0.2.10
 
 ### Patch Changes

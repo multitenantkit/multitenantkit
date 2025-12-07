@@ -1,5 +1,15 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.8
+
+### Patch Changes
+
+- refactor: improve organization membership filtering with proper OR logic and LEFT JOIN for pending invitations
+- Updated dependencies
+  - @multitenantkit/adapter-system-web-crypto@0.2.8
+  - @multitenantkit/adapter-persistence-supabase@0.2.8
+  - @multitenantkit/domain@0.2.8
+
 ## 0.2.7
 
 ### Patch Changes

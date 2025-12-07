@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.11
+
+### Patch Changes
+
+- refactor: improve organization membership filtering with proper OR logic and LEFT JOIN for pending invitations
+
 ## 0.2.10
 
 ### Patch Changes
