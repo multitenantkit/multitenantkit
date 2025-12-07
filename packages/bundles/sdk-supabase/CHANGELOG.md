@@ -1,5 +1,15 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.5
+
+### Patch Changes
+
+- supabase repository - public.profiles
+- Updated dependencies
+  - @multitenantkit/adapter-system-web-crypto@0.2.5
+  - @multitenantkit/adapter-persistence-supabase@0.2.5
+  - @multitenantkit/domain@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.8
+
+### Patch Changes
+
+- supabase repository - public.profiles
+- Updated dependencies
+  - @multitenantkit/domain@0.2.5
+
 ## 0.2.7
 
 ### Patch Changes

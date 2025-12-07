@@ -1,5 +1,13 @@
 # @multitenantkit/adapter-persistence-supabase
 
+## 0.2.5
+
+### Patch Changes
+
+- supabase repository - public.profiles
+- Updated dependencies
+  - @multitenantkit/domain@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes

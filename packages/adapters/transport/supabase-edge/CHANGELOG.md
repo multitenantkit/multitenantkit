@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.8
+
+### Patch Changes
+
+- supabase repository - public.profiles
+
 ## 0.2.7
 
 ### Patch Changes

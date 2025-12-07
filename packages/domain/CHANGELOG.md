@@ -1,5 +1,11 @@
 # @multitenantkit/domain
 
+## 0.2.5
+
+### Patch Changes
+
+- supabase repository - public.profiles
+
 ## 0.2.4
 
 ### Patch Changes
