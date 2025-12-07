@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.9
+
+### Patch Changes
+
+- Add debug logging for customFields propagation
+- Updated dependencies
+  - @multitenantkit/domain@0.2.6
+
 ## 0.2.8
 
 ### Patch Changes

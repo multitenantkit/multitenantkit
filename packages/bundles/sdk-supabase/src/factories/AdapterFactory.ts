@@ -218,12 +218,30 @@ export function createSupabaseAdapters<
 > {
     const { client, toolkitOptions: userOptions } = options;
 
+    // DEBUG: Log user options before applying defaults
+    console.log('[AdapterFactory] userOptions received:', !!userOptions);
+    console.log(
+        '[AdapterFactory] userOptions.users?.customFields?.customSchema:',
+        !!userOptions?.users?.customFields?.customSchema
+    );
+
     // Apply Supabase defaults to toolkit options
     const toolkitOptions = applySupabaseDefaults<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >(userOptions);
+
+    // DEBUG: Log after applying defaults
+    console.log('[AdapterFactory] toolkitOptions after defaults:', !!toolkitOptions);
+    console.log(
+        '[AdapterFactory] toolkitOptions.users?.customFields?.customSchema after defaults:',
+        !!toolkitOptions?.users?.customFields?.customSchema
+    );
+    console.log(
+        '[AdapterFactory] toolkitOptions.users?.database:',
+        toolkitOptions?.users?.database
+    );
 
     // Create persistence adapters using Supabase repositories
     const persistence = createSupabaseRepositories<

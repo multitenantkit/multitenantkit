@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.9
+
+### Patch Changes
+
+- Add debug logging for customFields propagation
+
 ## 0.2.8
 
 ### Patch Changes

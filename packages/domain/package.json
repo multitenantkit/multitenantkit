@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/domain",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "type": "module",
     "description": "Core domain logic and use cases for MultiTenantKit - Pure business logic layer",
     "keywords": [

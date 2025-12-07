@@ -28,6 +28,22 @@ export class SupabaseUserRepository<TCustomFields = {}> implements UserRepositor
         private readonly client: SupabaseClient,
         toolkitOptions?: ToolkitOptions<TCustomFields, unknown, unknown>
     ) {
+        // DEBUG: Log what we're receiving
+        console.log('[SupabaseUserRepository] toolkitOptions received:', !!toolkitOptions);
+        console.log('[SupabaseUserRepository] toolkitOptions.users:', !!toolkitOptions?.users);
+        console.log(
+            '[SupabaseUserRepository] toolkitOptions.users.customFields:',
+            !!toolkitOptions?.users?.customFields
+        );
+        console.log(
+            '[SupabaseUserRepository] toolkitOptions.users.customFields.customSchema:',
+            !!toolkitOptions?.users?.customFields?.customSchema
+        );
+        console.log(
+            '[SupabaseUserRepository] toolkitOptions.users.database:',
+            toolkitOptions?.users?.database
+        );
+
         // Extract user custom fields config from toolkit options
         const userConfig = toolkitOptions?.users?.customFields;
 
@@ -45,6 +61,14 @@ export class SupabaseUserRepository<TCustomFields = {}> implements UserRepositor
             databaseNamingStrategy,
             globalNamingStrategy
         );
+
+        // DEBUG: Log the result
+        console.log(
+            '[SupabaseUserRepository] configHelper.hasCustomFields:',
+            this.configHelper.hasCustomFields
+        );
+        console.log('[SupabaseUserRepository] schemaName:', this.schemaName);
+        console.log('[SupabaseUserRepository] tableName:', this.tableName);
     }
 
     /**
