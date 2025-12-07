@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-system-web-crypto",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Crypto UUID adapter",
     "keywords": [
         "multitenantkit",

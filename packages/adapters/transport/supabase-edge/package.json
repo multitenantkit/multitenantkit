@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-transport-supabase-edge",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "type": "module",
     "description": "Supabase Edge Functions transport adapter for MultiTenantKit HTTP API",
     "keywords": [

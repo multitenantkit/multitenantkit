@@ -1,5 +1,13 @@
 # @multitenantkit/sdk
 
+## 0.2.7
+
+### Patch Changes
+
+- refactor: change default user table from auth.users to public.profiles
+- Updated dependencies
+  - @multitenantkit/domain@0.2.4
+
 ## 0.2.6
 
 ### Patch Changes

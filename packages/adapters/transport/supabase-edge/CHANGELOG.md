@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-transport-supabase-edge
 
+## 0.2.7
+
+### Patch Changes
+
+- refactor: change default user table from auth.users to public.profiles
+
 ## 0.2.6
 
 ### Patch Changes

@@ -131,7 +131,7 @@ export class SupabaseUserRepository<TCustomFields = {}> implements UserRepositor
     async findByExternalId(externalId: string): Promise<(User & TCustomFields) | null> {
         const { data, error } = await this.getTable()
             .select(this.getSelectColumns())
-            .ilike(this.configHelper.getColumnName('externalId'), externalId)
+            .eq(this.configHelper.getColumnName('externalId'), externalId)
             .limit(1)
             .single();
 

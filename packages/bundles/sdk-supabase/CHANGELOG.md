@@ -1,5 +1,15 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.4
+
+### Patch Changes
+
+- refactor: change default user table from auth.users to public.profiles
+- Updated dependencies
+  - @multitenantkit/adapter-system-web-crypto@0.2.4
+  - @multitenantkit/adapter-persistence-supabase@0.2.4
+  - @multitenantkit/domain@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/sdk-supabase",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "type": "module",
     "description": "MultiTenantKit SDK for Supabase Edge Functions (Deno compatible)",
     "keywords": [
@@ -46,10 +46,10 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@multitenantkit/domain": "^0.2.3",
+        "@multitenantkit/domain": "^0.2.4",
         "@multitenantkit/domain-contracts": "^0.2.0",
-        "@multitenantkit/adapter-persistence-supabase": "^0.2.3",
-        "@multitenantkit/adapter-system-web-crypto": "^0.2.3",
+        "@multitenantkit/adapter-persistence-supabase": "^0.2.4",
+        "@multitenantkit/adapter-system-web-crypto": "^0.2.4",
         "@supabase/supabase-js": "^2.39.0"
     },
     "devDependencies": {

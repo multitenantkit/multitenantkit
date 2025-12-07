@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-persistence-supabase",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "type": "module",
     "description": "Supabase persistence adapter for MultiTenantKit - works in Node.js and Deno/Edge Functions",
     "keywords": [
@@ -55,7 +55,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@multitenantkit/domain": "^0.2.3",
+        "@multitenantkit/domain": "^0.2.4",
         "@multitenantkit/domain-contracts": "^0.2.0",
         "@supabase/supabase-js": "^2.39.0",
         "zod": "^3.22.4"

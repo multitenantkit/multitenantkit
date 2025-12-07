@@ -33,11 +33,15 @@ class WebClock implements ClockPort {
  *
  * Supabase defaults applied:
  * - namingStrategy: 'snake_case'
- * - users.database: { schema: 'auth', table: 'users' }
- * - users.customFields.columnMapping: { externalId: 'id', username: 'email' }
- * - users.customFields.customMapper: maps to/from raw_user_meta_data
+ * - users.database: { schema: 'public', table: 'profiles' }
+ * - users.customFields.columnMapping: { externalId: 'external_id', username: 'username' }
  * - organizations.database: { schema: 'public', table: 'organizations' }
  * - organizationMemberships.database: { schema: 'public', table: 'organization_memberships' }
+ *
+ * Note: We use public.profiles instead of auth.users because:
+ * - auth.users is not accessible via PostgREST (Supabase client)
+ * - auth.users is managed by GoTrue and shouldn't be modified directly
+ * - public.profiles gives you full control over user data
  *
  * User-provided options take precedence over defaults.
  */
@@ -56,27 +60,11 @@ export function applySupabaseDefaults<
     TOrganizationCustomFields,
     TOrganizationMembershipCustomFields
 > {
-    // Default Supabase customMapper for users (maps to raw_user_meta_data)
-    const supabaseUserMapper = {
-        toDb: (fields: unknown) => ({
-            raw_user_meta_data: {
-                ...(fields as Record<string, unknown>),
-                email_verified: true,
-                phone_verified: false
-            }
-        }),
-        toDomain: (dbRow: Record<string, unknown>) => {
-            const metadata = (dbRow.raw_user_meta_data as Record<string, unknown>) || {};
-            // biome-ignore lint/correctness/noUnusedVariables: intentionally extracted to exclude
-            const { sub, email_verified, phone_verified, ...customFields } = metadata;
-            return customFields;
-        }
-    };
-
-    // Default Supabase columnMapping for users
+    // Default Supabase columnMapping for users (profiles table uses snake_case)
     const supabaseUserColumnMapping = {
-        externalId: 'id',
-        username: 'email'
+        // TODO: externalId should be 'id'
+        externalId: 'external_id',
+        username: 'username'
     };
 
     // Build users config with Supabase defaults
@@ -88,14 +76,14 @@ export function applySupabaseDefaults<
             }),
             // Use user's columnMapping or Supabase default
             columnMapping: options?.users?.customFields?.columnMapping ?? supabaseUserColumnMapping,
-            // Use user's customMapper or Supabase default (only if customSchema is provided)
-            ...(options?.users?.customFields?.customSchema && {
-                customMapper: options?.users?.customFields?.customMapper ?? supabaseUserMapper
+            // Use user's customMapper if provided (no default mapper needed for profiles table)
+            ...(options?.users?.customFields?.customMapper && {
+                customMapper: options.users.customFields.customMapper
             })
         } as UserCustomFieldsConfig<TUserCustomFields>,
         database: {
-            schema: options?.users?.database?.schema ?? 'auth',
-            table: options?.users?.database?.table ?? 'users',
+            schema: options?.users?.database?.schema ?? 'public',
+            table: options?.users?.database?.table ?? 'profiles',
             ...(options?.users?.database?.namingStrategy && {
                 namingStrategy: options.users.database.namingStrategy
             })

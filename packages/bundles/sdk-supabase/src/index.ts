@@ -8,10 +8,15 @@
  *
  * **Supabase defaults applied automatically:**
  * - `namingStrategy: 'snake_case'`
- * - `users.database: { schema: 'auth', table: 'users' }`
- * - `users.customFields.columnMapping: { externalId: 'id', username: 'email' }`
+ * - `users.database: { schema: 'public', table: 'profiles' }`
+ * - `users.customFields.columnMapping: { externalId: 'external_id', username: 'username' }`
  * - `organizations.database: { schema: 'public', table: 'organizations' }`
  * - `organizationMemberships.database: { schema: 'public', table: 'organization_memberships' }`
+ *
+ * Note: We use `public.profiles` instead of `auth.users` because:
+ * - `auth.users` is not accessible via PostgREST (Supabase JS client)
+ * - `auth.users` is managed by GoTrue and shouldn't be modified directly
+ * - `public.profiles` gives you full control over user profile data
  *
  * @example
  * ```typescript

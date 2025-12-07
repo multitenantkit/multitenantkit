@@ -1,5 +1,11 @@
 # @multitenantkit/domain
 
+## 0.2.4
+
+### Patch Changes
+
+- refactor: change default user table from auth.users to public.profiles
+
 ## 0.2.3
 
 ### Patch Changes
