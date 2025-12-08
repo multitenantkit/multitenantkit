@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import type {
     Adapters,
     DomainError,
@@ -108,7 +107,7 @@ export abstract class BaseUseCase<
         this.abortReason = '';
         this.sharedState = {};
         this.stepResults = {};
-        this.executionId = randomUUID();
+        this.executionId = this.adapters.system.uuid.generate();
     }
 
     /**

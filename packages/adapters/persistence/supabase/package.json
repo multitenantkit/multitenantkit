@@ -1,30 +1,30 @@
 {
-    "name": "@multitenantkit/domain",
+    "name": "@multitenantkit/adapter-persistence-supabase",
     "version": "0.2.8",
     "type": "module",
-    "description": "Core domain logic and use cases for MultiTenantKit - Pure business logic layer",
+    "description": "Supabase persistence adapter for MultiTenantKit - works in Node.js and Deno/Edge Functions",
     "keywords": [
         "multitenantkit",
         "saas",
-        "saas-toolkit",
         "multi-tenant",
         "multitenancy",
-        "organization-management",
-        "team-management",
-        "user-management",
+        "adapter",
+        "persistence",
+        "supabase",
+        "database",
+        "edge-functions",
+        "deno",
         "organizations",
         "teams",
         "users",
-        "business-logic",
-        "typescript",
-        "clean-architecture"
+        "typescript"
     ],
     "author": "",
     "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/multitenantkit/multitenantkit.git",
-        "directory": "packages/domain"
+        "directory": "packages/adapters/persistence/supabase"
     },
     "bugs": {
         "url": "https://github.com/multitenantkit/multitenantkit/issues"
@@ -42,23 +42,7 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
-        },
-        "./users": {
-            "types": "./dist/users/index.d.ts",
-            "default": "./dist/users/index.js"
-        },
-        "./organizations": {
-            "types": "./dist/organizations/index.d.ts",
-            "default": "./dist/organizations/index.js"
-        },
-        "./organization-memberships": {
-            "types": "./dist/organization-memberships/index.d.ts",
-            "default": "./dist/organization-memberships/index.js"
-        },
-        "./shared": {
-            "types": "./dist/shared/index.d.ts",
-            "default": "./dist/shared/index.js"
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -71,11 +55,14 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
+        "@multitenantkit/domain": "^0.2.8",
         "@multitenantkit/domain-contracts": "^0.2.0",
+        "@supabase/supabase-js": "^2.39.0",
         "zod": "^3.22.4"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",
-        "typescript": "^5.0.0"
+        "typescript": "^5.0.0",
+        "vitest": "^1.0.0"
     }
 }

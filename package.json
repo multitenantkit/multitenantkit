@@ -12,7 +12,7 @@
     ],
     "description": "MultiTenantKit is a production-ready TypeScript toolkit that provides the business logic for managing Users, Organizations, and Organization Memberships in B2B SaaS applications.",
     "scripts": {
-        "build": "npm run build -w @multitenantkit/domain-contracts -w @multitenantkit/api-contracts -w @multitenantkit/adapter-system-crypto-uuid -w @multitenantkit/adapter-system-system-clock -w @multitenantkit/domain -w @multitenantkit/api-handlers -w @multitenantkit/adapter-persistence-json -w @multitenantkit/adapter-persistence-postgres -w @multitenantkit/adapter-metrics-http -w @multitenantkit/adapter-transport-express -w @multitenantkit/composition -w @multitenantkit/adapter-auth-supabase -w @multitenantkit/sdk",
+        "build": "npm run build -w @multitenantkit/domain-contracts -w @multitenantkit/api-contracts -w @multitenantkit/adapter-system-crypto-uuid -w @multitenantkit/adapter-system-system-clock -w @multitenantkit/adapter-system-web-crypto -w @multitenantkit/domain -w @multitenantkit/api-handlers -w @multitenantkit/adapter-persistence-json -w @multitenantkit/adapter-persistence-postgres -w @multitenantkit/adapter-persistence-supabase -w @multitenantkit/adapter-metrics-http -w @multitenantkit/adapter-transport-express -w @multitenantkit/adapter-transport-supabase-edge -w @multitenantkit/composition -w @multitenantkit/adapter-auth-supabase -w @multitenantkit/sdk -w @multitenantkit/sdk-supabase",
         "pack": "npm run build && ./scripts/pack-all.sh dist-packages",
         "changeset": "changeset",
         "version": "changeset version",

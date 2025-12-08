@@ -1,82 +1,67 @@
-# @multitenantkit/domain
+# @multitenantkit/adapter-transport-supabase-edge
 
-## 0.2.8
+## 0.2.11
 
 ### Patch Changes
 
 - refactor: improve organization membership filtering with proper OR logic and LEFT JOIN for pending invitations
 
-## 0.2.7
+## 0.2.10
 
 ### Patch Changes
 
 - feat: implement proper joins and data mapping in OrganizationMembershipRepository
 
-## 0.2.6
+## 0.2.9
 
 ### Patch Changes
 
 - Add debug logging for customFields propagation
 
-## 0.2.5
+## 0.2.8
 
 ### Patch Changes
 
 - supabase repository - public.profiles
 
-## 0.2.4
+## 0.2.7
 
 ### Patch Changes
 
 - refactor: change default user table from auth.users to public.profiles
 
-## 0.2.3
+## 0.2.6
 
 ### Patch Changes
 
 - feat: add automatic Supabase defaults to adapter factory
 
-## 0.2.2
+## 0.2.5
 
 ### Patch Changes
 
 - fix: use npm package path instead of relative monorepo path
 
-## 0.2.1
+## 0.2.4
 
 ### Patch Changes
 
 - deno supabase sdk
 
-## 0.2.0
-
-### Minor Changes
-
-- rename actorUserId to externalId
+## 0.2.3
 
 ### Patch Changes
 
-- Updated dependencies
-  - @multitenantkit/domain-contracts@0.2.0
+- fix: Deno compatibility - use main index imports instead of subpaths
 
-## 0.1.3
-
-### Patch Changes
-
-- rename `afterExecution` hook to `onSuccess` and prevent its errors from failing the use case
-- Updated dependencies
-  - @multitenantkit/domain-contracts@0.1.2
-
-## 0.1.2
+## 0.2.2
 
 ### Patch Changes
 
-- Add Supabase-specific convenience functions and configuration, and add support for custom fields in organization memberships with dynamic schema validation and updated documentation.
+- fix: add .js extension to imports for Deno compatibility
 
-## 0.1.1
+## 0.2.1
 
 ### Patch Changes
 
-- Initial release
-- Updated dependencies
-  - @multitenantkit/domain-contracts@0.1.1
+- new transport adapter - supabase

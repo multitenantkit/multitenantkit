@@ -58,6 +58,12 @@
             "@multitenantkit/adapter-metrics-http": ["packages/adapters/metrics/http-metrics/dist"],
             "@multitenantkit/adapter-metrics-http/*": [
                 "packages/adapters/metrics/http-metrics/dist/*"
+            ],
+            "@multitenantkit/adapter-transport-supabase-edge": [
+                "packages/adapters/transport/supabase-edge/dist"
+            ],
+            "@multitenantkit/adapter-transport-supabase-edge/*": [
+                "packages/adapters/transport/supabase-edge/dist/*"
             ]
         }
     },

@@ -38,7 +38,7 @@ describe('CreateUser use case', () => {
 
             expect(result.isSuccess).toBe(true);
             const user = result.getValue();
-            expect(user.id).toBe('00000000-0000-4000-8000-000000000001');
+            expect(user.id).toBe('00000000-0000-4000-8000-000000000002'); // First UUID is used for executionId
             expect(user.externalId).toBe('New@Example.com');
             expect(user.username).toBe('New@Example.com');
             expect(user.createdAt).toBeInstanceOf(Date);
