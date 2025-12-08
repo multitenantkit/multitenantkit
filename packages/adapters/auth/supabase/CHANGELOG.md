@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-auth-supabase
 
+## 0.2.2
+
+### Patch Changes
+
+- refactor: rename SUPABASE_SERVICE_KEY to SUPABASE_SERVICE_ROLE_KEY
+
 ## 0.2.1
 
 ### Patch Changes

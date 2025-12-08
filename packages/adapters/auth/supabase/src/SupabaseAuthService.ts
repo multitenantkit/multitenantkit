@@ -108,7 +108,7 @@ export class SupabaseAuthService implements AuthService<SupabaseAuthInput> {
 
 export interface SupabaseAuthEnvironmentVariables {
     SUPABASE_URL: string;
-    SUPABASE_SERVICE_KEY: string;
+    SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
 /**
@@ -118,7 +118,7 @@ export interface SupabaseAuthEnvironmentVariables {
  *
  * Environment variable lookup order:
  * 1. Explicit config passed as parameter
- * 2. SUPABASE_URL / SUPABASE_SERVICE_KEY (Node.js convention)
+ * 2. SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY (Node.js convention)
  * 3. PROJECT_URL / SERVICE_ROLE_KEY (Supabase Edge Functions convention)
  *
  * @param config - Optional explicit configuration
@@ -132,13 +132,13 @@ export function createSupabaseAuthService(
         config?.SUPABASE_URL ?? getEnvVar('SUPABASE_URL') ?? getEnvVar('PROJECT_URL');
 
     const supabaseServiceKey =
-        config?.SUPABASE_SERVICE_KEY ??
-        getEnvVar('SUPABASE_SERVICE_KEY') ??
+        config?.SUPABASE_SERVICE_ROLE_KEY ??
+        getEnvVar('SUPABASE_SERVICE_ROLE_KEY') ??
         getEnvVar('SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseServiceKey) {
         throw new Error(
-            'Missing required variables: SUPABASE_URL and SUPABASE_SERVICE_KEY (or PROJECT_URL and SERVICE_ROLE_KEY for Edge Functions) must be set from config or environment variables'
+            'Missing required variables: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or PROJECT_URL and SERVICE_ROLE_KEY for Edge Functions) must be set from config or environment variables.'
         );
     }
 

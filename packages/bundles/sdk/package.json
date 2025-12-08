@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/sdk",
-    "version": "0.2.11",
+    "version": "0.2.12",
     "description": "Complete SDK for building multi-tenant SaaS applications - includes all adapters and options",
     "keywords": [
         "multitenantkit",
@@ -55,7 +55,7 @@
         }
     },
     "peerDependencies": {
-        "@multitenantkit/adapter-auth-supabase": "^0.2.0",
+        "@multitenantkit/adapter-auth-supabase": "^0.2.2",
         "@multitenantkit/adapter-persistence-json": "^0.2.0",
         "@multitenantkit/adapter-persistence-postgres": "^0.2.0",
         "@multitenantkit/adapter-system-crypto-uuid": "^0.2.0",
