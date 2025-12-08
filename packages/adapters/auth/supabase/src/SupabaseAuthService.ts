@@ -3,6 +3,38 @@ import { createPrincipal, type Principal } from '@multitenantkit/domain-contract
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { SupabaseAuthInput } from './SupabaseAuthInput';
 
+// Declare Deno type for TypeScript (available at runtime in Deno)
+declare const Deno:
+    | {
+          env: {
+              get(key: string): string | undefined;
+          };
+      }
+    | undefined;
+
+/**
+ * Get environment variable with runtime detection (Node.js or Deno)
+ *
+ * Automatically detects the runtime environment and uses the appropriate
+ * method to retrieve environment variables:
+ * - Deno: Deno.env.get(key)
+ * - Node.js: process.env[key]
+ *
+ * @param key - Environment variable name
+ * @returns The value or undefined if not found
+ */
+function getEnvVar(key: string): string | undefined {
+    // Deno runtime (Supabase Edge Functions)
+    if (typeof Deno !== 'undefined') {
+        return Deno.env.get(key);
+    }
+    // Node.js runtime
+    if (typeof process !== 'undefined' && process.env) {
+        return process.env[key];
+    }
+    return undefined;
+}
+
 /**
  * Configuration for Supabase Auth Service
  */
@@ -82,17 +114,31 @@ export interface SupabaseAuthEnvironmentVariables {
 /**
  * Factory function to create SupabaseAuthService with environment variables
  *
+ * Works in both Node.js and Deno (Supabase Edge Functions) runtimes.
+ *
+ * Environment variable lookup order:
+ * 1. Explicit config passed as parameter
+ * 2. SUPABASE_URL / SUPABASE_SERVICE_KEY (Node.js convention)
+ * 3. PROJECT_URL / SERVICE_ROLE_KEY (Supabase Edge Functions convention)
+ *
+ * @param config - Optional explicit configuration
  * @throws Error if required environment variables are missing
  */
 export function createSupabaseAuthService(
-    config?: SupabaseAuthEnvironmentVariables
+    config?: Partial<SupabaseAuthEnvironmentVariables>
 ): SupabaseAuthService {
-    const supabaseUrl = config?.SUPABASE_URL ?? process.env.SUPABASE_URL;
-    const supabaseServiceKey = config?.SUPABASE_SERVICE_KEY ?? process.env.SUPABASE_SERVICE_KEY;
+    // Try config first, then Node.js env var names, then Supabase Edge env var names
+    const supabaseUrl =
+        config?.SUPABASE_URL ?? getEnvVar('SUPABASE_URL') ?? getEnvVar('PROJECT_URL');
+
+    const supabaseServiceKey =
+        config?.SUPABASE_SERVICE_KEY ??
+        getEnvVar('SUPABASE_SERVICE_KEY') ??
+        getEnvVar('SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseServiceKey) {
         throw new Error(
-            'Missing required variables: SUPABASE_URL and SUPABASE_SERVICE_KEY must be set from config or environment variables'
+            'Missing required variables: SUPABASE_URL and SUPABASE_SERVICE_KEY (or PROJECT_URL and SERVICE_ROLE_KEY for Edge Functions) must be set from config or environment variables'
         );
     }
 

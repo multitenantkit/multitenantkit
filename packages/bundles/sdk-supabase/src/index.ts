@@ -29,6 +29,14 @@
  * ```
  */
 
+// Re-export auth adapter (runtime-agnostic: works in both Node.js and Deno)
+export {
+    createSupabaseAuthService,
+    type SupabaseAuthConfig,
+    type SupabaseAuthEnvironmentVariables,
+    type SupabaseAuthInput,
+    SupabaseAuthService
+} from '@multitenantkit/adapter-auth-supabase';
 // Re-export persistence adapter
 export {
     createSupabaseClient,
@@ -39,9 +47,12 @@ export {
     type SupabaseFactoryOptions,
     type SupabaseRepositoryBundle
 } from '@multitenantkit/adapter-persistence-supabase';
-
 // Re-export system adapter
 export { WebCryptoUuid } from '@multitenantkit/adapter-system-web-crypto';
+// Re-export Edge Functions transport
+export { buildEdgeFunction } from '@multitenantkit/adapter-transport-supabase-edge';
+// Re-export API handlers
+export { buildHandlers } from '@multitenantkit/api-handlers';
 
 // Export factories and utilities
 export {
@@ -50,4 +61,11 @@ export {
     createSupabaseAdapters,
     type SupabaseAdaptersResult
 } from './factories/AdapterFactory';
+// Export Edge Handler factory (all-in-one function)
+export {
+    type CorsOptions,
+    type CreateSupabaseEdgeHandlerOptions,
+    createSupabaseEdgeHandler,
+    type EdgeOptions
+} from './factories/EdgeHandlerFactory';
 export { createUseCases } from './factories/UseCaseFactory';

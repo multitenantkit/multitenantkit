@@ -16,7 +16,31 @@ import type {
     ToolkitOptions,
     UserCustomFieldsConfig
 } from '@multitenantkit/domain-contracts';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+
+// Declare Deno type for TypeScript (available at runtime in Deno)
+declare const Deno:
+    | {
+          env: {
+              get(key: string): string | undefined;
+          };
+      }
+    | undefined;
+
+/**
+ * Get environment variable with runtime detection (Node.js or Deno)
+ */
+function getEnvVar(key: string): string | undefined {
+    // Deno runtime (Supabase Edge Functions)
+    if (typeof Deno !== 'undefined') {
+        return Deno.env.get(key);
+    }
+    // Node.js runtime
+    if (typeof process !== 'undefined' && process.env) {
+        return process.env[key];
+    }
+    return undefined;
+}
 
 /**
  * Simple clock implementation using standard Date API
@@ -137,8 +161,13 @@ export interface CreateSupabaseAdaptersOptions<
     TOrganizationCustomFields,
     TOrganizationMembershipCustomFields
 > {
-    /** Supabase client instance */
-    client: SupabaseClient;
+    /**
+     * Supabase client instance.
+     * If not provided, one will be created automatically using environment variables:
+     * - SUPABASE_URL or PROJECT_URL
+     * - SUPABASE_SERVICE_ROLE_KEY or SERVICE_ROLE_KEY
+     */
+    client?: SupabaseClient;
     /**
      * Toolkit options for custom fields and database configuration.
      * Supabase defaults are applied automatically (auth.users, snake_case, etc.)
@@ -190,12 +219,16 @@ export interface SupabaseAdaptersResult<
  *
  * @example
  * ```typescript
+ * // Simplest usage - auto-creates client from env vars
  * import { createSupabaseAdapters, createUseCases } from '@multitenantkit/sdk-supabase';
- * import { createClient } from '@supabase/supabase-js';
  *
+ * const { adapters, toolkitOptions } = createSupabaseAdapters();
+ * const useCases = createUseCases(adapters, toolkitOptions);
+ *
+ * // Or provide your own client
+ * import { createClient } from '@supabase/supabase-js';
  * const client = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
  * const { adapters, toolkitOptions } = createSupabaseAdapters({ client });
- * const useCases = createUseCases(adapters, toolkitOptions);
  * ```
  */
 export function createSupabaseAdapters<
@@ -206,7 +239,7 @@ export function createSupabaseAdapters<
     // biome-ignore lint/complexity/noBannedTypes: Empty object {} is the correct default
     TOrganizationMembershipCustomFields = {}
 >(
-    options: CreateSupabaseAdaptersOptions<
+    options?: CreateSupabaseAdaptersOptions<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -216,7 +249,27 @@ export function createSupabaseAdapters<
     TOrganizationCustomFields,
     TOrganizationMembershipCustomFields
 > {
-    const { client, toolkitOptions: userOptions } = options;
+    const { client: providedClient, toolkitOptions: userOptions } = options ?? {};
+
+    // Create or use provided Supabase client
+    let client: SupabaseClient;
+    if (providedClient) {
+        client = providedClient;
+    } else {
+        // Auto-create client from environment variables
+        const supabaseUrl = getEnvVar('SUPABASE_URL') ?? getEnvVar('PROJECT_URL');
+        const supabaseServiceKey =
+            getEnvVar('SUPABASE_SERVICE_ROLE_KEY') ?? getEnvVar('SERVICE_ROLE_KEY');
+
+        if (!supabaseUrl || !supabaseServiceKey) {
+            throw new Error(
+                'Missing Supabase credentials. Either provide a client or set environment variables: ' +
+                    'SUPABASE_URL/PROJECT_URL and SUPABASE_SERVICE_ROLE_KEY/SERVICE_ROLE_KEY'
+            );
+        }
+
+        client = createClient(supabaseUrl, supabaseServiceKey);
+    }
 
     // Apply Supabase defaults to toolkit options
     const toolkitOptions = applySupabaseDefaults<

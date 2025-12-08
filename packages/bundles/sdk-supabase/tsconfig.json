@@ -15,10 +15,19 @@
             "path": "../../domain"
         },
         {
+            "path": "../../api/handlers"
+        },
+        {
+            "path": "../../adapters/auth/supabase"
+        },
+        {
             "path": "../../adapters/persistence/supabase"
         },
         {
             "path": "../../adapters/system/web-crypto-uuid"
+        },
+        {
+            "path": "../../adapters/transport/supabase-edge"
         }
     ]
 }

@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-auth-supabase
 
+## 0.2.1
+
+### Patch Changes
+
+- refactor: update Supabase sdk
+
 ## 0.2.0
 
 ### Minor Changes

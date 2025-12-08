@@ -7,7 +7,11 @@ MultiTenantKit is a **headless**, production-ready TypeScript toolkit that provi
 > 🔐 **Not an auth provider** — Bring your own Auth0, Clerk, Supabase, Cognito, or custom auth. MultiTenantKit handles what comes after authentication: user profiles, organizations, teams, and role-based memberships.
 
 ```bash
+# Node.js / Express
 npm install @multitenantkit/sdk
+
+# Supabase Edge Functions (Deno) - use via esm.sh
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
 ```
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
@@ -87,7 +91,7 @@ app.use('/api/teams', router);
 app.listen(3000);
 ```
 
-> 💡 **Need more control?** Use the individual functions (`compose`, `buildHandlers`, `buildExpressApp`) for full flexibility. The convenience functions are shortcuts for the most common stack (PostgreSQL + Supabase + Express).
+> 💡 **Need more control?** Use the individual functions (`createUseCases`, `buildHandlers`, `buildExpressRouter`) for full flexibility. The convenience functions are shortcuts for the most common stack (PostgreSQL + Supabase + Express).
 
 ### Database Setup
 
@@ -124,6 +128,43 @@ Memberships (6 endpoints)
   PUT    /organizations/:organizationId/members/:userId/role   # Update Organization Member Role
   DELETE /organizations/:organizationId/members/:userId        # Remove Organization Member
   POST   /organizations/:organizationId/leave                  # Leave Organization
+```
+
+### Supabase Edge Functions (Deno)
+
+Running on Supabase Edge? Use our Deno-compatible SDK:
+
+```typescript
+import { createSupabaseEdgeHandler } from '@multitenantkit/sdk-supabase';
+
+// Zero config - uses env vars automatically
+const handler = createSupabaseEdgeHandler();
+Deno.serve(handler);
+```
+
+With custom fields:
+
+```typescript
+import { createSupabaseEdgeHandler } from '@multitenantkit/sdk-supabase';
+import { z } from 'zod';
+
+const handler = createSupabaseEdgeHandler({
+    toolkitOptions: {
+        users: {
+            customFields: {
+                customSchema: z.object({
+                    firstName: z.string(),
+                    lastName: z.string()
+                })
+            }
+        }
+    },
+    edgeOptions: {
+        basePath: '/multitenantkit'
+    }
+});
+
+Deno.serve(handler);
 ```
 
 ---
@@ -292,10 +333,15 @@ Now you have 18 new endpoints under `/api/teams` without touching your existing 
 - **Pure TypeScript code** that runs in your application
 
 ### 🔌 Adapters for Your Infrastructure
-- **Persistence**: PostgreSQL (included) + JSON (dev/testing). Build adapters for MySQL, MongoDB, DynamoDB, etc.
-- **Authentication**: Supabase Auth (included). Build adapters for Auth0, Cognito, Firebase, custom JWT, etc.
-- **Transport**: Express.js (included). Build adapters for Hono, Fastify, AWS Lambda, etc.
+- **Persistence**: PostgreSQL + Supabase (included) + JSON (dev/testing). Build adapters for MySQL, MongoDB, DynamoDB, etc.
+- **Authentication**: Supabase Auth (included, works in Node.js and Deno). Build adapters for Auth0, Cognito, Firebase, custom JWT, etc.
+- **Transport**: Express.js + Supabase Edge Functions (included). Build adapters for Hono, Fastify, AWS Lambda, etc.
 - **Extensible by design**: Clear interfaces make building custom adapters straightforward
+
+### 🌐 Platform Support
+- **Node.js**: Full support with Express.js
+- **Deno/Supabase Edge**: Full support with `@multitenantkit/sdk-supabase`
+- **Serverless**: Build adapters for AWS Lambda, Cloudflare Workers, etc.
 
 ### 🛡️ Type Safety Everywhere
 - Zod schemas for runtime validation
@@ -358,7 +404,8 @@ MultiTenantKit is a monorepo with composable packages:
 
 ```
 @multitenantkit/
-├── sdk                          # 📦 All-in-one bundle (recommended)
+├── sdk                          # 📦 All-in-one bundle for Node.js (recommended)
+├── sdk-supabase                 # 📦 All-in-one bundle for Supabase Edge/Deno
 ├── domain                       # Pure business logic
 ├── domain-contracts             # Domain interfaces and schemas
 ├── api-contracts                # HTTP request/response schemas
@@ -366,18 +413,23 @@ MultiTenantKit is a monorepo with composable packages:
 ├── composition                  # Dependency injection
 └── adapters/
     ├── persistence/
-    │   ├── postgres             # PostgreSQL implementation
+    │   ├── postgres             # PostgreSQL implementation (Node.js)
+    │   ├── supabase             # Supabase JS client (Deno compatible)
     │   └── json                 # JSON file storage (dev/test)
     ├── auth/
-    │   └── supabase             # Supabase Auth adapter
+    │   └── supabase             # Supabase Auth (Node.js + Deno)
     ├── transport/
-    │   └── express              # Express.js adapter
+    │   ├── express              # Express.js adapter (Node.js)
+    │   └── supabase-edge        # Supabase Edge Functions (Deno)
     └── system/
-        ├── crypto-uuid          # UUID generation
+        ├── crypto-uuid          # UUID generation (Node.js)
+        ├── web-crypto           # UUID generation (Deno compatible)
         └── system-clock         # Time operations
 ```
 
-**Recommended**: Use `@multitenantkit/sdk` for the complete experience.
+**Node.js**: Use `@multitenantkit/sdk` for Express.js applications.
+
+**Supabase Edge / Deno**: Use `@multitenantkit/sdk-supabase` for Edge Functions.
 
 **Advanced**: Install individual packages for granular control.
 
@@ -385,12 +437,13 @@ MultiTenantKit is a monorepo with composable packages:
 
 ## Documentation
 
-- **[Getting Started](./docs/getting-started.md)** - Your first app in 5 minutes
-- **[Custom Fields Guide](./docs/custom-fields.md)** - Extend entities with your data
-- **[Adapters](./docs/adapters.md)** - Build custom persistence, auth, or transport layers
-- **[Architecture](./docs/architecture.md)** - Deep dive into the design
-- **[API Reference](./docs/api-reference.md)** - Complete API documentation
-- **[Examples](./examples)** - Real-world code samples
+- **[Website](https://multitenantkit.dev)** - Full documentation and guides
+
+### Key Guides
+- **Getting Started** - Your first app in 5 minutes
+- **Custom Fields** - Extend entities with your data
+- **Supabase Edge Integration** - Deploy to Supabase Edge Functions
+- **Architecture** - Deep dive into the hexagonal design
 
 ---
 
@@ -422,7 +475,8 @@ We're actively developing:
 - 📊 **Audit logging** (comprehensive activity trails)
 - 💳 **Billing integration** (connect teams to Stripe subscriptions)
 - 🌍 **i18n support** (internationalization)
-- ⚡ **Lambda adapter** (serverless deployments)
+- ⚡ **AWS Lambda adapter** (serverless deployments)
+- ☁️ **Cloudflare Workers adapter** (edge deployments)
 
 ---
 
