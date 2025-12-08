@@ -1,5 +1,11 @@
 # @multitenantkit/sdk-supabase
 
+## 0.2.12
+
+### Patch Changes
+
+- feat: add client parameter to createSupabaseEdgeHandler to avoid version conflicts
+
 ## 0.2.11
 
 ### Patch Changes

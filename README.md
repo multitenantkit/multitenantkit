@@ -135,20 +135,34 @@ Memberships (6 endpoints)
 Running on Supabase Edge? Use our Deno-compatible SDK:
 
 ```typescript
-import { createSupabaseEdgeHandler } from '@multitenantkit/sdk-supabase';
+// IMPORTANT: Import createClient directly from esm.sh to avoid version conflicts
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
 
-// Zero config - uses env vars automatically
-const handler = createSupabaseEdgeHandler();
+// Create client and pass it to the handler
+const client = createClient(
+    Deno.env.get('PROJECT_URL')!,
+    Deno.env.get('SERVICE_ROLE_KEY')!
+);
+
+const handler = createSupabaseEdgeHandler({ client });
 Deno.serve(handler);
 ```
 
 With custom fields:
 
 ```typescript
-import { createSupabaseEdgeHandler } from '@multitenantkit/sdk-supabase';
-import { z } from 'zod';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+import { z } from 'https://deno.land/x/zod/mod.ts';
+
+const client = createClient(
+    Deno.env.get('PROJECT_URL')!,
+    Deno.env.get('SERVICE_ROLE_KEY')!
+);
 
 const handler = createSupabaseEdgeHandler({
+    client,
     toolkitOptions: {
         users: {
             customFields: {

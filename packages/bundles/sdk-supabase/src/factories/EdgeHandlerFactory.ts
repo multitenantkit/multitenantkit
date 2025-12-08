@@ -9,6 +9,7 @@ import { SupabaseAuthService } from '@multitenantkit/adapter-auth-supabase';
 import { buildEdgeFunction } from '@multitenantkit/adapter-transport-supabase-edge';
 import { buildHandlers } from '@multitenantkit/api-handlers';
 import type { ToolkitOptions } from '@multitenantkit/domain-contracts';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createSupabaseAdapters } from './AdapterFactory';
 import { createUseCases } from './UseCaseFactory';
 
@@ -56,6 +57,16 @@ export interface CreateSupabaseEdgeHandlerOptions<
     TOrganizationMembershipCustomFields
 > {
     /**
+     * Supabase client instance.
+     * **IMPORTANT for Deno/esm.sh**: Pass a client created with createClient
+     * imported directly from 'https://esm.sh/@supabase/supabase-js@2' to avoid
+     * version conflicts with transitive dependencies.
+     *
+     * If not provided, will be auto-created from environment variables
+     * (works in Node.js, may have issues in Deno via esm.sh).
+     */
+    client?: SupabaseClient;
+    /**
      * Toolkit options for custom fields and configuration.
      * Supabase defaults are applied automatically.
      */
@@ -98,26 +109,28 @@ const DEFAULT_CORS: CorsOptions = {
  *
  * @example
  * ```typescript
- * // Simplest usage - zero configuration!
- * import { createSupabaseEdgeHandler } from '@multitenantkit/sdk-supabase';
+ * // For Deno/esm.sh - pass your own client to avoid version conflicts
+ * import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+ * import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
  *
- * const handler = createSupabaseEdgeHandler();
+ * const client = createClient(
+ *     Deno.env.get('PROJECT_URL')!,
+ *     Deno.env.get('SERVICE_ROLE_KEY')!
+ * );
+ *
+ * const handler = createSupabaseEdgeHandler({ client });
  * Deno.serve(handler);
  *
  * // With custom fields
  * const handler = createSupabaseEdgeHandler({
+ *     client,
  *     toolkitOptions: {
  *         users: { customFields: { customSchema: userSchema } }
  *     }
  * });
  *
- * // With edge options
- * const handler = createSupabaseEdgeHandler({
- *     edgeOptions: {
- *         basePath: '/multitenantkit',
- *         cors: { allowOrigin: 'https://myapp.com', ... }
- *     }
- * });
+ * // Node.js - auto-creates client from env vars
+ * const handler = createSupabaseEdgeHandler();
  * ```
  */
 export function createSupabaseEdgeHandler<
@@ -134,14 +147,21 @@ export function createSupabaseEdgeHandler<
         TOrganizationMembershipCustomFields
     >
 ): (request: Request) => Promise<Response> {
-    const { toolkitOptions: userToolkitOptions, edgeOptions } = options ?? {};
+    const {
+        client: providedClient,
+        toolkitOptions: userToolkitOptions,
+        edgeOptions
+    } = options ?? {};
 
-    // 1. Create adapters (auto-creates Supabase client from env vars)
+    // 1. Create adapters (uses provided client or auto-creates from env vars)
     const { adapters, toolkitOptions, client } = createSupabaseAdapters<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
-    >({ toolkitOptions: userToolkitOptions });
+    >({
+        client: providedClient,
+        toolkitOptions: userToolkitOptions
+    });
 
     // 2. Create use cases
     const useCases = createUseCases(adapters, toolkitOptions);
