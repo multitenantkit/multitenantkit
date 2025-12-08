@@ -5,7 +5,7 @@
  * All configuration is optional - uses sensible defaults.
  */
 
-import { createSupabaseAuthService } from '@multitenantkit/adapter-auth-supabase';
+import { SupabaseAuthService } from '@multitenantkit/adapter-auth-supabase';
 import { buildEdgeFunction } from '@multitenantkit/adapter-transport-supabase-edge';
 import { buildHandlers } from '@multitenantkit/api-handlers';
 import type { ToolkitOptions } from '@multitenantkit/domain-contracts';
@@ -137,7 +137,7 @@ export function createSupabaseEdgeHandler<
     const { toolkitOptions: userToolkitOptions, edgeOptions } = options ?? {};
 
     // 1. Create adapters (auto-creates Supabase client from env vars)
-    const { adapters, toolkitOptions } = createSupabaseAdapters<
+    const { adapters, toolkitOptions, client } = createSupabaseAdapters<
         TUserCustomFields,
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
@@ -149,8 +149,8 @@ export function createSupabaseEdgeHandler<
     // 3. Build HTTP handlers
     const handlers = buildHandlers(useCases, toolkitOptions);
 
-    // 4. Create auth service (auto-detects runtime)
-    const authService = createSupabaseAuthService();
+    // 4. Create auth service using the SAME client (avoids esm.sh version conflicts)
+    const authService = new SupabaseAuthService({ client });
 
     // 5. Build Edge Function handler with defaults
     const handler = buildEdgeFunction(handlers, authService, {

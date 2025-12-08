@@ -44,6 +44,13 @@ export interface SupabaseAuthConfig {
 }
 
 /**
+ * Alternative configuration using an existing Supabase client
+ */
+export interface SupabaseAuthClientConfig {
+    client: SupabaseClient;
+}
+
+/**
  * Supabase implementation of AuthService
  *
  * This service verifies Supabase JWT tokens from the Authorization header
@@ -52,8 +59,14 @@ export interface SupabaseAuthConfig {
 export class SupabaseAuthService implements AuthService<SupabaseAuthInput> {
     private supabase: SupabaseClient;
 
-    constructor(config: SupabaseAuthConfig) {
-        this.supabase = createClient(config.supabaseUrl, config.supabaseServiceKey);
+    constructor(config: SupabaseAuthConfig | SupabaseAuthClientConfig) {
+        if ('client' in config) {
+            // Use existing client
+            this.supabase = config.client;
+        } else {
+            // Create new client from URL and key
+            this.supabase = createClient(config.supabaseUrl, config.supabaseServiceKey);
+        }
     }
 
     /**

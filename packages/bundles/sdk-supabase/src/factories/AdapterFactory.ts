@@ -200,6 +200,8 @@ export interface SupabaseAdaptersResult<
         TOrganizationCustomFields,
         TOrganizationMembershipCustomFields
     >;
+    /** The Supabase client used (for reuse in auth service) */
+    client: SupabaseClient;
 }
 
 /**
@@ -304,5 +306,5 @@ export function createSupabaseAdapters<
         system
     };
 
-    return { adapters, toolkitOptions };
+    return { adapters, toolkitOptions, client };
 }

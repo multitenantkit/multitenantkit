@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/sdk-supabase",
-    "version": "0.2.10",
+    "version": "0.2.11",
     "type": "module",
     "description": "MultiTenantKit SDK for Supabase Edge Functions (Deno compatible)",
     "keywords": [
@@ -49,7 +49,7 @@
         "@multitenantkit/domain": "^0.2.8",
         "@multitenantkit/domain-contracts": "^0.2.0",
         "@multitenantkit/api-handlers": "^0.2.0",
-        "@multitenantkit/adapter-auth-supabase": "^0.2.2",
+        "@multitenantkit/adapter-auth-supabase": "^0.2.3",
         "@multitenantkit/adapter-persistence-supabase": "^0.2.8",
         "@multitenantkit/adapter-system-web-crypto": "^0.2.8",
         "@multitenantkit/adapter-transport-supabase-edge": "^0.2.10",

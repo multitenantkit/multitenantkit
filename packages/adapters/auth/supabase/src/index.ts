@@ -1,3 +1,8 @@
 export type { SupabaseAuthInput } from './SupabaseAuthInput';
-export type { SupabaseAuthConfig, SupabaseAuthEnvironmentVariables } from './SupabaseAuthService';
-export { createSupabaseAuthService, SupabaseAuthService } from './SupabaseAuthService';
+export {
+    createSupabaseAuthService,
+    type SupabaseAuthClientConfig,
+    type SupabaseAuthConfig,
+    type SupabaseAuthEnvironmentVariables,
+    SupabaseAuthService
+} from './SupabaseAuthService';

@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-auth-supabase
 
+## 0.2.3
+
+### Patch Changes
+
+- feat: reuse Supabase client in auth service to avoid version conflicts
+
 ## 0.2.2
 
 ### Patch Changes
