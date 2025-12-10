@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
@@ -15,6 +17,7 @@ import { Route as DocsLayoutRouteImport } from './routes/docs/_layout'
 import { Route as BlogLayoutRouteImport } from './routes/blog/_layout'
 import { Route as DocsLayoutIndexRouteImport } from './routes/docs/_layout/index'
 import { Route as BlogLayoutIndexRouteImport } from './routes/blog/_layout/index'
+import { Route as BlogLayoutSupabaseEdgeFunctionsRouteImport } from './routes/blog/_layout/supabase-edge-functions'
 import { Route as BlogLayoutIntroducingMultitenantkitRouteImport } from './routes/blog/_layout/introducing-multitenantkit'
 import { Route as BlogLayoutArchitectureDeepDiveRouteImport } from './routes/blog/_layout/architecture-deep-dive'
 import { Route as DocsLayoutUseCasesUserManagementRouteImport } from './routes/docs/_layout/use-cases/user-management'
@@ -48,6 +51,19 @@ import { Route as DocsLayoutAdaptersPersistenceRouteImport } from './routes/docs
 import { Route as DocsLayoutAdaptersOverviewRouteImport } from './routes/docs/_layout/adapters/overview'
 import { Route as DocsLayoutAdaptersAuthenticationRouteImport } from './routes/docs/_layout/adapters/authentication'
 
+const DocsRouteImport = createFileRoute('/docs')()
+const BlogRouteImport = createFileRoute('/blog')()
+
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -76,6 +92,12 @@ const BlogLayoutIndexRoute = BlogLayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BlogLayoutRoute,
 } as any)
+const BlogLayoutSupabaseEdgeFunctionsRoute =
+  BlogLayoutSupabaseEdgeFunctionsRouteImport.update({
+    id: '/supabase-edge-functions',
+    path: '/supabase-edge-functions',
+    getParentRoute: () => BlogLayoutRoute,
+  } as any)
 const BlogLayoutIntroducingMultitenantkitRoute =
   BlogLayoutIntroducingMultitenantkitRouteImport.update({
     id: '/introducing-multitenantkit',
@@ -275,6 +297,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsLayoutRouteWithChildren
   '/blog/architecture-deep-dive': typeof BlogLayoutArchitectureDeepDiveRoute
   '/blog/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute
+  '/blog/supabase-edge-functions': typeof BlogLayoutSupabaseEdgeFunctionsRoute
   '/blog/': typeof BlogLayoutIndexRoute
   '/docs/': typeof DocsLayoutIndexRoute
   '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
@@ -311,10 +334,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
-  '/blog/architecture-deep-dive': typeof BlogLayoutArchitectureDeepDiveRoute
-  '/blog/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute
   '/blog': typeof BlogLayoutIndexRoute
   '/docs': typeof DocsLayoutIndexRoute
+  '/blog/architecture-deep-dive': typeof BlogLayoutArchitectureDeepDiveRoute
+  '/blog/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute
+  '/blog/supabase-edge-functions': typeof BlogLayoutSupabaseEdgeFunctionsRoute
   '/docs/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
   '/docs/adapters/overview': typeof DocsLayoutAdaptersOverviewRoute
   '/docs/adapters/persistence': typeof DocsLayoutAdaptersPersistenceRoute
@@ -350,10 +374,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
+  '/blog': typeof BlogRouteWithChildren
   '/blog/_layout': typeof BlogLayoutRouteWithChildren
+  '/docs': typeof DocsRouteWithChildren
   '/docs/_layout': typeof DocsLayoutRouteWithChildren
   '/blog/_layout/architecture-deep-dive': typeof BlogLayoutArchitectureDeepDiveRoute
   '/blog/_layout/introducing-multitenantkit': typeof BlogLayoutIntroducingMultitenantkitRoute
+  '/blog/_layout/supabase-edge-functions': typeof BlogLayoutSupabaseEdgeFunctionsRoute
   '/blog/_layout/': typeof BlogLayoutIndexRoute
   '/docs/_layout/': typeof DocsLayoutIndexRoute
   '/docs/_layout/adapters/authentication': typeof DocsLayoutAdaptersAuthenticationRoute
@@ -396,6 +423,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/blog/architecture-deep-dive'
     | '/blog/introducing-multitenantkit'
+    | '/blog/supabase-edge-functions'
     | '/blog/'
     | '/docs/'
     | '/docs/adapters/authentication'
@@ -432,10 +460,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/privacy'
-    | '/blog/architecture-deep-dive'
-    | '/blog/introducing-multitenantkit'
     | '/blog'
     | '/docs'
+    | '/blog/architecture-deep-dive'
+    | '/blog/introducing-multitenantkit'
+    | '/blog/supabase-edge-functions'
     | '/docs/adapters/authentication'
     | '/docs/adapters/overview'
     | '/docs/adapters/persistence'
@@ -470,10 +499,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/privacy'
+    | '/blog'
     | '/blog/_layout'
+    | '/docs'
     | '/docs/_layout'
     | '/blog/_layout/architecture-deep-dive'
     | '/blog/_layout/introducing-multitenantkit'
+    | '/blog/_layout/supabase-edge-functions'
     | '/blog/_layout/'
     | '/docs/_layout/'
     | '/docs/_layout/adapters/authentication'
@@ -511,10 +543,26 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacyRoute: typeof PrivacyRoute
+  BlogRoute: typeof BlogRouteWithChildren
+  DocsRoute: typeof DocsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -531,14 +579,14 @@ declare module '@tanstack/react-router' {
     }
     '/docs/_layout': {
       id: '/docs/_layout'
-      path: ''
+      path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsLayoutRouteImport
       parentRoute: typeof DocsRoute
     }
     '/blog/_layout': {
       id: '/blog/_layout'
-      path: ''
+      path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogLayoutRouteImport
       parentRoute: typeof BlogRoute
@@ -555,6 +603,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogLayoutIndexRouteImport
+      parentRoute: typeof BlogLayoutRoute
+    }
+    '/blog/_layout/supabase-edge-functions': {
+      id: '/blog/_layout/supabase-edge-functions'
+      path: '/supabase-edge-functions'
+      fullPath: '/blog/supabase-edge-functions'
+      preLoaderRoute: typeof BlogLayoutSupabaseEdgeFunctionsRouteImport
       parentRoute: typeof BlogLayoutRoute
     }
     '/blog/_layout/introducing-multitenantkit': {
@@ -784,9 +839,132 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BlogLayoutRouteChildren {
+  BlogLayoutArchitectureDeepDiveRoute: typeof BlogLayoutArchitectureDeepDiveRoute
+  BlogLayoutIntroducingMultitenantkitRoute: typeof BlogLayoutIntroducingMultitenantkitRoute
+  BlogLayoutSupabaseEdgeFunctionsRoute: typeof BlogLayoutSupabaseEdgeFunctionsRoute
+  BlogLayoutIndexRoute: typeof BlogLayoutIndexRoute
+}
+
+const BlogLayoutRouteChildren: BlogLayoutRouteChildren = {
+  BlogLayoutArchitectureDeepDiveRoute: BlogLayoutArchitectureDeepDiveRoute,
+  BlogLayoutIntroducingMultitenantkitRoute:
+    BlogLayoutIntroducingMultitenantkitRoute,
+  BlogLayoutSupabaseEdgeFunctionsRoute: BlogLayoutSupabaseEdgeFunctionsRoute,
+  BlogLayoutIndexRoute: BlogLayoutIndexRoute,
+}
+
+const BlogLayoutRouteWithChildren = BlogLayoutRoute._addFileChildren(
+  BlogLayoutRouteChildren,
+)
+
+interface BlogRouteChildren {
+  BlogLayoutRoute: typeof BlogLayoutRouteWithChildren
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogLayoutRoute: BlogLayoutRouteWithChildren,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface DocsLayoutRouteChildren {
+  DocsLayoutIndexRoute: typeof DocsLayoutIndexRoute
+  DocsLayoutAdaptersAuthenticationRoute: typeof DocsLayoutAdaptersAuthenticationRoute
+  DocsLayoutAdaptersOverviewRoute: typeof DocsLayoutAdaptersOverviewRoute
+  DocsLayoutAdaptersPersistenceRoute: typeof DocsLayoutAdaptersPersistenceRoute
+  DocsLayoutAdaptersTransportRoute: typeof DocsLayoutAdaptersTransportRoute
+  DocsLayoutArchitectureDomainRoute: typeof DocsLayoutArchitectureDomainRoute
+  DocsLayoutArchitectureExternalIdRoute: typeof DocsLayoutArchitectureExternalIdRoute
+  DocsLayoutArchitectureOverviewRoute: typeof DocsLayoutArchitectureOverviewRoute
+  DocsLayoutArchitecturePortsAdaptersRoute: typeof DocsLayoutArchitecturePortsAdaptersRoute
+  DocsLayoutArchitectureUsernameRoute: typeof DocsLayoutArchitectureUsernameRoute
+  DocsLayoutConfigurationCustomFieldsRoute: typeof DocsLayoutConfigurationCustomFieldsRoute
+  DocsLayoutConfigurationHooksRoute: typeof DocsLayoutConfigurationHooksRoute
+  DocsLayoutConfigurationOverviewRoute: typeof DocsLayoutConfigurationOverviewRoute
+  DocsLayoutConfigurationResponseTransformersRoute: typeof DocsLayoutConfigurationResponseTransformersRoute
+  DocsLayoutEndpointsMembershipEndpointsRoute: typeof DocsLayoutEndpointsMembershipEndpointsRoute
+  DocsLayoutEndpointsOrganizationEndpointsRoute: typeof DocsLayoutEndpointsOrganizationEndpointsRoute
+  DocsLayoutEndpointsOverviewRoute: typeof DocsLayoutEndpointsOverviewRoute
+  DocsLayoutEndpointsUserEndpointsRoute: typeof DocsLayoutEndpointsUserEndpointsRoute
+  DocsLayoutExamplesAdvancedSetupRoute: typeof DocsLayoutExamplesAdvancedSetupRoute
+  DocsLayoutExamplesBasicSetupRoute: typeof DocsLayoutExamplesBasicSetupRoute
+  DocsLayoutExamplesRealWorldRoute: typeof DocsLayoutExamplesRealWorldRoute
+  DocsLayoutGettingStartedInstallationRoute: typeof DocsLayoutGettingStartedInstallationRoute
+  DocsLayoutGettingStartedIntroductionRoute: typeof DocsLayoutGettingStartedIntroductionRoute
+  DocsLayoutGettingStartedQuickStartRoute: typeof DocsLayoutGettingStartedQuickStartRoute
+  DocsLayoutGuidesCustomAdaptersRoute: typeof DocsLayoutGuidesCustomAdaptersRoute
+  DocsLayoutGuidesDeploymentRoute: typeof DocsLayoutGuidesDeploymentRoute
+  DocsLayoutGuidesTestingRoute: typeof DocsLayoutGuidesTestingRoute
+  DocsLayoutUseCasesMembershipManagementRoute: typeof DocsLayoutUseCasesMembershipManagementRoute
+  DocsLayoutUseCasesOrganizationManagementRoute: typeof DocsLayoutUseCasesOrganizationManagementRoute
+  DocsLayoutUseCasesOverviewRoute: typeof DocsLayoutUseCasesOverviewRoute
+  DocsLayoutUseCasesUserManagementRoute: typeof DocsLayoutUseCasesUserManagementRoute
+}
+
+const DocsLayoutRouteChildren: DocsLayoutRouteChildren = {
+  DocsLayoutIndexRoute: DocsLayoutIndexRoute,
+  DocsLayoutAdaptersAuthenticationRoute: DocsLayoutAdaptersAuthenticationRoute,
+  DocsLayoutAdaptersOverviewRoute: DocsLayoutAdaptersOverviewRoute,
+  DocsLayoutAdaptersPersistenceRoute: DocsLayoutAdaptersPersistenceRoute,
+  DocsLayoutAdaptersTransportRoute: DocsLayoutAdaptersTransportRoute,
+  DocsLayoutArchitectureDomainRoute: DocsLayoutArchitectureDomainRoute,
+  DocsLayoutArchitectureExternalIdRoute: DocsLayoutArchitectureExternalIdRoute,
+  DocsLayoutArchitectureOverviewRoute: DocsLayoutArchitectureOverviewRoute,
+  DocsLayoutArchitecturePortsAdaptersRoute:
+    DocsLayoutArchitecturePortsAdaptersRoute,
+  DocsLayoutArchitectureUsernameRoute: DocsLayoutArchitectureUsernameRoute,
+  DocsLayoutConfigurationCustomFieldsRoute:
+    DocsLayoutConfigurationCustomFieldsRoute,
+  DocsLayoutConfigurationHooksRoute: DocsLayoutConfigurationHooksRoute,
+  DocsLayoutConfigurationOverviewRoute: DocsLayoutConfigurationOverviewRoute,
+  DocsLayoutConfigurationResponseTransformersRoute:
+    DocsLayoutConfigurationResponseTransformersRoute,
+  DocsLayoutEndpointsMembershipEndpointsRoute:
+    DocsLayoutEndpointsMembershipEndpointsRoute,
+  DocsLayoutEndpointsOrganizationEndpointsRoute:
+    DocsLayoutEndpointsOrganizationEndpointsRoute,
+  DocsLayoutEndpointsOverviewRoute: DocsLayoutEndpointsOverviewRoute,
+  DocsLayoutEndpointsUserEndpointsRoute: DocsLayoutEndpointsUserEndpointsRoute,
+  DocsLayoutExamplesAdvancedSetupRoute: DocsLayoutExamplesAdvancedSetupRoute,
+  DocsLayoutExamplesBasicSetupRoute: DocsLayoutExamplesBasicSetupRoute,
+  DocsLayoutExamplesRealWorldRoute: DocsLayoutExamplesRealWorldRoute,
+  DocsLayoutGettingStartedInstallationRoute:
+    DocsLayoutGettingStartedInstallationRoute,
+  DocsLayoutGettingStartedIntroductionRoute:
+    DocsLayoutGettingStartedIntroductionRoute,
+  DocsLayoutGettingStartedQuickStartRoute:
+    DocsLayoutGettingStartedQuickStartRoute,
+  DocsLayoutGuidesCustomAdaptersRoute: DocsLayoutGuidesCustomAdaptersRoute,
+  DocsLayoutGuidesDeploymentRoute: DocsLayoutGuidesDeploymentRoute,
+  DocsLayoutGuidesTestingRoute: DocsLayoutGuidesTestingRoute,
+  DocsLayoutUseCasesMembershipManagementRoute:
+    DocsLayoutUseCasesMembershipManagementRoute,
+  DocsLayoutUseCasesOrganizationManagementRoute:
+    DocsLayoutUseCasesOrganizationManagementRoute,
+  DocsLayoutUseCasesOverviewRoute: DocsLayoutUseCasesOverviewRoute,
+  DocsLayoutUseCasesUserManagementRoute: DocsLayoutUseCasesUserManagementRoute,
+}
+
+const DocsLayoutRouteWithChildren = DocsLayoutRoute._addFileChildren(
+  DocsLayoutRouteChildren,
+)
+
+interface DocsRouteChildren {
+  DocsLayoutRoute: typeof DocsLayoutRouteWithChildren
+}
+
+const DocsRouteChildren: DocsRouteChildren = {
+  DocsLayoutRoute: DocsLayoutRouteWithChildren,
+}
+
+const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacyRoute: PrivacyRoute,
+  BlogRoute: BlogRouteWithChildren,
+  DocsRoute: DocsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

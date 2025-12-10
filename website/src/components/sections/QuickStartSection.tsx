@@ -29,7 +29,7 @@ export function QuickStartSection() {
 const app = createSupabaseExpressApp();
 
 app.listen(3000);
-// Works with Express, Lambda, Hono, Fastify...`;
+// Also works with Supabase Edge Functions!`;
 
     const features = [
         '18 production-ready endpoints',
@@ -138,8 +138,8 @@ app.listen(3000);
                     {/* Bottom Note */}
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                            Use the domain use cases directly in your services, or expose them
-                            through the built-in Express adapter.
+                            Deploy to Express, Supabase Edge Functions, or use the domain logic
+                            directly in your services.
                         </p>
                     </div>
                 </motion.div>

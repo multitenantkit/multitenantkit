@@ -33,7 +33,7 @@ export function DatabaseSetupSection() {
                         </h2>
                         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                             MultiTenantKit is fully infrastructure-agnostic. Out of the box you get
-                            adapters for PostgreSQL and JSON storage, Supabase Auth, and Express —
+                            adapters for PostgreSQL, Supabase (Auth + Edge Functions), and Express —
                             but you can also build adapters for MySQL, MongoDB, DynamoDB, Auth0,
                             Cognito, Firebase, AWS Lambda, Fastify, Hono, and more.{' '}
                             <span className="font-semibold text-gray-900 dark:text-gray-100">

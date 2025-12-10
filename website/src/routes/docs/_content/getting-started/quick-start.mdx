@@ -1,60 +1,22 @@
 ---
 title: Quick Start
-description: Get MultiTenantKit running in under 5 minutes with a working Express server
-lastUpdated: '2025-11-22'
+description: Get MultiTenantKit running in under 5 minutes. Choose Express (Node.js) or Supabase Edge Functions.
+lastUpdated: '2025-12-09'
 ---
 
+Choose your deployment target and follow the guide below.
+
 <Callout type="info">
-**Note**: This guide assumes you're using **Supabase** for both database and authentication. See [Installation](/docs/getting-started/installation) for setup details.
+**Prerequisites**: See [Installation](/docs/getting-started/installation) for database setup and environment configuration.
 </Callout>
 
-## Create Database Tables
+---
 
-Supabase provides the `auth.users` table automatically. You only need to create the organizations and memberships tables.
+## Express (Node.js)
 
-Run this SQL in your Supabase SQL Editor:
+The traditional approach: run MultiTenantKit on your own Express server with full control over your infrastructure.
 
-```sql
--- Organizations table
-CREATE TABLE organizations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  owner_user_id UUID NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  archived_at TIMESTAMP,
-  deleted_at TIMESTAMP
-);
-
--- Organization Memberships table
-CREATE TABLE organization_memberships (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID,
-  username TEXT NOT NULL,
-  organization_id UUID NOT NULL REFERENCES organizations(id),
-  role_code TEXT NOT NULL CHECK (role_code IN ('owner', 'admin', 'member')),
-  invited_at TIMESTAMP,
-  joined_at TIMESTAMP,
-  left_at TIMESTAMP,
-  deleted_at TIMESTAMP,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
--- Indexes
-CREATE INDEX idx_orgs_owner ON organizations(owner_user_id);
-CREATE INDEX idx_orgs_deleted_at ON organizations(deleted_at);
-CREATE INDEX idx_orgs_archived_at ON organizations(archived_at);
-
-CREATE INDEX idx_memberships_user ON organization_memberships(user_id);
-CREATE INDEX idx_memberships_org ON organization_memberships(organization_id);
-CREATE INDEX idx_memberships_username ON organization_memberships(username);
-```
-
-> **Prerequisites**: Complete the [Installation Guide](/docs/getting-started/installation) first to install packages and setup your database.
-
-## Initialize Your Project
-
-If you haven't already, create a new Node.js project:
+### 1. Setup Project
 
 ```bash
 npm init -y
@@ -62,54 +24,68 @@ npm install @multitenantkit/sdk dotenv
 npm install -D typescript tsx @types/node
 ```
 
-Create `tsconfig.json`:
+### 2. Environment Variables
 
-```json
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "outDir": "./dist"
-  },
-  "include": ["src/**/*"]
-}
+Create `.env`:
+
+```bash
+DATABASE_URL=postgresql://user:password@localhost:5432/postgres
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-service-role-key
 ```
 
-Add scripts to `package.json`:
-
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
-  }
-}
-```
-
-## Create Your Server
+### 3. Create Server
 
 Create `src/index.ts`:
 
 ```typescript
 import 'dotenv/config';
 import { createSupabaseExpressApp } from '@multitenantkit/sdk';
+import { z } from 'zod';
 
-const app = createSupabaseExpressApp();
+// Define custom fields (optional)
+const customUserFields = z.object({
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
+});
+
+const customOrgFields = z.object({
+  organizationName: z.string().min(1).max(200),
+  industry: z.string().optional(),
+});
+
+// Create app with custom fields
+const app = createSupabaseExpressApp({
+  users: {
+    customFields: { customSchema: customUserFields }
+  },
+  organizations: {
+    customFields: { customSchema: customOrgFields }
+  }
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
+  console.log('');
+  console.log('Endpoints:');
+  console.log('  GET    /users/me');
+  console.log('  PATCH  /users/me');
+  console.log('  POST   /organizations');
+  console.log('  GET    /organizations/:id');
+  console.log('  ...and 14 more!');
 });
 ```
 
-### Alternative: Add to Existing Express App
+### 4. Run
 
-If you already have an Express app, use `createExpressRouter` to add MultiTenantKit routes:
+```bash
+npx tsx src/index.ts
+```
+
+### Alternative: Add to Existing App
+
+Already have an Express app? Use `createExpressRouter`:
 
 ```typescript
 import 'dotenv/config';
@@ -119,51 +95,105 @@ import { createExpressRouter } from '@multitenantkit/sdk';
 const app = express();
 
 // Your existing routes
-app.get('/api/billing', (req, res) => {
-  res.json({ status: 'ok' });
+app.get('/api/billing', (req, res) => res.json({ status: 'ok' }));
+
+// Add MultiTenantKit under a prefix
+const mtRouter = createExpressRouter();
+app.use('/api/teams', mtRouter);
+
+app.listen(3000);
+```
+
+---
+
+## Supabase Edge Functions
+
+Deploy MultiTenantKit as a serverless "fat function" on Supabase's globally distributed edge network.
+
+### 1. Create Edge Function
+
+```bash
+# Initialize Supabase (if needed)
+supabase init
+
+# Create the function
+supabase functions new multitenantkit
+```
+
+### 2. Write the Function
+
+Edit `supabase/functions/multitenantkit/index.ts`:
+
+```typescript
+// Deno imports - IMPORTANT: import createClient directly from esm.sh
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+
+// Define custom fields (optional)
+const customUserFields = z.object({
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
 });
 
-// Add MultiTenantKit routes
-const multitenantRouter = createExpressRouter({
-  users: {
-    database: {
-      schema: 'auth',
-      table: 'users'
+const customOrgFields = z.object({
+  organizationName: z.string().min(1).max(200),
+  industry: z.string().optional(),
+});
+
+// Create Supabase client - MUST use createClient from esm.sh directly
+const client = createClient(
+  Deno.env.get('PROJECT_URL')!,
+  Deno.env.get('SERVICE_ROLE_KEY')!
+);
+
+// Create handler with custom fields
+const handler = createSupabaseEdgeHandler({
+  client,
+  toolkitOptions: {
+    users: {
+      customFields: { customSchema: customUserFields }
+    },
+    organizations: {
+      customFields: { customSchema: customOrgFields }
     }
+  },
+  edgeOptions: {
+    basePath: '/multitenantkit'
   }
 });
 
-// Mount under your preferred path
-app.use('/api', multitenantRouter);
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
-});
+Deno.serve(handler);
 ```
 
-## Environment Variables
+<Callout type="warning">
+**Important**: Always import `createClient` directly from `esm.sh/@supabase/supabase-js@2` and pass it to `createSupabaseEdgeHandler`. This avoids JWT verification failures caused by module version conflicts.
+</Callout>
 
-Create `.env`:
+### 3. Deploy
 
 ```bash
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/postgres
-
-# Supabase Auth
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your-service-role-key
+supabase functions deploy multitenantkit
 ```
 
-## Run Your Server
+### 4. Test
+
+Your API is now live:
 
 ```bash
-npm run dev
+# Base URL
+https://your-project.supabase.co/functions/v1/multitenantkit
+
+# Example: Get current user
+curl https://your-project.supabase.co/functions/v1/multitenantkit/users/me \
+  -H "Authorization: Bearer YOUR_SUPABASE_JWT"
 ```
 
-## Test the API
+---
 
-Your server now has all user and organization endpoints ready:
+## Test Your API
+
+Both deployments expose the same 18 endpoints. Here are the key ones:
 
 ### Get Current User
 
@@ -178,19 +208,60 @@ curl -X GET http://localhost:3000/users/me \
 curl -X POST http://localhost:3000/organizations \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"organizationName": "My Company"}'
 ```
 
-### Get User Organizations
+### List User Organizations
 
 ```bash
 curl -X GET http://localhost:3000/users/me/organizations \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
+### Add Member to Organization
+
+```bash
+curl -X POST http://localhost:3000/organizations/{orgId}/members \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"username": "user@example.com"}'
+```
+
+---
+
+## Available Endpoints
+
+All 18 endpoints work identically in both deployment modes:
+
+**Users (5)**
+- `GET /users/me` - Get current user
+- `PATCH /users/me` - Update current user
+- `DELETE /users/me` - Delete current user
+- `GET /users/me/organizations` - List user's organizations
+- `POST /users` - Create user (called automatically on first auth)
+
+**Organizations (8)**
+- `POST /organizations` - Create organization
+- `GET /organizations/:id` - Get organization
+- `PATCH /organizations/:id` - Update organization
+- `DELETE /organizations/:id` - Delete organization
+- `POST /organizations/:id/archive` - Archive organization
+- `POST /organizations/:id/restore` - Restore organization
+- `POST /organizations/:id/transfer-ownership` - Transfer ownership
+- `GET /organizations/:id/members` - List members
+
+**Memberships (5)**
+- `POST /organizations/:id/members` - Add member
+- `POST /organizations/:id/accept` - Accept invitation
+- `PUT /organizations/:id/members/:userId/role` - Update member role
+- `DELETE /organizations/:id/members/:userId` - Remove member
+- `DELETE /organizations/:id/members/me` - Leave organization
+
+---
+
 ## Next Steps
 
-- **Add custom fields**: [Custom Fields Configuration](/docs/configuration/custom-fields)
-- **Add hooks**: [Use Case Hooks](/docs/configuration/hooks)
-- **Explore endpoints**: [User Endpoints](/docs/endpoints/user-endpoints), [Organization Endpoints](/docs/endpoints/organization-endpoints)
-- **View all use cases**: [Use Cases Overview](/docs/use-cases/overview)
+- [Custom Fields](/docs/configuration/custom-fields) - Extend entities with your own fields
+- [Use Case Hooks](/docs/configuration/hooks) - Add custom logic at lifecycle points
+- [User Endpoints](/docs/endpoints/user-endpoints) - Detailed endpoint documentation
+- [Organization Endpoints](/docs/endpoints/organization-endpoints) - Organization API reference

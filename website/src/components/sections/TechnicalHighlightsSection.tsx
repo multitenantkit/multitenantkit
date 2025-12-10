@@ -23,7 +23,7 @@ export function TechnicalHighlightsSection() {
         {
             title: '18 use cases for users, organizations, and memberships',
             content:
-                'Covering all CRUD operations, role management, invitations, soft deletes, and more. Wired into a ready-to-use Express transport layer.'
+                'Covering all CRUD operations, role management, invitations, soft deletes, and more. Deploy via Express or Supabase Edge Functions.'
         },
         {
             title: 'Zod-based schemas for runtime validation',

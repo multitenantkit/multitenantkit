@@ -1,0 +1,199 @@
+---
+title: "Deploy MultiTenantKit to Supabase Edge Functions in 5 Minutes"
+description: "Learn how to deploy your multi-tenant API to the edge using Supabase Edge Functions. Zero Node.js, fast cold starts, global distribution out of the box."
+date: "2025-12-10"
+author: "German Llorente"
+coverImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80"
+tags: ["supabase", "edge-functions", "serverless", "deployment"]
+featured: true
+---
+
+We're excited to announce first-class support for **Supabase Edge Functions** in MultiTenantKit. You can now deploy your entire multi-tenant API to the edge with a single function — no Node.js server required.
+
+## Why Edge Functions?
+
+Traditional server deployments have their place, but edge functions offer compelling advantages:
+
+- **Fast Cold Starts** — Deno runtime boots in ~100-300ms (vs seconds for traditional serverless)
+- **Global Distribution** — Your API runs close to your users worldwide
+- **Simplified Infrastructure** — No servers to manage, scale, or monitor
+- **Cost Efficiency** — Pay only for what you use, scale to zero when idle
+
+For many B2B SaaS applications, especially those with global customers, edge deployment is the obvious choice.
+
+## The New SDK
+
+We've created a dedicated package for Supabase Edge Functions:
+
+```bash
+# For Express/Node.js
+npm install @multitenantkit/sdk
+
+# For Supabase Edge Functions
+# Import directly from esm.sh (no npm install needed!)
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+```
+
+Both packages expose the same 18 endpoints with identical behavior. The difference is in how they're deployed and configured.
+
+## Quick Start: Edge Function Deployment
+
+### 1. Create Your Edge Function
+
+```bash
+supabase functions new multitenantkit
+```
+
+### 2. Write the Handler
+
+```typescript
+// supabase/functions/multitenantkit/index.ts
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+
+const client = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+);
+
+const handler = createSupabaseEdgeHandler({
+  client,
+  edgeOptions: { basePath: '/multitenantkit' }
+});
+
+Deno.serve(handler);
+```
+
+### 3. Deploy
+
+```bash
+supabase functions deploy multitenantkit
+```
+
+**That's it.** You now have a globally distributed API with 18 endpoints for managing users, organizations, and memberships.
+
+## The "Fat Function" Pattern
+
+Supabase Edge Functions use a pattern called **fat functions** — a single function that handles multiple routes. This is different from the AWS Lambda model where each endpoint is a separate function.
+
+Benefits of this approach:
+
+- **Shared Context** — All endpoints share configuration, database connections, and custom logic
+- **Simpler Deployment** — One function to deploy, one URL to manage
+- **Reduced Cold Starts** — Warm up once, serve all routes
+- **Easier Debugging** — All logs in one place
+
+MultiTenantKit's `createSupabaseEdgeHandler` is designed specifically for this pattern, handling routing internally based on the request path.
+
+## Database Setup for Edge Functions
+
+There's one key difference from the Express setup: Edge Functions use the Supabase JS client (PostgREST), which cannot query `auth.users` directly. Instead, we use a `profiles` table that syncs with `auth.users` via a database trigger.
+
+```sql
+-- Profiles table synced with auth.users
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Trigger to auto-create profile on signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email)
+  VALUES (NEW.id, NEW.email);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+```
+
+> 📋 For the complete SQL setup including organizations, memberships, and RLS policies, check out the [full setup script on GitHub](https://github.com/multitenantkit/multitenantkit/blob/main/packages/adapters/persistence/supabase/sql/setup.sql).
+
+## Custom Fields Work the Same Way
+
+One of the best parts: your custom fields configuration is identical between Express and Edge Functions:
+
+```typescript
+import { z } from 'https://esm.sh/zod';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+
+const handler = createSupabaseEdgeHandler({
+  client,
+  edgeOptions: { basePath: '/multitenantkit' },
+  toolkitOptions: {
+    users: {
+      customFields: {
+        customSchema: z.object({
+          firstName: z.string(),
+          lastName: z.string(),
+          avatar: z.string().url().optional(),
+        }),
+      },
+    },
+    organizations: {
+      customFields: {
+        customSchema: z.object({
+          industry: z.string().optional(),
+          billingEmail: z.string().email().optional(),
+        }),
+      },
+    },
+  },
+});
+```
+
+Hooks and response transformers also work identically. The same configuration object you use for Express works for Edge Functions.
+
+## When to Choose Edge Functions vs Express
+
+| Use Case | Recommendation |
+|----------|----------------|
+| New project with Supabase | **Edge Functions** — simplest path |
+| Global user base | **Edge Functions** — lower latency |
+| Existing Express/Node.js app | **Express** — add routes to existing app |
+| Custom middleware needs | **Express** — more control over request pipeline |
+| Need to run on AWS/GCP/Azure | **Express** — deploy anywhere |
+| Tight budget, variable traffic | **Edge Functions** — pay per request |
+
+Both options give you the same 18 endpoints with identical business logic. Choose based on your infrastructure preferences.
+
+## Testing Your Edge Function
+
+```bash
+# Get the function URL from Supabase dashboard, then:
+
+# Create an organization
+curl -X POST https://your-project.supabase.co/functions/v1/multitenantkit/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Acme Corp", "slug": "acme"}'
+
+# List organizations for current user
+curl https://your-project.supabase.co/functions/v1/multitenantkit/users/me/organizations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## What's Next?
+
+Edge Functions support is available now in `@multitenantkit/sdk-supabase`. We're continuing to improve the edge experience:
+
+- **Edge-optimized caching** — Reduce database round trips
+- **Regional deployment hints** — Choose specific edge locations
+- **Webhook support** — Trigger external services from edge
+
+## Get Started Today
+
+Ready to deploy to the edge?
+
+1. 📖 [Read the Installation Guide](/docs/getting-started/installation) — Complete setup for both Express and Edge Functions
+2. 🚀 [Quick Start Tutorial](/docs/getting-started/quick-start) — Step-by-step deployment guide
+3. ⭐ [Star us on GitHub](https://github.com/multitenantkit/multitenantkit) — Help spread the word
+
+We're excited to see your multi-tenant apps running at the edge!

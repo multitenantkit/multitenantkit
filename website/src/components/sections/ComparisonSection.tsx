@@ -35,7 +35,7 @@ app.listen(3000);
 // ⚡ 30 seconds
 // ✨ 18 production endpoints
 // 🛡️ Type-safe by default
-// 🚀 Works with Express, Lambda, Hono, Fastify...`;
+// 🚀 Express, Edge Functions, or serverless`;
 
     return (
         <Section className="bg-light-bg dark:bg-dark-bg">

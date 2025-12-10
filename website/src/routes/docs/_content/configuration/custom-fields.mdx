@@ -1,11 +1,11 @@
 ---
 title: Custom Fields
 description: Custom fields allow you to extend User, Organization, and Membership entities with your own data while maintaining full type safety through Zod schemas
-lastUpdated: '2025-11-22'
+lastUpdated: '2025-12-09'
 ---
 
 <Callout type="info">
-**Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+Examples use Express syntax, but custom fields work identically with **Supabase Edge Functions** - pass the same `toolkitOptions` to `createSupabaseEdgeHandler`. See [Installation](/docs/getting-started/installation) for setup.
 </Callout>
 
 > **Important**: Custom fields are stored as **individual columns** in your database tables, not as JSONB (except for Supabase users, see below). This provides better query performance and indexing capabilities.

@@ -1,23 +1,36 @@
 ---
 title: Installation
-description: MultiTenantKit can be installed via npm or yarn. Choose your preferred package manager below.
-lastUpdated: '2025-11-22'
+description: Install MultiTenantKit for Express (Node.js) or Supabase Edge Functions. Choose your deployment target.
+lastUpdated: '2025-12-09'
 ---
 
-## Prerequisites
+## Choose Your Deployment
+
+MultiTenantKit offers two SDK bundles optimized for different deployment scenarios:
+
+| SDK | Best For | Runtime | Database Access |
+|-----|----------|---------|-----------------|
+| `@multitenantkit/sdk` | Express apps, Node.js servers, traditional hosting | Node.js | Raw SQL (PostgreSQL) |
+| `@multitenantkit/sdk-supabase` | Supabase Edge Functions, serverless | Deno | Supabase JS Client |
+
+<Callout type="info">
+**Which should I choose?**
+- **Express (Node.js)**: You control the server, have full database access, and deploy to traditional hosting (AWS, Vercel, Railway, etc.)
+- **Supabase Edge Functions**: Serverless, globally distributed, zero server management. All endpoints run in a single "fat function" on Supabase's edge network.
+</Callout>
+
+---
+
+## Option A: Express (Node.js)
+
+### Prerequisites
 
 - **Node.js 18+** or Bun 1.0+
 - **TypeScript 5.0+**
 - **PostgreSQL 13+** (for persistence)
 - **Supabase Account** (for authentication)
 
-<Callout type="info">
-**Note**: This guide assumes you're using **Supabase** for both database persistence (PostgreSQL) and authentication. While MultiTenantKit supports other databases and auth providers, we'll use Supabase for simplicity.
-</Callout>
-
-## Install the SDK
-
-The SDK bundle includes everything you need to get started quickly:
+### Install the SDK
 
 ```bash title="npm"
 npm install @multitenantkit/sdk
@@ -25,10 +38,6 @@ npm install @multitenantkit/sdk
 
 ```bash title="yarn"
 yarn add @multitenantkit/sdk
-```
-
-```bash title="pnpm"
-pnpm add @multitenantkit/sdk
 ```
 
 For more granular control, install packages individually:
@@ -40,11 +49,11 @@ npm install @multitenantkit/composition \
   @multitenantkit/api-handlers
 ```
 
-## Database Setup
+### Database Setup
 
-> **Important**: When using Supabase, you **don't need to create a users table**. Supabase provides `auth.users` built-in, which MultiTenantKit uses automatically. You only need to create the organizations and memberships tables.
+> **Important**: When using Supabase, you **don't need to create a users table**. Supabase provides `auth.users` built-in, which MultiTenantKit uses automatically.
 
-Run these SQL commands in your Supabase SQL Editor (or any PostgreSQL client):
+Run this SQL in your Supabase SQL Editor:
 
 ```sql
 -- Organizations table
@@ -55,7 +64,7 @@ CREATE TABLE organizations (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   archived_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  -- Custom fields (optional, add your own):
+  -- Add your custom fields:
   name TEXT,
   industry TEXT
 );
@@ -72,97 +81,131 @@ CREATE TABLE organization_memberships (
   left_at TIMESTAMP,
   deleted_at TIMESTAMP,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  -- Custom fields (optional, add your own):
-  department TEXT,
-  job_title TEXT
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Indexes for better query performance
+-- Indexes
 CREATE INDEX idx_orgs_owner ON organizations(owner_user_id);
-CREATE INDEX idx_orgs_deleted_at ON organizations(deleted_at);
-CREATE INDEX idx_orgs_archived_at ON organizations(archived_at);
-
 CREATE INDEX idx_memberships_user ON organization_memberships(user_id);
 CREATE INDEX idx_memberships_org ON organization_memberships(organization_id);
-CREATE INDEX idx_memberships_username ON organization_memberships(username);
 ```
 
-> **Note**: The custom fields shown above (`name`, `industry`, `department`, `job_title`) are just examples. You can add any fields you need. For more details on custom fields configuration and validation, see [Custom Fields Configuration](/docs/configuration/custom-fields).
+### Environment Variables
 
-> **Note**: For user custom fields with Supabase, use the `raw_user_meta_data` column in `auth.users`. See [Custom Fields Configuration](/docs/configuration/custom-fields#supabase-users) for details.
-
-## Environment Variables
-
-Create a `.env` file in your project root with the following variables:
+Create `.env` in your project root:
 
 ```bash title=".env"
 # Database (Required)
-DATABASE_URL=postgresql://user:password@localhost:5432/multitenantkit_dev
+DATABASE_URL=postgresql://user:password@localhost:5432/postgres
 
 # Supabase Auth (Required)
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_KEY=your-service-role-key
-
-# Optional: Database Pool Size (defaults to 10)
-DB_POOL_SIZE=10
 ```
 
-### Required Variables
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `SUPABASE_URL` | Your Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | Service role key (not anon key!) from Dashboard → Settings → API |
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@localhost:5432/dbname` |
-| `SUPABASE_URL` | Your Supabase project URL | `https://xyz.supabase.co` |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key (not anon key!) | Found in Supabase Dashboard → Settings → API |
-
-### Optional Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DB_POOL_SIZE` | Maximum database connections | `10` |
-| `DB_SSL` | SSL mode: `false`, `true`, or `rejectUnauthorized` | `false` |
-
-> **Security Note**: Use the **service role key**, not the anon key. The service role key has admin privileges needed for user management.
-
-## Verify Installation
-
-Create a simple Express server to verify your setup:
+### Verify Installation
 
 ```typescript title="index.ts"
+import 'dotenv/config';
 import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
 const app = createSupabaseExpressApp();
 
 app.listen(3000, () => {
-  console.log('✅ MultiTenantKit server running on http://localhost:3000');
-  console.log('');
-  console.log('Available endpoints:');
-  console.log('  GET    /users/me');
-  console.log('  PATCH  /users/me');
-  console.log('  POST   /organizations');
-  console.log('  GET    /organizations/:id');
-  console.log('  ...and 14 more!');
+  console.log('🚀 Server running on http://localhost:3000');
 });
 ```
-
-Run the server:
 
 ```bash
 npx tsx index.ts
 ```
 
-If you see the success message, you're all set! 🎉
+---
 
-Test it with curl (you'll need a valid Supabase JWT token):
+## Option B: Supabase Edge Functions
+
+### Prerequisites
+
+- **Supabase Project** with Edge Functions enabled
+- **Supabase CLI** installed (`npm install -g supabase`)
+
+### Create the Edge Function
+
+No npm install needed! Import directly from esm.sh in your Edge Function:
 
 ```bash
-curl http://localhost:3000/users/me \
-  -H "Authorization: Bearer YOUR_SUPABASE_JWT_TOKEN"
+# Initialize Supabase (if not already done)
+supabase init
+
+# Create the Edge Function
+supabase functions new multitenantkit
 ```
+
+### Database Setup
+
+Edge Functions use the Supabase JS client, which requires a `profiles` table instead of querying `auth.users` directly.
+
+Run the complete setup script in your Supabase SQL Editor:
+
+👉 **[View full SQL setup script on GitHub](https://github.com/multitenantkit/multitenantkit/blob/main/packages/adapters/persistence/supabase/sql/setup.sql)**
+
+This script creates:
+- **`profiles`** - User data synced with `auth.users` via trigger
+- **`organizations`** - Organizations with owner reference
+- **`organization_memberships`** - Membership relationships
+- **Foreign keys, indexes, and RLS policies**
+
+<Callout type="info">
+**Why `profiles` instead of `auth.users`?** The `auth.users` table is not queryable via the Supabase JS client (PostgREST). The `profiles` table gives you full control over user data and custom fields.
+</Callout>
+
+### Write the Edge Function
+
+Edit `supabase/functions/multitenantkit/index.ts`:
+
+```typescript title="supabase/functions/multitenantkit/index.ts"
+// IMPORTANT: Import createClient directly from esm.sh to avoid version conflicts
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+
+// Create Supabase client
+const client = createClient(
+  Deno.env.get('PROJECT_URL')!,
+  Deno.env.get('SERVICE_ROLE_KEY')!
+);
+
+// Create the Edge Function handler
+const handler = createSupabaseEdgeHandler({
+  client,
+  edgeOptions: {
+    basePath: '/multitenantkit'
+  }
+});
+
+Deno.serve(handler);
+```
+
+### Deploy
+
+```bash
+supabase functions deploy multitenantkit
+```
+
+Your API is now live at:
+```
+https://your-project.supabase.co/functions/v1/multitenantkit
+```
+
+---
 
 ## Next Steps
 
-- [Quick Start](/docs/getting-started/quick-start) - Build your first app in 5 minutes
+- [Quick Start](/docs/getting-started/quick-start) - Complete examples for both deployment options
 - [Custom Fields](/docs/configuration/custom-fields) - Extend entities with your own fields
 - [Use Cases](/docs/use-cases/overview) - Explore all 18 use cases

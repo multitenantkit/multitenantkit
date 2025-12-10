@@ -1,11 +1,11 @@
 ---
 title: Response Transformers
 description: Modify HTTP responses without changing business logic. Add computed fields, remove sensitive data, or customize formats per client.
-lastUpdated: '2025-11-30'
+lastUpdated: '2025-12-09'
 ---
 
 <Callout type="info">
-**Note**: This guide assumes you're using **Supabase** for both database and authentication, as covered in the [Installation Guide](/docs/getting-started/installation).
+Examples use Express syntax, but the configuration works identically with **Supabase Edge Functions** - pass the same options to `createSupabaseEdgeHandler`. See [Installation](/docs/getting-started/installation) for setup.
 </Callout>
 
 ## Overview
@@ -57,10 +57,10 @@ const app = createSupabaseExpressApp({
     users: {
       GetUser: async ({ response }) => {
         const user = response.body.data;
-        
+
         // Remove sensitive field
         const { internalId, ...publicData } = user;
-        
+
         return {
           ...response,
           body: {
@@ -102,7 +102,7 @@ interface ResponseTransformerContext<TInput, TOutput> {
 GetUser: async ({ response, request }) => {
   const user = response.body.data;
   const isOwnProfile = request.principal?.userId === user.id;
-  
+
   return {
     ...response,
     body: {
@@ -127,7 +127,7 @@ const config = {
     users: {
       GetUser: async ({ response }) => {
         const { internalId, systemMetadata, ...publicData } = response.body.data;
-        
+
         return {
           ...response,
           body: { ...response.body, data: publicData }
@@ -146,7 +146,7 @@ const config = {
     users: {
       GetUser: async ({ response }) => {
         const user = response.body.data;
-        
+
         return {
           ...response,
           body: {
@@ -176,13 +176,13 @@ const config = {
     users: {
       GetUser: async ({ response }) => {
         const user = response.body.data;
-        
+
         // Convert all keys to snake_case
         const snakeCaseUser = Object.keys(user).reduce((acc, key) => {
           acc[toSnakeCase(key)] = user[key];
           return acc;
         }, {} as any);
-        
+
         return {
           ...response,
           body: { ...response.body, data: snakeCaseUser }
@@ -223,10 +223,10 @@ const config = {
       GetOrganization: async ({ response, request }) => {
         const org = response.body.data;
         const tenantId = request.principal?.organizationId;
-        
+
         // Load tenant-specific configuration
         const tenantConfig = await getTenantConfig(tenantId);
-        
+
         if (tenantConfig.showInternalData) {
           return response; // Return full data
         } else {
@@ -258,7 +258,7 @@ const config = {
       DeleteUser: myDeleteUserTransformer,
       ListUserOrganizations: myListOrganizationsTransformer,
     },
-    
+
     // Organization endpoints
     organizations: {
       GetOrganization: myOrgTransformer,
@@ -270,7 +270,7 @@ const config = {
       TransferOrganizationOwnership: myTransferOwnershipTransformer,
       ListOrganizationMembers: myListMembersTransformer,
     },
-    
+
     // Membership endpoints
     organizationMemberships: {
       AddOrganizationMember: myAddMemberTransformer,
@@ -293,14 +293,14 @@ function createFieldRemover<T extends Record<string, any>>(
 ) {
   return async ({ response }: any) => {
     const data = response.body.data;
-    
+
     const cleanedData = Object.keys(data).reduce((acc, key) => {
       if (!fieldsToRemove.includes(key)) {
         acc[key] = data[key];
       }
       return acc;
     }, {} as T);
-    
+
     return {
       ...response,
       body: { ...response.body, data: cleanedData }
@@ -388,18 +388,18 @@ const goodTransformer = async ({ response }) => {
 ```typescript
 const typeSafeTransformer = async ({ response }) => {
   const data = response.body.data;
-  
+
   // Type guard
   if (!data || typeof data !== 'object') {
     return response;
   }
-  
+
   // Now safe to access properties
   const transformed = {
     ...data,
     fullName: `${data.firstName} ${data.lastName}`
   };
-  
+
   return {
     ...response,
     body: { ...response.body, data: transformed }
@@ -421,10 +421,10 @@ const app = createSupabaseExpressApp({
         try {
           const user = response.body.data;
           const isOwnProfile = request.principal?.userId === user.id;
-          
+
           // Remove sensitive fields
           const { internalId, systemMetadata, ...userData } = user;
-          
+
           // Add computed fields
           const enhanced = {
             ...userData,
@@ -433,7 +433,7 @@ const app = createSupabaseExpressApp({
             // Only show email for own profile
             email: isOwnProfile ? user.email : undefined
           };
-          
+
           return {
             status: response.status,
             body: {
@@ -451,12 +451,12 @@ const app = createSupabaseExpressApp({
         }
       }
     },
-    
+
     organizations: {
       GetOrganization: async ({ response }) => {
         try {
           const org = response.body.data;
-          
+
           return {
             ...response,
             body: {
@@ -499,12 +499,12 @@ app.listen(3000, () => {
 ```typescript
 const combinedTransformer = async (context) => {
   let result = context.response;
-  
+
   // Apply transformations in sequence
   result = await removeFieldsTransform(result);
   result = await addFieldsTransform(result);
   result = await formatTransform(result);
-  
+
   return result;
 };
 ```
@@ -540,7 +540,7 @@ const myTransformer: ResponseTransformer<GetUserInput, User> = async ({
   request
 }) => {
   const user = response.body.data; // Type: User
-  
+
   return {
     status: 200,
     body: {

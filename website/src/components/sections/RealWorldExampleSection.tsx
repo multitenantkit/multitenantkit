@@ -137,7 +137,7 @@ app.listen(3000);
 // - Error handling
 // - Full TypeScript support
 
-// Total: ~30 lines. Deploy ready. 🚀`;
+// Total: ~30 lines. Deploy anywhere. 🚀`;
 
     const stats = [
         { label: 'Code Reduction', value: '85%', icon: Zap },

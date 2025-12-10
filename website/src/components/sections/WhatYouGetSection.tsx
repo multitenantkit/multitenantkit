@@ -13,7 +13,7 @@ export function WhatYouGetSection() {
     const features = [
         '18 production-ready endpoints for users, organizations, and memberships.',
         'Pre-built use cases with business validations, role management, and soft deletes.',
-        'Supabase supported out of the box (auth + db) — or plug in your own adapters.',
+        'Deploy to Express or Supabase Edge Functions — or plug in your own adapters.',
         'A type-safe custom fields system powered by Zod.',
         'Hook and response transformer systems to add logging, metrics, webhooks, or custom API shapes without forking the tool.'
     ];

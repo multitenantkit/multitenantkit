@@ -15,7 +15,7 @@ const app = createSupabaseExpressApp();
 
 app.listen(3000);
 // → 18 endpoints running ✅
-// Works with Express, Lambda, Hono, Fastify...`;
+// Deploy anywhere: Express, Edge Functions, Lambda...`;
 
     return (
         <Section
@@ -58,6 +58,11 @@ app.listen(3000);
                             <div className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Your auth
+                                </span>
+                            </div>
+                            <div className="px-3 py-1.5 bg-green-100 dark:bg-green-900/30 rounded-full">
+                                <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                                    Serverless ready
                                 </span>
                             </div>
                         </div>

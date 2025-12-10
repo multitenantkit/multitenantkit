@@ -1,5 +1,9 @@
 [
     {
+        "slug": "supabase-edge-functions",
+        "title": "Deploy MultiTenantKit to Supabase Edge Functions in 5 Minutes"
+    },
+    {
         "slug": "introducing-multitenantkit",
         "title": "Introducing MultiTenantKit: Simplifying Multi-Tenancy for Node.js"
     },

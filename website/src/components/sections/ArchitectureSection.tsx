@@ -23,8 +23,8 @@ export function ArchitectureSection() {
         },
         {
             category: 'Transport',
-            items: ['Express', 'Hono', 'Next.js', 'Lambda'],
-            included: 'Express'
+            items: ['Express', 'Supabase Edge', 'Hono', 'Lambda'],
+            included: 'Express + Edge'
         }
     ];
 

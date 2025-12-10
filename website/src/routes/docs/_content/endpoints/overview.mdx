@@ -1,7 +1,7 @@
 ---
 title: Endpoints Overview
 description: REST API endpoints for MultiTenantKit
-lastUpdated: '2025-11-22'
+lastUpdated: '2025-12-09'
 ---
 
 # Endpoints Overview
@@ -10,33 +10,31 @@ MultiTenantKit provides a complete REST API with 18 endpoints for managing users
 
 ## Authentication
 
-Most endpoints require authentication via JWT token:
-- **Required**: User must be authenticated (JWT token in `Authorization` header)
-- **Optional**: Endpoint works with or without authentication
+All endpoints require authentication via JWT token in the `Authorization` header:
 
-When authentication is required, the `principalExternalId` (user's auth provider ID) is automatically extracted from the JWT token and passed to the use case.
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+The `principalExternalId` (user's auth provider ID) is automatically extracted from the JWT and passed to each use case.
 
 ## Setup Options
 
-MultiTenantKit provides two ways to set up your API:
+MultiTenantKit supports two deployment targets with the same endpoints:
 
-### Option 1: New Express App
+### Express (Node.js)
 
-Create a complete Express application with all MultiTenantKit endpoints:
+**New app** - Create a complete Express application:
 
 ```typescript
 import { createSupabaseExpressApp } from '@multitenantkit/sdk';
 
 const app = createSupabaseExpressApp();
-
 app.listen(3000);
+// Endpoints: /users/me, /organizations, etc.
 ```
 
-This sets up a new Express app with all endpoints at the root level (e.g., `/users/me`, `/organizations`).
-
-### Option 2: Add to Existing App
-
-Add MultiTenantKit routes to an existing Express application:
+**Existing app** - Add routes to your Express application:
 
 ```typescript
 import express from 'express';
@@ -47,18 +45,38 @@ const app = express();
 // Your existing routes
 app.get('/api/billing', billingHandler);
 
-// Add MultiTenantKit routes
-const multitenantRouter = createExpressRouter({
-  users: {
-    database: { schema: 'auth', table: 'users' }
-  }
-});
+// Add MultiTenantKit under a prefix
+app.use('/api/teams', createExpressRouter());
+// Endpoints: /api/teams/users/me, /api/teams/organizations, etc.
 
-app.use('/api', multitenantRouter);
 app.listen(3000);
 ```
 
-This mounts MultiTenantKit endpoints under your chosen path (e.g., `/api/users/me`, `/api/organizations`).
+### Supabase Edge Functions
+
+Deploy as a serverless function on Supabase's edge network:
+
+```typescript
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createSupabaseEdgeHandler } from 'https://esm.sh/@multitenantkit/sdk-supabase';
+
+const client = createClient(
+  Deno.env.get('PROJECT_URL')!,
+  Deno.env.get('SERVICE_ROLE_KEY')!
+);
+
+const handler = createSupabaseEdgeHandler({
+  client,
+  edgeOptions: { basePath: '/multitenantkit' }
+});
+
+Deno.serve(handler);
+// Endpoints: /multitenantkit/users/me, /multitenantkit/organizations, etc.
+```
+
+<Callout type="info">
+Both deployment options expose the same 18 endpoints with identical behavior. Choose based on your infrastructure preferences.
+</Callout>
 
 ## Response Format
 
