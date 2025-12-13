@@ -45,7 +45,8 @@ export {
     type SupabaseClient,
     type SupabaseConfig,
     type SupabaseFactoryOptions,
-    type SupabaseRepositoryBundle
+    type SupabaseRepositoryBundle,
+    SupabaseUnitOfWork
 } from '@multitenantkit/adapter-persistence-supabase';
 // Re-export system adapter
 export { WebCryptoUuid } from '@multitenantkit/adapter-system-web-crypto';

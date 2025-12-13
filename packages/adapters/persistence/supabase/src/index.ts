@@ -47,3 +47,6 @@ export { type UserDbRow, UserMapper } from './mappers/UserMapper';
 export { SupabaseOrganizationMembershipRepository } from './repositories/SupabaseOrganizationMembershipRepository';
 export { SupabaseOrganizationRepository } from './repositories/SupabaseOrganizationRepository';
 export { SupabaseUserRepository } from './repositories/SupabaseUserRepository';
+
+// Unit of Work
+export { SupabaseUnitOfWork } from './uow/SupabaseUnitOfWork';

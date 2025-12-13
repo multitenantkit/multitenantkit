@@ -10,6 +10,7 @@ Supabase persistence adapter for MultiTenantKit. Works in both **Node.js** and *
 - 🔄 Full CRUD operations for Users, Organizations, and OrganizationMemberships
 - 🎨 Custom fields support with column mapping
 - 📄 Pagination support
+- 🔗 Unit of Work pattern support (non-transactional)
 
 ## Installation
 
@@ -190,6 +191,32 @@ Creates all repositories with shared configuration.
 - `SupabaseUserRepository` - User CRUD operations
 - `SupabaseOrganizationRepository` - Organization CRUD operations
 - `SupabaseOrganizationMembershipRepository` - Membership CRUD operations
+
+### Unit of Work
+
+- `SupabaseUnitOfWork` - Unit of Work pattern implementation
+
+## Unit of Work (Transaction Support)
+
+This adapter includes a `SupabaseUnitOfWork` implementation that follows the Unit of Work pattern.
+
+> ⚠️ **Important:** This is a **non-transactional** implementation. The Supabase JS client does not support native database transactions. Operations are executed sequentially without automatic rollback.
+
+```typescript
+import { createSupabaseRepositories } from '@multitenantkit/adapter-persistence-supabase';
+
+const { uow } = createSupabaseRepositories({ client });
+
+// Operations run sequentially (no automatic rollback on failure)
+await uow.transaction(async (repos) => {
+    await repos.organizations.insert(organization, context);
+    await repos.organizationMemberships.insert(membership, context);
+});
+```
+
+For true ACID transactions, consider:
+- Using the PostgreSQL adapter with direct connection (`@multitenantkit/adapter-persistence-postgres`)
+- Implementing RPC/stored procedures in Supabase
 
 ## Environment Variables
 

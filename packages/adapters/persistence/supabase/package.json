@@ -1,6 +1,6 @@
 {
     "name": "@multitenantkit/adapter-persistence-supabase",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "type": "module",
     "description": "Supabase persistence adapter for MultiTenantKit - works in Node.js and Deno/Edge Functions",
     "keywords": [

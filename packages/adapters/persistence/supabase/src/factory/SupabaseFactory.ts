@@ -10,6 +10,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseOrganizationMembershipRepository } from '../repositories/SupabaseOrganizationMembershipRepository';
 import { SupabaseOrganizationRepository } from '../repositories/SupabaseOrganizationRepository';
 import { SupabaseUserRepository } from '../repositories/SupabaseUserRepository';
+import { SupabaseUnitOfWork } from '../uow/SupabaseUnitOfWork';
 
 /**
  * Options for creating Supabase repositories
@@ -37,6 +38,11 @@ export interface SupabaseRepositoryBundle<
     TOrganizationCustomFields,
     TOrganizationMembershipCustomFields
 > {
+    uow: SupabaseUnitOfWork<
+        TUserCustomFields,
+        TOrganizationCustomFields,
+        TOrganizationMembershipCustomFields
+    >;
     userRepository: SupabaseUserRepository<TUserCustomFields>;
     organizationRepository: SupabaseOrganizationRepository<TOrganizationCustomFields>;
     organizationMembershipRepository: SupabaseOrganizationMembershipRepository<
@@ -82,6 +88,11 @@ export function createSupabaseRepositories<
     const { client, toolkitOptions } = options;
 
     return {
+        uow: new SupabaseUnitOfWork<
+            TUserCustomFields,
+            TOrganizationCustomFields,
+            TOrganizationMembershipCustomFields
+        >(client, toolkitOptions),
         userRepository: new SupabaseUserRepository<TUserCustomFields>(
             client,
             toolkitOptions as any

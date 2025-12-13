@@ -1,5 +1,11 @@
 # @multitenantkit/adapter-persistence-supabase
 
+## 0.2.9
+
+### Patch Changes
+
+- feat(adapter-persistence-supabase): add SupabaseUnitOfWork for Unit of Work pattern support
+
 ## 0.2.8
 
 ### Patch Changes
